@@ -1,0 +1,88 @@
+/* cards */
+.cards {
+	width: 100%;
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	column-gap: 40px;
+	row-gap: 20px;
+	padding: 20px;
+}
+
+.cards .card {
+	height: 200px;
+	width: 250px;
+	display: flex;
+	flex-direction: column;
+	border: none;
+	border-radius: 10px;
+	overflow: hidden;
+	background-color: white;
+}
+
+.cards .card .card-header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background-color: #F2F2F2;
+	border-top: 3px solid #D2D6DE;
+	overflow: hidden;
+	padding: 5px 10px;
+
+}
+
+.cards .card .card-header h2 {
+	font-weight: 400;
+	font-size: 18px;
+}
+
+.cards .card .card-header img {
+	width: 50px;
+}
+
+.cards .card .card-body {
+	display: flex;
+	gap: 35px;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.cards .card .card-body .first-element, .second-element {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: 10px;
+	transition: var(--primary-transition);
+}
+
+.cards .card .card-body .first-element img {
+	transition: 0.2s ease-in-out;
+}
+
+.cards .card .card-body .second-element img {
+	transition: 0.2s ease-in-out;
+}
+
+.cards .card .card-body .first-element:hover img {
+	margin-top: -10px;
+}
+
+.cards .card .card-body .second-element:hover img {
+	margin-top: -10px;
+}
+.cards .card .card-body .first-element:hover span {
+	color: black;
+}
+
+.cards .card .card-body .second-element:hover span {
+	color: black;
+}
+
+.cards .card .card-body span {
+	color: #3C8DBC;
+}
+
+.cards .card .card-body img {
+	width: 80px;
+}

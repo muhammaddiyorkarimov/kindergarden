@@ -1,0 +1,13 @@
+:root {
+	/* color */
+	--primary-text-color: #000;
+	--primary-bar-color: #20687f;
+	--primary-bar-background-color: #1A4A5A33;
+	--primary-border-color: #F9F9F9;
+	/* font */
+	--primary-text-size: 22px;
+	--secondary-text-size: 18px;
+
+	/* transition */
+	--primary-transition: 0.3s ease;
+}
