@@ -2,7 +2,6 @@
 @import './styles/rootStyles.css';
 
 /* "main" - rootlayout */
-
 header {
 	width: 100%;
 	height: 60px;
@@ -13,16 +12,17 @@ header {
 }
 
 .navbar {
-	padding: 0 20px;
 	width: 100%;
+	padding: 0 20px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	transition: var(--primary-transition);
 }
 
 header .logo {
 	height: 100%;
-	width: 300px;
+	width: 250px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -51,13 +51,17 @@ header .logo h1 {
 	font-weight: 500;
 }
 
+header .logo.active + .navbar {
+	width: 96%;
+}
+
 .navbar .menu i {
 	color: white;
 	font-size: var(--secondary-text-size);
 }
 
 .navbar .filters {
-	margin-right: 200px;
+	margin-right: -700px;
 	background-color: var(--primary-border-color);
 	display: flex;
 	align-items: center;
@@ -117,18 +121,21 @@ header .logo h1 {
 
 /* sidebar */
 main {
+	height: 100%;
 	display: flex;
 	background-color: #f1f1f1;
+	overflow: scroll;
 }
+
 .sidebar {
 	height: 100vh;
-	width: 249.5px;
+	width: 250px;
 	background-color: #222D32;
 	transition: var(--primary-transition);
 }
 
 .sidebar.active {
-	width: 3.85%;
+	width: 4%;
 }
 .sidebar.active li a {
 	display: none;

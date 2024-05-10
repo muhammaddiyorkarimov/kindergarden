@@ -1,4 +1,7 @@
 /* cards */
+.home {
+	width: 100%;
+}
 .cards {
 	width: 100%;
 	display: grid;
@@ -86,3 +89,4 @@
 .cards .card .card-body img {
 	width: 80px;
 }
+

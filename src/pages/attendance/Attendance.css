@@ -1,0 +1,197 @@
+.attendance {
+	padding: 20px;
+	width: 100%;
+}
+
+.attendance .header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.attendance .header .items {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.attendance .header .items i {
+	font-size: 12px;
+}
+
+.attendance .header .a-count {
+	width: 220px;
+	background-color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.attendance .header .items .type {
+	position: relative;
+}
+
+.attendance .header .items .type span {
+	border-radius: 10px;
+	padding: 10px 20px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	user-select: none;
+}
+
+.attendance .header .items .type span i {
+	width: 10px;
+}
+
+.attendance .header .items .type .dropdown {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	overflow: hidden;
+}
+
+.attendance .header .items .type.active .dropdown {
+	display: block;
+}
+
+.attendance .header .items .type .dropdown p {
+	font-size: 14px;
+	background-color: white;
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.attendance .header .items .type .dropdown p:hover {
+	background-color: #eaeaea;
+}
+
+.attendance .header .items .group-number {
+	position: relative;
+	width: 205px;
+	border-radius: 10px;
+	padding: 10px 20px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	transition: var(--primary-transition);
+}
+
+.attendance .header .items .group-number span {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	user-select: none;
+}
+
+.attendance .header .items .group-number span i {
+	width: 10px;
+}
+
+.attendance .header .items .group-number .dropdown {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	overflow: hidden;
+}
+
+.attendance .header .items .group-number.active .dropdown {
+	display: block;
+}
+
+.attendance .header .items .group-number .dropdown p {
+	font-size: 14px;
+	background-color: white;
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.attendance .header .items .group-number .dropdown p:hover {
+	background-color: #eaeaea;
+}
+
+.attendance .header .items .select-date input {
+	width: 200px;
+	border-radius: 10px;
+	padding: 10px 20px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.attendance .header .items .select-date input:focus {
+	outline: none;
+}
+
+.attendance .header .items .select-date .dropdown {
+	position: absolute;
+}
+
+table {
+	margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th,
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+thead th {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #e0e0e0;
+}
+
+tbody td select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+tbody td span {
+  font-weight: bold;
+  color: blue;
+}
+
+@media (max-width: 768px) {
+  thead {
+    display: none;
+  }
+  
+  tbody tr {
+    display: block;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+
+  tbody td {
+    display: block;
+    text-align: left;
+  }
+
+  tbody td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    float: left;
+    text-transform: uppercase;
+  }
+}

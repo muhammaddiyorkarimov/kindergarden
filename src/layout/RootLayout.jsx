@@ -11,6 +11,9 @@ function RootLayout() {
     setActive((prev => {
       return !active ? true : false
     }))
+    if (!active) {
+      setActiveDropdown('');
+    }
   }
 
   const toggleDropdown = (dropdown) => {
