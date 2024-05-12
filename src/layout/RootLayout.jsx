@@ -22,14 +22,14 @@ function RootLayout() {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
-  function handleClickLogOut(){
+  function handleClickLogOut() {
     Cookies.remove('access_token')
     Cookies.remove('refresh_token')
     navigate(`/login`)
   }
 
 
-   
+
   return (
     <div className="root-layout">
       <header>
@@ -53,11 +53,10 @@ function RootLayout() {
             >
               User{" "}
               <i
-                className={`fa-solid ${
-                  activeDropdown === "user-logout"
+                className={`fa-solid ${activeDropdown === "user-logout"
                     ? "fa-chevron-down"
                     : "fa-chevron-left"
-                }`}
+                  }`}
               ></i>
             </span>
             <div
@@ -88,19 +87,17 @@ function RootLayout() {
                 <div>
                   Bolalar{" "}
                   <i
-                    className={`fa-solid ${
-                      activeDropdown === "children"
+                    className={`fa-solid ${activeDropdown === "children"
                         ? "fa-chevron-down"
                         : "fa-chevron-left"
-                    }`}
+                      }`}
                   ></i>
                 </div>
               </Link>
             </li>
             <div
-              className={`children-dropdown ${
-                activeDropdown === "children" ? "active" : ""
-              }`}
+              className={`children-dropdown ${activeDropdown === "children" ? "active" : ""
+                }`}
             >
               <div className="first">
                 <span></span>
@@ -108,7 +105,7 @@ function RootLayout() {
               </div>
               <div className="second">
                 <span></span>
-                <Link to="/salary">To'lov</Link>
+                <Link to="/payment">To'lov</Link>
               </div>
             </div>
             <li
@@ -120,20 +117,17 @@ function RootLayout() {
                 <div>
                   Hodimlar{" "}
                   <i
-                    className={`fa-solid ${
-                      activeDropdown === "employees"
+                    className={`fa-solid ${activeDropdown === "employees"
                         ? "fa-chevron-down"
                         : "fa-chevron-left"
-                    }`}
+                      }`}
                   ></i>
                 </div>
               </Link>
             </li>
             <div
-              className={`children-dropdown ${
-
-                activeDropdown === "employees" ? "active" : ""
-              }`}
+              className={`children-dropdown ${activeDropdown === "employees" ? "active" : ""
+                }`}
             >
               <div className="first">
                 <span></span>
