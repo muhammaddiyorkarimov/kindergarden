@@ -42,6 +42,7 @@ header .logo.active {
 header .logo.active h1 {
 	display: none;
 }
+
 header .logo.active i {
 	display: block;
 }
@@ -51,7 +52,7 @@ header .logo h1 {
 	font-weight: 500;
 }
 
-header .logo.active + .navbar {
+header .logo.active+.navbar {
 	width: 96%;
 }
 
@@ -61,7 +62,7 @@ header .logo.active + .navbar {
 }
 
 .navbar .filters {
-	margin-right: -700px;
+	/* margin-right: -700px; */
 	background-color: var(--primary-border-color);
 	display: flex;
 	align-items: center;
@@ -100,6 +101,8 @@ header .logo.active + .navbar {
 	display: flex;
 	align-items: center;
 	gap: 10px;
+	/* border:1px solid red; */
+	width: 112px;
 }
 
 .navbar .account img {
@@ -137,6 +140,7 @@ main {
 .sidebar.active {
 	width: 4%;
 }
+
 .sidebar.active li a {
 	display: none;
 }
@@ -181,6 +185,7 @@ main {
 	background-color: #1d2225;
 	color: #fff;
 }
+
 .sidebar ul li:hover a {
 	color: #fff;
 }
@@ -197,6 +202,7 @@ main {
 .fa-chevron-down {
 	transition: var(--primary-transition);
 }
+
 .fa-chevron-left {
 	transition: var(--primary-transition);
 }
@@ -204,6 +210,7 @@ main {
 .employees {
 	margin-bottom: 8px;
 }
+
 .children-dropdown {
 	height: 0;
 	transition: var(--primary-transition);
@@ -261,3 +268,25 @@ main {
 .children-dropdown.active .first a {
 	color: white;
 } */
+
+.logout {
+	position: absolute;
+	right: 0;
+	top: 60px;
+	background-color:#FFFFFF;
+	padding: 5px 7px;
+	display: flex;
+	align-items:center;
+	gap: 15px;
+	cursor:pointer;
+	color:#035e7c;
+	width: 125px;
+}
+.fa-arrow-right-from-bracket{
+	color:#035e7c;
+}
+.log-span p{
+	font-size: 20px;
+	color:#035e7c;
+	font-weight: 500;
+}
