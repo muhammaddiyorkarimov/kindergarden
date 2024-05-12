@@ -250,3 +250,28 @@ main {
 	font-size: 16px;
 	color: #B8C7CE;
 }
+
+/* log out */
+
+
+.logout {
+  position: absolute;
+  right: 0;
+  top: 60px;
+  background-color:#FFFFFF;
+  padding: 5px 7px;
+  display: flex;
+  align-items:center;
+  gap: 15px;
+  cursor:pointer;
+  color:#035e7c;
+  width: 125px;
+}
+.fa-arrow-right-from-bracket{
+  color:#035e7c;
+}
+.log-span p{
+  font-size: 20px;
+  color:#035e7c;
+  font-weight: 500;
+}
