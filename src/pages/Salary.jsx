@@ -2,7 +2,7 @@ import React from 'react'
 
 function Salary() {
 	return (
-		<div>Salary</div>
+		<div className='salary'>Salary</div>
 	)
 }
 

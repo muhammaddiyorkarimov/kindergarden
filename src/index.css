@@ -13,9 +13,6 @@
 
 body {
 	font-family: 'Montserrat', sans-serif;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
 }
 
 i, button {

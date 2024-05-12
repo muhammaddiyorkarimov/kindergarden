@@ -2,6 +2,7 @@
 import { useState } from 'react'
 // react router dom
 import { Link, Outlet } from 'react-router-dom'
+import userImg from '../../public/images/user.png'
 
 function RootLayout() {
   const [activeDropdown, setActiveDropdown] = useState('');
@@ -36,7 +37,7 @@ function RootLayout() {
             <i className="fa-solid fa-magnifying-glass"></i>
           </div>
           <div className="account">
-            <img src="./public/images/user.png" alt="user" />
+            <img src={userImg} alt="user" />
             <span>User <i className="fa-solid fa-chevron-down"></i></span>
           </div>
         </div>
@@ -60,7 +61,7 @@ function RootLayout() {
               </div>
               <div className="second">
                 <span></span>
-                <Link to='/salary'>To'lov</Link>
+                <Link to='/payment'>To'lov</Link>
               </div>
             </div>
             <li className='employees' onClick={() => toggleDropdown('employees')}>

@@ -13,6 +13,8 @@ import Salary from './pages/Salary';
 // layouts
 import RootLayout from './layout/RootLayout';
 import Home from './pages/home/Home';
+import UserAttendance from './pages/attendance/UserAttendance';
+import Payment from './pages/payment/Payment';
 
 
 function App() {
@@ -22,7 +24,8 @@ function App() {
       <Route path='/' element={<RootLayout/>}>
         <Route index element={<Home/>}/>
         <Route path='/attendance' element={<Attendance/>}/>
-        <Route path='/salary' element={<Salary/>}/>
+        <Route path='/attendance/:id' element={<UserAttendance/>}/>
+        <Route path='/payment' element={<Payment/>}/>
       </Route>
     )
   )

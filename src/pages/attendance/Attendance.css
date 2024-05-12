@@ -1,6 +1,18 @@
 .attendance {
 	padding: 20px;
 	width: 100%;
+	height: 100vh;
+}
+
+.loading {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.loading p {
+	margin-top: 100px;
 }
 
 .attendance .header {
@@ -14,6 +26,7 @@
 	display: flex;
 	align-items: center;
 	gap: 20px;
+	cursor: pointer;
 }
 
 .attendance .header .items i {
@@ -21,7 +34,6 @@
 }
 
 .attendance .header .a-count {
-	width: 220px;
 	background-color: white;
 	padding: 10px 20px;
 	border-radius: 10px;
@@ -30,6 +42,7 @@
 
 .attendance .header .items .type {
 	position: relative;
+	cursor: pointer;
 }
 
 .attendance .header .items .type span {
@@ -75,7 +88,6 @@
 
 .attendance .header .items .group-number {
 	position: relative;
-	width: 205px;
 	border-radius: 10px;
 	padding: 10px 20px;
 	background-color: white;
@@ -121,7 +133,6 @@
 }
 
 .attendance .header .items .select-date input {
-	width: 200px;
 	border-radius: 10px;
 	padding: 10px 20px;
 	background-color: white;
@@ -139,27 +150,27 @@
 	position: absolute;
 }
 
-table {
+.attendance table {
 	margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
 }
 
-thead th,
+.attendance thead th,
 tbody td {
   padding: 10px;
   border: 1px solid #ddd;
 }
 
-thead th {
+.attendance thead th {
   background-color: #f2f2f2;
 }
 
-tbody tr:hover {
+.attendance tbody tr:hover {
   background-color: #e0e0e0;
 }
 
-tbody td select {
+.attendance tbody td select {
   width: 100%;
   padding: 8px;
   border-radius: 5px;
@@ -167,7 +178,112 @@ tbody td select {
   cursor: pointer;
 }
 
-tbody td span {
+.attendance tbody td span {
+  font-weight: bold;
+  color: blue;
+}
+
+.attandance-save {
+	float: right;
+	padding: 10px 35px;
+	margin: 10px 0;
+	border: none;
+	border-radius: 10px;
+	font-weight: 400;
+	font-size: 16px;
+	background-color: #20687f;
+	color: white;
+}
+
+.attandance-save:hover {
+	background-color: #1f7f9f;
+}
+
+.name-click {
+	cursor: pointer;
+}
+
+/* user attendance */
+.user-attendance {
+	width: 100%;
+	height: 100vh;
+	padding: 20px;
+}
+
+.user-attendance .header {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	justify-content: end;
+}
+
+.user-attendance .header span {
+	background-color: white;
+	padding: 10px 15px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.user-attendance .header input {
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.user-attendance .header .selected-date {
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+}
+
+.user-attendance .name {
+	display: flex;
+	flex-direction: column;
+	padding: 30px 300px;
+	text-align: center;
+}
+
+.user-attendance .name .title {
+	font-size: 32px;
+	font-weight: 500;
+}
+
+.user-attendance table {
+	margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-attendance thead th,
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.user-attendance thead th {
+  background-color: #f2f2f2;
+}
+
+.user-attendance tbody td:hover {
+  background-color: #e0e0e0;
+}
+
+.user-attendance tbody td select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.user-attendance tbody td span {
   font-weight: bold;
   color: blue;
 }

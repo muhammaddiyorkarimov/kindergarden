@@ -61,7 +61,7 @@ header .logo.active + .navbar {
 }
 
 .navbar .filters {
-	margin-right: -700px;
+	/* margin-right: -700px; */
 	background-color: var(--primary-border-color);
 	display: flex;
 	align-items: center;
@@ -119,16 +119,14 @@ header .logo.active + .navbar {
 	padding-top: 5px;
 }
 
+
 /* sidebar */
 main {
-	height: 100%;
 	display: flex;
 	background-color: #f1f1f1;
-	overflow: scroll;
 }
 
 .sidebar {
-	height: 100vh;
 	width: 250px;
 	background-color: #222D32;
 	transition: var(--primary-transition);
@@ -252,12 +250,3 @@ main {
 	font-size: 16px;
 	color: #B8C7CE;
 }
-
-/* .children-dropdown.active .first span {
-	background-color: white;
-	border-color: white;
-}
-
-.children-dropdown.active .first a {
-	color: white;
-} */
