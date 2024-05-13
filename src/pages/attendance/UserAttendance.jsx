@@ -8,21 +8,18 @@ import { useParams } from 'react-router-dom'
 
 function UserAttendance() {
 	const [data, setData] = useState([]);
-	const [selectedDate, setSelectedDate] = useState('');
+	const [selectedDate, setSelectedDate] = useState(getCurrentDate());
 	const [calendar, setCalendar] = useState([]);
-	const { id } = useParams()
-	console.log(data);
-
+-
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const response = await axios.get(`https://kindergarten-ms.techcraft.uz/api/v1/users/attendance/list/?type=student&date=2024-05-12`, {
+				const response = await axios.get(`https://kindergarten-ms.techcraft.uz/api/v1/users/attendance/list/?type=student&date=${selectedDate}`, {
 					headers: {
 						Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
 					}
 				});
-				console.log(response.data);
 				setData(response.data);
 			} catch (error) {
 				console.error('Error fetching data:', error);
@@ -41,6 +38,15 @@ function UserAttendance() {
     setSelectedDate(todayString);
     displayMonthAndYear(todayString);
   }, []);
+
+	// getcurrentdate
+	function getCurrentDate() {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = String(today.getMonth() + 1).padStart(2, '0');
+		const day = String(today.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+}
 
   const displayMonthAndYear = (inputDate) => {
     const selectedDate = new Date(inputDate);

@@ -4,6 +4,9 @@ import Cookies from "js-cookie";
 // react router dom
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
+// image
+import img from '../../public/images/user.png'
+
 function RootLayout() {
   const [activeDropdown, setActiveDropdown] = useState("");
   const [active, setActive] = useState(false);
@@ -46,7 +49,7 @@ function RootLayout() {
             <i className="fa-solid fa-magnifying-glass"></i>
           </div>
           <div className="account">
-            <img src="./public/images/user.png" alt="user" />
+            <img src={img} alt="user" />
             <span
               onClick={() => toggleDropdown("user-logout")}
               className="user-logout"
@@ -131,11 +134,11 @@ function RootLayout() {
             >
               <div className="first">
                 <span></span>
-                <Link to="/attendance">Davomat</Link>
+                <Link to="/employees">Davomat</Link>
               </div>
               <div className="second">
                 <span></span>
-                <Link to="/income">Maosh</Link>
+                <Link to="/salary">Maosh</Link>
               </div>
             </div>
             <li>

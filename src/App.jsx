@@ -12,7 +12,7 @@ import './App.css'
 
 // pages
 import Attendance from "./pages/attendance/Attendance";
-import Salary from "./pages/Salary";
+import Salary from "./pages/salary/Salary";
 
 // layouts
 import RootLayout from "./layout/RootLayout";
@@ -20,6 +20,10 @@ import Home from "./pages/home/Home";
 import UserAttendance from "./pages/attendance/UserAttendance";
 import Login from "./pages/Login/Login";
 import Payment from "./pages/payment/Payment";
+import PaymentUser from "./pages/payment/PaymentUser";
+import Employees from "./pages/Employees/Employees";
+import UserEmployees from "./pages/Employees/UserEmployees";
+import UserSalary from "./pages/salary/UserSalary";
 
 const PrivateRoutes = () => {
   const auth = Cookies.get("access_token");
@@ -37,7 +41,7 @@ function App() {
     const interval = setInterval(() => {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
-    }, 3 * 60 * 1000);
+    }, 100 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -56,7 +60,11 @@ function App() {
             <Route path="/attendance" element={<Attendance />} />
             <Route path='/attendance/:id' element={<UserAttendance />} />
             <Route path='/payment' element={<Payment />} />
+            <Route path='/payment/:id' element={<PaymentUser/>} />
+            <Route path="/employees" element={<Employees />} />
+            <Route path='/employees/:id' element={<UserEmployees/>} />
             <Route path="/salary" element={<Salary />} />
+            <Route path='/salary/:id' element={<UserSalary/>} />
           </Route>
         </Route>
       </>

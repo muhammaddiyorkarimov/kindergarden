@@ -6,17 +6,169 @@
 .payment tbody .td-wrapper {
 	display: flex;
 	align-items: center;
-	
+
 	justify-content: space-around;
 }
 
 .payment tbody .td-wrapper button {
 	padding: 8px 25px;
-	/* margin: 10px 0; */
+	font-family: 'Montserrat', sans-serif;
 	border: none;
 	border-radius: 10px;
 	font-weight: 400;
 	font-size: 14px;
 	background-color: #fff;
 	color: black;
+}
+
+/* payment user */
+.payment-user {
+	padding: 20px;
+}
+.payment-user .header {
+	width: 100%;
+	display: flex;
+	justify-content: end;
+}
+
+.payment-user .header .select-date input {
+	font-family: 'Montserrat', sans-serif;
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+}
+
+.payment-user .loading {
+	margin-top: 200px;
+}
+
+.user-payment-empty {
+	text-align: center;
+	font-size: 24px;
+	margin-top: 20px;
+}
+
+/* Payment.css */
+
+/* Modal */
+.modal {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+}
+
+.modal-content {
+	background-color: #fefefe;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	transition: transform 0.3s ease-in-out;
+}
+
+.modal-content .user-title {
+	font-weight: 600;
+	font-size: 24px;
+	text-align: center;
+	margin: 0 0 10px 0;
+}
+
+.modal-content .paid-full {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.modal-content .paid-full input {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+.modal-content:hover {
+	transform: scale(1.02);
+}
+
+.modal-content .amount input {
+	width: 100%;
+	padding: 8px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+.modal-content .select-date input {
+	width: 100%;
+	padding: 8px;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+.modal-content input:focus {
+	outline: none;
+}
+
+.modal .modal-content .comment {
+	width: 100%;
+	height: 100px;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+}
+
+.modal .modal-content .comment textarea {
+	width: 100%;
+	height: 100%;
+	resize: none;
+	font-family: 'Montserrat', sans-serif;
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	border: none;
+	border: 1px solid #ccc;
+}
+.modal .modal-content .comment textarea:focus {
+	outline: none;
+}
+/* Buttons */
+.modal-content button {
+	background-color: #4caf50;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s ease-in-out;
+	float: right;
+}
+
+/* Button hover */
+.modal-content button:hover {
+	background-color: #45a049;
+}
+
+
+/* Modal Overlay */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9998;
 }

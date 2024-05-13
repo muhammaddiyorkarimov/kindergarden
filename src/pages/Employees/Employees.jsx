@@ -6,14 +6,13 @@ import { ThreeDots } from 'react-loader-spinner'
 // axios API
 import axios from '../../service/Api';
 
-// css
-import './Attendance.css';
+import '../attendance/Attendance.css';
 // components
 import InstitutionType from '../../components/InstitutionType';
-import GroupNumber from '../../components/GroupNumber';
+// import GroupNumber from '../../components/GroupNumber';
 import { useNavigate } from 'react-router-dom';
 
-function Attendance() {
+function Employees() {
 
 	// useState
 	const [data, setData] = useState([]);
@@ -34,6 +33,7 @@ function Attendance() {
 					}
 				});
 				setData(response.data.results);
+				console.log(response.data);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching data:', error);
@@ -58,9 +58,9 @@ function Attendance() {
 		setInsId(id);
 	};
 	// handle get ins id
-	const handleGetGroupId = (id) => {
-		setgroupId(id);
-	};
+	// const handleGetGroupId = (id) => {
+	// 	setgroupId(id);
+	// };
 
 	// handle get date
 	const handleGetDate = (e) => {
@@ -87,7 +87,6 @@ function Attendance() {
 						</div>
 						<div className="items">
 							<InstitutionType handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
-							<GroupNumber handleGetGroupId={handleGetGroupId} insId={insId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
 							<div className="select-date">
 								<input type='date' onChange={handleGetDate} />
 							</div>
@@ -124,4 +123,4 @@ function Attendance() {
 	)
 }
 
-export default Attendance
+export default Employees

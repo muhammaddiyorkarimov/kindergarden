@@ -2,6 +2,7 @@ import React from 'react'
 
 // css
 import './Home.css'
+import { Link } from 'react-router-dom'
 
 function Home() {
 	return (
@@ -12,14 +13,14 @@ function Home() {
 						<h2>Bolalar</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
-							<img src="./public/images/attendance.png" alt="attendance icon" />
+						<Link to='/attendance' className="first-element">
+							<img src="./public/images/children.png" alt="attendance icon" />
 							<span>Davomat</span>
-						</div>
-						<div className="second-element">
+						</Link>
+						<Link to='/payment' className="second-element">
 							<img src="./public/images/salary.png" alt="salary icon" />
 							<span>To'lov</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 				<div className="card">
@@ -27,14 +28,14 @@ function Home() {
 						<h2>Hodimlar</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
+						<Link to='/employees' className="first-element">
 							<img src="./public/images/attendance.png" alt="attendance icon" />
 							<span>Davomat</span>
-						</div>
-						<div className="second-element">
+						</Link>
+						<Link to='/salary' className="second-element">
 							<img src="./public/images/salary2.png" alt="salary icon" />
 							<span>Maosh</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 				<div className="card">
