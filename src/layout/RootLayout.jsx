@@ -4,24 +4,16 @@ import Cookies from "js-cookie";
 // react router dom
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-<<<<<<< HEAD
-function RootLayout({ inputValue, filterData, handleInput }) {
-=======
-// image
 import img from '../../public/images/user.png'
 
-function RootLayout() {
->>>>>>> 4ac6209125b1f4a86bd0aa7f4be76b50ce6e1d33
+function RootLayout({ inputValue, filterData, handleInput }) {
   const [activeDropdown, setActiveDropdown] = useState("");
   const [active, setActive] = useState(false);
-  // const [inputValue, setInputValue] = useState('');
 
   const navigate = useNavigate();
 
   const closeSidebar = () => {
-    setActive((prev) => {
-      return !active ? true : false;
-    });
+    setActive((prev) => !prev);
     if (!active) {
       setActiveDropdown("");
     }
@@ -36,7 +28,6 @@ function RootLayout() {
     Cookies.remove('refresh_token')
     navigate(`/login`)
   } 
-
 
   return (
     <div className="root-layout">
