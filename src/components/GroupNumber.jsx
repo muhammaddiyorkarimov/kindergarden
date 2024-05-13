@@ -4,7 +4,6 @@ import axios from '../service/Api';
 
 function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId }) {
   const [groups, setGroups] = useState([]);
-  console.log(insId);
 
   useEffect(() => {
     const fetchData = async () => {
