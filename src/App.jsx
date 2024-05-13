@@ -8,7 +8,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import Cookies from "js-cookie";
-import './App.css'
+import "./App.css";
 
 // pages
 import Attendance from "./pages/attendance/Attendance";
@@ -20,14 +20,18 @@ import Home from "./pages/home/Home";
 import UserAttendance from "./pages/attendance/UserAttendance";
 import Login from "./pages/Login/Login";
 import Payment from "./pages/payment/Payment";
+import Expenses from "./pages/Expenses/Expenses";
+import ExpensesCreate from "./pages/Expenses/ExpensesCreate";
 
-const PrivateRoutes = () => {
+const PrivateRoutes = ( {inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
-  return auth ? <Outlet /> : <Navigate to="/login" />;
+  return auth ? <Outlet inputValue={inputValue} filterData={filterData} /> : <Navigate to="/login" />;
 };
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [filterData, setFilterData] = useState([]);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -37,26 +41,51 @@ function App() {
     const interval = setInterval(() => {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
-    }, 3 * 60 * 1000);
+    }, 10 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
 
   function handleClickLogOut() {
-    handleLogout();
+    // handleLogout();+
   }
+
+  const handleInput = (value) => {
+    setInputValue(value.toLowerCase());
+    console.log(inputValue);
+  };
 
   const routes = createBrowserRouter(
     createRoutesFromElements(
       <>
         <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-        <Route element={<PrivateRoutes />}>
-          <Route path="/" element={<RootLayout handleClickLogOut={handleClickLogOut} />}>
+        <Route element={<PrivateRoutes inputValue={inputValue} filterData={filterData}  />}>
+          <Route
+            path="/"
+            element={
+              <RootLayout
+                filterData={filterData}
+                inputValue={inputValue}
+                handleInput={handleInput}
+                handleClickLogOut={handleClickLogOut}
+              />
+            }
+          >
             <Route index element={<Home />} />
-            <Route path="/attendance" element={<Attendance />} />
-            <Route path='/attendance/:id' element={<UserAttendance />} />
-            <Route path='/payment' element={<Payment />} />
+            <Route
+              path="/attendance"
+              element={
+                <Attendance
+                  setFilterData={setFilterData}
+                  inputValue={inputValue}
+                />
+              }
+            />
+            <Route path="/attendance/:id" element={<UserAttendance />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="/salary" element={<Salary />} />
+            <Route path="/expenses" element={<Expenses />} />
+            <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />
           </Route>
         </Route>
       </>
@@ -66,6 +95,7 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={routes} />
+      <Outlet inputValue={inputValue} filterData={filterData} />
     </div>
   );
 }

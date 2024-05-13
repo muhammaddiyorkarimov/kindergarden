@@ -7,21 +7,20 @@ import { ThreeDots } from "react-loader-spinner";
 import axios from "../../service/Api";
 
 // css
-import "./Attendance.css";
+
 // components
 import InstitutionType from "../../components/InstitutionType";
 import GroupNumber from "../../components/GroupNumber";
 import { useNavigate } from "react-router-dom";
+import ExpensesType from "../../components/ExpensesType";
 
-function Attendance({ inputValue, setFilterData }) {
+function Expenses() {
   // useState
   const [data, setData] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState("");
-  const [insId, setInsId] = useState(1);
   const [groupId, setgroupId] = useState(1);
   const [date, setDate] = useState("2024-12-05");
   const [loading, setLoading] = useState(true);
-
 
   // useNavigate
   const navigate = useNavigate();
@@ -29,18 +28,16 @@ function Attendance({ inputValue, setFilterData }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get(
-          `/users/attendance/list/?organization=${insId}&educating_group=${groupId}&type=student&date=${date}`,
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-            },
-          }
-        );
+        const response = await axios.get(`/accounting/expenses/list/?type=${groupId}`, {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
+          },
+        });
 
         setData(response.data.results);
         setLoading(false);
+        
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
@@ -48,40 +45,29 @@ function Attendance({ inputValue, setFilterData }) {
     }
 
     fetchData();
-  }, [insId, groupId, date]);
+  }, [groupId]);
+  console.log(data);
 
-  // handle get ins id
-  const handleGetInsId = (id) => {
-    setInsId(id);
-  };
   // handle get ins id
   const handleGetGroupId = (id) => {
+    console.log(id);
     setgroupId(id);
   };
-
-  // handle get date
-  const handleGetDate = (e) => {
-    setDate(e.target.value);
-  };
+  console.log(groupId);
 
   // toggle dropdown
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
-
-  // handle name about
-  const handleNameAbout = (item) => {
-    navigate(`${item.id}`);
+  // handle get date
+  const handleGetDate = (e) => {
+    setDate(e.target.value);
   };
 
-  useEffect(() => {
-    const filtered = data.filter((item) =>
-      item.first_name.toLowerCase().includes(inputValue)
-    );
-    setFilterData(filtered);
-	console.log(inputValue);
-  }, [data, inputValue]);
 
+  function handleOpenExpense(){
+    navigate(`/expenses/expensescreate`)
+  }
 
   return (
     <div className="attendance">
@@ -92,21 +78,16 @@ function Attendance({ inputValue, setFilterData }) {
       ) : (
         <>
           <div className="header">
-            <div className="a-count">
-              <p>Davomat: 30 dan 28</p>
+            <div onClick={handleOpenExpense} className="a-count">
+              <p>Harajat qo'shish</p>
             </div>
             <div className="items">
-              <InstitutionType
-                handleGetInsId={handleGetInsId}
-                activeDropdown={activeDropdown}
-                toggleDropdown={toggleDropdown}
+              <ExpensesType 
+               handleGetGroupId={handleGetGroupId}
+               activeDropdown={activeDropdown}
+               toggleDropdown={toggleDropdown}
               />
-              <GroupNumber
-                handleGetGroupId={handleGetGroupId}
-                insId={insId}
-                activeDropdown={activeDropdown}
-                toggleDropdown={toggleDropdown}
-              />
+
               <div className="select-date">
                 <input type="date" onChange={handleGetDate} />
               </div>
@@ -116,30 +97,26 @@ function Attendance({ inputValue, setFilterData }) {
             <table>
               <thead>
                 <tr>
-                  <th>ISM</th>
-                  <th>Sana</th>
+                  <th>Mahsulot</th>
+                  <th>Summa</th>
                   <th>
-                    <span>Salom</span>
+                    <span>Sana</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {data.map((item) => {
+                  console.log(item);
                   return (
                     <tr key={item.id}>
                       <td
                         className="name-click"
                         onClick={() => handleNameAbout(item)}
                       >
-                        {item.first_name} {item.last_name} {item.middle_name}
+                        {item.comment}
                       </td>
-                      <td>{date}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          defaultChecked={item.is_present}
-                        />
-                      </td>
+                      <td>{item.amount}</td>
+                      <td>{item.date}</td>
                     </tr>
                   );
                 })}
@@ -157,4 +134,4 @@ function Attendance({ inputValue, setFilterData }) {
   );
 }
 
-export default Attendance;
+export default Expenses;

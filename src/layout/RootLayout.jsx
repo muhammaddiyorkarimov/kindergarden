@@ -4,9 +4,11 @@ import Cookies from "js-cookie";
 // react router dom
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-function RootLayout() {
+function RootLayout({ inputValue, filterData, handleInput }) {
   const [activeDropdown, setActiveDropdown] = useState("");
   const [active, setActive] = useState(false);
+  // const [inputValue, setInputValue] = useState('');
+
   const navigate = useNavigate();
 
   const closeSidebar = () => {
@@ -26,8 +28,7 @@ function RootLayout() {
     Cookies.remove('access_token')
     Cookies.remove('refresh_token')
     navigate(`/login`)
-  }
-
+  } 
 
 
   return (
@@ -42,7 +43,7 @@ function RootLayout() {
             <i className="fa-solid fa-bars"></i>
           </div>
           <div className="filters">
-            <input type="text" />
+            <input type="text" value={inputValue} onChange={(e) => handleInput(e.target.value)} />
             <i className="fa-solid fa-magnifying-glass"></i>
           </div>
           <div className="account">
@@ -140,7 +141,7 @@ function RootLayout() {
             </div>
             <li>
               <i className="sidebar-icon fa-solid fa-money-check-dollar"></i>
-              <Link to="/costs">Harajat</Link>
+              <Link to="/expenses">Harajat</Link>
             </li>
             <li>
               <i className="sidebar-icon fa-solid fa-hand-holding-dollar"></i>
