@@ -62,6 +62,15 @@ function Attendance({ inputValue, setFilterData }) {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
+  // handle get ins id
+	const handleGetInsId = (id) => {
+		setInsId(id);
+	};
+   // handle get group id
+   const handleGetGroupId = (id) => {
+    setgroupId(id);
+  };
+
   // handle name about
   const handleNameAbout = (item) => {
     navigate(`${item.id}`);
