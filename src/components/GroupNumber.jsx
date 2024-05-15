@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../service/Api';
 
-function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId }) {
+function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, handleGetGroupName }) {
   const [groups, setGroups] = useState([]);
 
   useEffect(() => {
@@ -22,9 +22,10 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId }
     fetchData();
   }, [insId]);
 
-	const handleClick = (id) => {
+	const handleClick = (item) => {
 		toggleDropdown('')
-    handleGetGroupId(id)
+    handleGetGroupId(item.id)
+    handleGetGroupName(item.name)
 	}
 
 
@@ -35,7 +36,7 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId }
         <div className="dropdown">
           {groups.map(group => {
             return (
-              <p key={group.id} onClick={() => handleClick(group.id)}>{group.name}</p>
+              <p key={group.id} onClick={() => handleClick(group)}>{group.name}</p>
             );
           })}
         </div>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../service/Api';
 
-function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId }) {
+function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName }) {
 	const [institutions, setInstitutions] = useState([]);
 
 	useEffect(() => {
@@ -21,8 +21,9 @@ function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId }) {
 		fetchData();
 	}, []);
 
-	const handleClick = (id) => {
-		handleGetInsId(id);
+	const handleClick = (item) => {
+		handleGetInsId(item.id);
+		handleGetInsName(item.name)
 		toggleDropdown('');
 	};
 
@@ -33,7 +34,7 @@ function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId }) {
 				<div className="dropdown">
 					{institutions.map(institution => {
 						return (
-							<p key={institution.id} onClick={() => handleClick(institution.id)}>{institution.name}</p>
+							<p key={institution.id} onClick={() => handleClick(institution)}>{institution.name}</p>
 						);
 					})}
 				</div>

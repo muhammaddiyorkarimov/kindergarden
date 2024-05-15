@@ -6,8 +6,33 @@
 .payment tbody .td-wrapper {
 	display: flex;
 	align-items: center;
-
+	gap: 10px;
 	justify-content: space-around;
+}
+
+.payment tbody button{
+	width: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.edit-btn {
+	background-color: #20687F !important;
+	color: white !important;
+}
+
+.payment-btn {
+	background-color: rgb(255, 89, 94) !important;
+	color: white !important;
+}
+
+.green-bg {
+	background-color: green !important;
+}
+
+.payment-btn:disabled {
+	cursor: not-allowed;
 }
 
 .payment tbody .td-wrapper button {
@@ -31,6 +56,11 @@
 	justify-content: end;
 }
 
+.select-date {
+	padding-bottom: 14px;
+	padding: 10px 0;
+}
+
 .payment-user .header .select-date input {
 	font-family: 'Montserrat', sans-serif;
 	border-radius: 10px;
@@ -39,6 +69,10 @@
 	cursor: pointer;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	border: none;
+}
+
+.payment-user .header .select-date input:focus {
+	outline: none;
 }
 
 .payment-user .loading {

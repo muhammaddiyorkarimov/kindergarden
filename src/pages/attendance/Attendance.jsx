@@ -16,9 +16,12 @@ import { useNavigate } from "react-router-dom";
 function Attendance({ inputValue, setFilterData }) {
   // useState
   const [data, setData] = useState([]);
+  const [attendance, setAttendance] = useState('')
   const [activeDropdown, setActiveDropdown] = useState("");
   const [insId, setInsId] = useState(1);
+  const [insNameId, setInsNameId] = useState('');
   const [groupId, setgroupId] = useState(1);
+  const [groupNameId, setGroupNameId] = useState('');
   const [date, setDate] = useState(getCurrentDate());
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +41,8 @@ function Attendance({ inputValue, setFilterData }) {
           }
         );
         setData(response.data.results);
+        setAttendance(response.data);
+        console.log(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,13 +68,19 @@ function Attendance({ inputValue, setFilterData }) {
   };
 
   // handle get ins id
-	const handleGetInsId = (id) => {
-		setInsId(id);
-	};
-   // handle get group id
-   const handleGetGroupId = (id) => {
+  const handleGetInsId = (id) => {
+    setInsId(id);
+  };
+  const handleGetInsName = (name) => {
+    setInsNameId(name)
+  }
+  // handle get group id
+  const handleGetGroupId = (id) => {
     setgroupId(id);
   };
+  const handleGetGroupName = (name) => {
+    setGroupNameId(name);
+  }
 
   // handle name about
   const handleNameAbout = (item) => {
@@ -98,16 +109,18 @@ function Attendance({ inputValue, setFilterData }) {
         <>
           <div className="header">
             <div className="a-count">
-              <p>Davomat: 30 dan 28</p>
+            <p>Davomat: {groupNameId && insNameId && `${attendance.count} dan ${attendance.total_presences}`}</p>
             </div>
             <div className="items">
               <InstitutionType
                 handleGetInsId={handleGetInsId}
+                handleGetInsName={handleGetInsName}
                 activeDropdown={activeDropdown}
                 toggleDropdown={toggleDropdown}
               />
               <GroupNumber
                 handleGetGroupId={handleGetGroupId}
+                handleGetGroupName={handleGetGroupName}
                 insId={insId}
                 activeDropdown={activeDropdown}
                 toggleDropdown={toggleDropdown}
@@ -118,36 +131,41 @@ function Attendance({ inputValue, setFilterData }) {
             </div>
           </div>
           <div className="body">
+            <div className="selected-item-title">
+              <span>Muassasa turi: {insNameId}</span>
+              <span>Guruh sinf raqami: {groupNameId}</span>
+              <span>Sana: {date}</span>
+            </div>
             <table>
               <thead>
                 <tr>
                   <th>ISM</th>
                   <th>Sana</th>
-                  <th>
-                    <span>Salom</span>
-                  </th>
+                  <th>Davomat</th>
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => {
-                  return (
-                    <tr key={item.id}>
-                      <td
-                        className="name-click"
-                        onClick={() => handleNameAbout(item)}
-                      >
-                        {item.first_name} {item.last_name} {item.middle_name}
-                      </td>
-                      <td>{date}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          defaultChecked={item.is_present}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+                {insNameId && groupNameId ? (
+                  data.map((item) => {
+                    return (
+                      <tr key={item.id}>
+                        <td
+                          className="name-click"
+                          onClick={() => handleNameAbout(item)}
+                        >
+                          {item.first_name} {item.last_name} {item.middle_name}
+                        </td>
+                        <td>{date}</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            defaultChecked={item.is_present}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : <tr><td style={{textAlign: 'center'}} colSpan={3}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
             {data.length === 0 && (

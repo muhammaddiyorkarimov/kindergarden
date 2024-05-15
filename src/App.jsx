@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+// hooks
+import { useState, useEffect } from "react";
+// react router dom
 import {
   Navigate,
   Outlet,
@@ -7,15 +9,15 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+// js cookie
 import Cookies from "js-cookie";
+// css
 import "./App.css";
-
+// layouts
+import RootLayout from "./layout/RootLayout";
 // pages
 import Attendance from "./pages/attendance/Attendance";
 import Salary from "./pages/salary/Salary";
-
-// layouts
-import RootLayout from "./layout/RootLayout";
 import Home from "./pages/home/Home";
 import UserAttendance from "./pages/attendance/UserAttendance";
 import Login from "./pages/Login/Login";
@@ -26,6 +28,7 @@ import PaymentUser from "./pages/payment/PaymentUser";
 import Employees from "./pages/Employees/Employees";
 import UserEmployees from "./pages/Employees/UserEmployees";
 import UserSalary from "./pages/salary/UserSalary";
+import Reports from "./report/Reports";
 
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
@@ -33,6 +36,7 @@ const PrivateRoutes = ({ inputValue, filterData }) => {
 };
 
 function App() {
+  // useState
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [filterData, setFilterData] = useState([]);
@@ -45,7 +49,7 @@ function App() {
     const interval = setInterval(() => {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
-    }, 10 * 60 * 1000);
+    }, 100 * 60 * 1000);
   
     return () => clearInterval(interval); 
   }, []);
@@ -99,6 +103,7 @@ const routes = createBrowserRouter(
           <Route path='/employees/:id' element={<UserEmployees />} />
           <Route path="/salary" element={<Salary />} />
           <Route path='/salary/:id' element={<UserSalary />} />
+          <Route path="/reports" element={<Reports />} />
         </Route>
       </Route>
     </>

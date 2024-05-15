@@ -150,6 +150,13 @@
 	position: absolute;
 }
 
+.attendance .selected-item-title {
+	display: flex;
+	align-items: center;
+	gap: 40px;
+	padding: 20px 0 10px;
+}
+
 .attendance table {
 	margin-top: 20px;
   width: 100%;

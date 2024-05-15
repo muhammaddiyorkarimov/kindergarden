@@ -76,10 +76,10 @@ function Home() {
 						<h2>Hisobotlar</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
+						<Link to='/reports' className="first-element">
 							<img src={report} alt="report icon" />
 							<span>Hisobotlar</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 				<div className="card">
