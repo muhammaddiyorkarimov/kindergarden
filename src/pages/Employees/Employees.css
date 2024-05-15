@@ -2,3 +2,120 @@
 	width: 100%;
 	height: 100vh;
 }
+
+.employees-user .header {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	justify-content: end;
+}
+
+.employees-user .header span {
+	background-color: white;
+	padding: 10px 15px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.employees-user .header input {
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.employees-user .header .selected-date {
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+}
+
+.employees-user .name {
+	display: flex;
+	flex-direction: column;
+	padding: 30px 300px;
+	text-align: center;
+}
+
+.employees-user .name .title {
+	font-size: 32px;
+	font-weight: 500;
+}
+
+.employees-user table {
+	margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employees-user thead th,
+tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.employees-user thead th {
+  background-color: #f2f2f2;
+}
+
+.employees-user tbody td:hover {
+  background-color: #e0e0e0;
+}
+
+.employees-user tbody td select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.employees-user tbody td span {
+  font-weight: bold;
+  color: blue;
+}
+
+.employees-user {
+	padding: 20px;
+}
+
+.employees-user .header {
+	width: 100%;
+	display: flex;
+	justify-content: end;
+}
+
+.select-date {
+	padding-bottom: 14px;
+	padding: 10px 0;
+}
+
+.employees-user .header .select-date input {
+	font-family: 'Montserrat', sans-serif;
+	border-radius: 10px;
+	padding: 10px 15px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+}
+
+.employees-user .header .select-date input:focus {
+	outline: none;
+}
+
+.employees-user .loading {
+	margin-top: 200px;
+}
+
+.user-payment-empty {
+	text-align: center;
+	font-size: 24px;
+	margin-top: 20px;
+}

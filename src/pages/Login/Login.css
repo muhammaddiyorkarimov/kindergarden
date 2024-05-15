@@ -18,6 +18,11 @@
 	padding: 25px 0px;
 	border-radius:5px;
 }
+
+.login-wrapper img {
+	width: 100px;
+}
+
 .login-wrapper h3{
 	font-weight: 500;
 }

@@ -109,7 +109,7 @@ function Attendance({ inputValue, setFilterData }) {
         <>
           <div className="header">
             <div className="a-count">
-            <p>Davomat: {groupNameId && insNameId && `${attendance.count} dan ${attendance.total_presences}`}</p>
+              <p>Davomat: {groupNameId && insNameId && `${attendance.count} dan ${attendance.total_presences}`}</p>
             </div>
             <div className="items">
               <InstitutionType
@@ -158,6 +158,7 @@ function Attendance({ inputValue, setFilterData }) {
                         <td>{date}</td>
                         <td>
                           <input
+                            style={{ pointerEvents: 'none' }}
                             type="checkbox"
                             defaultChecked={item.is_present}
                           />
@@ -165,7 +166,7 @@ function Attendance({ inputValue, setFilterData }) {
                       </tr>
                     );
                   })
-                ) : <tr><td style={{textAlign: 'center'}} colSpan={3}>M'alumot topilmadi</td></tr>}
+                ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
             {data.length === 0 && (

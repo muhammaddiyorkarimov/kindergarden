@@ -3,7 +3,7 @@ import axios from "axios";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
+import img from '../../../public/images/school.png'
 
 
 function Login() {
@@ -83,9 +83,8 @@ function Login() {
   return (
     <div className="container">
       <div className="login-wrapper">
-        <i className="fa-solid fa-school"></i>
+        <img src={img} alt="school icon" />
         <h3>Maktab va Bog'cha</h3>
-        <h4>School and Kindergarden</h4>
         <div className="input-logs">
           <label htmlFor="username">Username</label>
           <div className="input-wrap">

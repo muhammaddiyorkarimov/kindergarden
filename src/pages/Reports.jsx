@@ -1,6 +1,6 @@
-import React from 'react'
 
-function Statistics() {
+
+function Reports() {
 	return (
 		<div className='attendance reports'>
 			<h1>Yangilanmoqda...</h1>
@@ -8,4 +8,4 @@ function Statistics() {
 	)
 }
 
-export default Statistics
+export default Reports

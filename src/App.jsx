@@ -28,7 +28,9 @@ import PaymentUser from "./pages/payment/PaymentUser";
 import Employees from "./pages/Employees/Employees";
 import UserEmployees from "./pages/Employees/UserEmployees";
 import UserSalary from "./pages/salary/UserSalary";
-import Reports from "./report/Reports";
+import Reports from "./pages/Reports";
+import Income from "./pages/Income";
+import Statistics from "./pages/Statistics";
 
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
@@ -103,7 +105,9 @@ const routes = createBrowserRouter(
           <Route path='/employees/:id' element={<UserEmployees />} />
           <Route path="/salary" element={<Salary />} />
           <Route path='/salary/:id' element={<UserSalary />} />
+          <Route path="/income" element={<Income />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/statistics" element={<Statistics />} />
         </Route>
       </Route>
     </>

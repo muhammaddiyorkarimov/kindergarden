@@ -3,10 +3,10 @@ import axios from '../../service/Api'
 import { useParams } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 
-function UserSalary() {
+function PaymentUser() {
 
 	const [data, setData] = useState([])
-	const [date, setDate] = useState(getCurrentYear())
+	const [date, setDate] = useState(getCurrenDate())
 
 	const { id } = useParams()
 
@@ -19,6 +19,7 @@ function UserSalary() {
 					}
 				});
 				setData(response.data);
+				console.log(response.data);
 				// setLoading(false);
 			} catch (error) {
 				console.error('Error fetching data:', error);
@@ -30,16 +31,20 @@ function UserSalary() {
 	}, [date]);
 
 	// getCurrentYear
-	function getCurrentYear() {
+	function getCurrenDate() {
 		const today = new Date();
 		const year = today.getFullYear();
-		return `${year}`;
+		const month = today.getMonth();
+		const day = today.getDay();
+		return `${year}-${month}-${day}`;
 	}
 
 	// handle get date
 	const handleGetDate = (e) => {
-		setDate(getCurrentYear());
-	}
+		const selectedDate = new Date(e.target.value);
+		const year = selectedDate.getFullYear();
+		setDate(selectedDate == 'Invalid Date' ? 2000 : year);
+	};
 
 	// getmonthName
 	function getMonthName(date) {
@@ -55,7 +60,8 @@ function UserSalary() {
 		<div className='attendance payment-user'>
 			<div className="header">
 				<div className="select-date">
-					<input type='date' onChange={handleGetDate} />
+					<span>Yilni kiriting: </span>
+					<input defaultValue={getCurrenDate()} type='number' onChange={handleGetDate} />
 				</div>
 			</div>
 			<div className="body">
@@ -70,16 +76,17 @@ function UserSalary() {
 							data.monthly_payments.map(payment => {
 								return (
 									<tr key={payment.id}>
-									<td>{getMonthName(new Date(payment.paid_month))}</td>
-									<td>{payment.paid_month}</td>
-									<td>{payment.amount}</td>
-									<td>
-										<input type="checkbox" defaultChecked={payment.is_completed}/>
-									</td>
-								</tr>
+										<td>{getMonthName(new Date(payment.paid_month))}</td>
+										<td>{date}</td>
+										<td>{payment.amount}</td>
+										<td>
+											{payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}
+											{!payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }}/>}
+										</td>
+									</tr>
 								)
 							})
-						) :  <tr><td className='user-payment-empty'>Hali maosh olmagan</td></tr>}
+						) : <tr><td className='user-payment-empty'>Hali to'lov qilmagan</td></tr>}
 					</tbody>
 				</table>}
 				{data.length === 0 && <div className='loading'><ThreeDots color='#222D32' /></div>}
@@ -88,4 +95,4 @@ function UserSalary() {
 	)
 }
 
-export default UserSalary
+export default PaymentUser

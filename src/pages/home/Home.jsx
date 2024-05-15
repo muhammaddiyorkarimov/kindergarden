@@ -87,10 +87,10 @@ function Home() {
 						<h2>Statistika</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
+						<Link to='/statistics' className="first-element">
 							<img src={statistics} alt="statistics icon" />
 							<span>Statistika</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 			</div>

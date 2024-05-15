@@ -1,26 +1,25 @@
 // hooks
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 // react loader
-import { ThreeDots } from 'react-loader-spinner'
+import { ThreeDots } from "react-loader-spinner";
 
 // axios API
-import axios from '../../service/Api';
+import axios from "../../service/Api";
 
-import '../attendance/Attendance.css';
 // components
-import InstitutionType from '../../components/InstitutionType';
-// import GroupNumber from '../../components/GroupNumber';
-import { useNavigate } from 'react-router-dom';
+import InstitutionType from "../../components/InstitutionType";
+import { useNavigate } from "react-router-dom";
 
-function Employees() {
-
+function Attendance({ }) {
 	// useState
 	const [data, setData] = useState([]);
-	const [activeDropdown, setActiveDropdown] = useState('');
+	const [attendance, setAttendance] = useState('')
+	const [activeDropdown, setActiveDropdown] = useState("");
 	const [insId, setInsId] = useState(1);
-	const [groupId, setgroupId] = useState(1);
+	const [insNameId, setInsNameId] = useState('');
 	const [date, setDate] = useState(getCurrentDate());
 	const [loading, setLoading] = useState(true);
+
 	// useNavigate
 	const navigate = useNavigate();
 
@@ -33,7 +32,7 @@ function Employees() {
 					}
 				});
 				setData(response.data.results);
-				console.log(response.data);
+				setAttendance(response.data);
 				setLoading(false);
 			} catch (error) {
 				console.error('Error fetching data:', error);
@@ -42,85 +41,105 @@ function Employees() {
 		}
 
 		fetchData();
-	}, [insId, groupId, date]);
-
+	}, [insId, date]);
 	// getCurrentDate
 	function getCurrentDate() {
 		const today = new Date();
 		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, '0');
-		const day = String(today.getDate()).padStart(2, '0');
+		const month = String(today.getMonth() + 1).padStart(2, "0");
+		const day = String(today.getDate()).padStart(2, "0");
 		return `${year}-${month}-${day}`;
-}
+	}
+
+	// toggle dropdown
+	const toggleDropdown = (dropdown) => {
+		setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
+	};
 
 	// handle get ins id
 	const handleGetInsId = (id) => {
 		setInsId(id);
 	};
-	// handle get ins id
-	// const handleGetGroupId = (id) => {
-	// 	setgroupId(id);
-	// };
+	const handleGetInsName = (name) => {
+		setInsNameId(name)
+	}
+
+	// handle name about
+	const handleNameAbout = (item) => {
+		navigate(`${item.id}`);
+	};
 
 	// handle get date
 	const handleGetDate = (e) => {
 		setDate(e.target.value);
-	}
-
-	// toggle dropdown
-	const toggleDropdown = (dropdown) => {
-		setActiveDropdown(activeDropdown === dropdown ? '' : dropdown);
 	};
 
-	// handle name about
-	const handleNameAbout = (item) => {
-		navigate(`${item.id}`)
-	}
-
 	return (
-		<div className='attendance'>
-			{loading ? (<div className='loading'><ThreeDots color='#222D32' /></div>) :
-				(<>
+		<div className="attendance">
+			{loading ? (
+				<div className="loading">
+					<ThreeDots color="#222D32" />
+				</div>
+			) : (
+				<>
 					<div className="header">
 						<div className="a-count">
-							<p>Davomat: 30 dan 28</p>
+							<p>Davomat: {insNameId && `${attendance.count} dan ${attendance.total_presences}`}</p>
 						</div>
 						<div className="items">
-							<InstitutionType handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
+							<InstitutionType
+								handleGetInsId={handleGetInsId}
+								handleGetInsName={handleGetInsName}
+								activeDropdown={activeDropdown}
+								toggleDropdown={toggleDropdown}
+							/>
 							<div className="select-date">
-								<input type='date' onChange={handleGetDate} />
+								<input type="date" onChange={handleGetDate} />
 							</div>
 						</div>
 					</div>
 					<div className="body">
+						<div className="selected-item-title">
+							<span>Muassasa turi: {insNameId}</span>
+							<span>Sana: {date}</span>
+						</div>
 						<table>
 							<thead>
 								<tr>
 									<th>ISM</th>
 									<th>Sana</th>
-									<th><span>Salom</span></th>
+									<th>Davomat</th>
 								</tr>
 							</thead>
 							<tbody>
-								{data.map(item => {
-									return (
-										<tr key={item.id}>
-											<td className='name-click' onClick={() => handleNameAbout(item)}>{item.first_name} {item.last_name} {item.middle_name}</td>
-											<td>{date}</td>
-											<td>
-												<input type="checkbox" defaultChecked={item.is_present}/>
-											</td>
-										</tr>
-									)
-								})}
+								{insNameId ? (
+									data.map((item) => {
+										console.log(item.is_present);
+										return (
+											<tr key={item.id}>
+												<td className="name-click" onClick={() => handleNameAbout(item)}>
+													{item.first_name} {item.last_name} {item.middle_name}
+												</td>
+												<td>{date}</td>
+												<td>
+													<input style={{ pointerEvents: 'none' }} type="checkbox" defaultChecked={item.is_present} />
+												</td>
+											</tr>
+										);
+									})
+								) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
 							</tbody>
 						</table>
-						{data.length === 0 && <div className='loading'><p>Ma'lumot topilmadi</p></div>}
+						{data.length === 0 && (
+							<div className="loading">
+								<p>Ma'lumot topilmadi</p>
+							</div>
+						)}
 					</div>
-				</>)
-			}
+				</>
+			)}
 		</div>
-	)
+	);
 }
 
-export default Employees
+export default Attendance;

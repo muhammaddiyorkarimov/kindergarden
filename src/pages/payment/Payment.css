@@ -10,7 +10,7 @@
 	justify-content: space-around;
 }
 
-.payment tbody button{
+.payment tbody button {
 	width: 100px;
 	display: flex;
 	align-items: center;
@@ -50,6 +50,7 @@
 .payment-user {
 	padding: 20px;
 }
+
 .payment-user .header {
 	width: 100%;
 	display: flex;
@@ -124,12 +125,14 @@
 	align-items: center;
 	margin-bottom: 10px;
 }
+
 .modal-content .paid-full input {
 	padding: 8px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	box-sizing: border-box;
 }
+
 .modal-content:hover {
 	transform: scale(1.02);
 }
@@ -142,6 +145,7 @@
 	border-radius: 4px;
 	box-sizing: border-box;
 }
+
 .modal-content .select-date input {
 	width: 100%;
 	padding: 8px;
@@ -175,9 +179,11 @@
 	border: none;
 	border: 1px solid #ccc;
 }
+
 .modal .modal-content .comment textarea:focus {
 	outline: none;
 }
+
 /* Buttons */
 .modal-content button {
 	background-color: #4caf50;
