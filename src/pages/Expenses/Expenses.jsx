@@ -1,43 +1,34 @@
-// hooks
-import { useEffect, useState } from "react";
-// react loader
+import React, { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
-
-// axios API
 import axios from "../../service/Api";
-
-// css
-
-// components
-import InstitutionType from "../../components/InstitutionType";
-import GroupNumber from "../../components/GroupNumber";
 import { useNavigate } from "react-router-dom";
 import ExpensesType from "../../components/ExpensesType";
 
 function Expenses() {
-  // useState
   const [data, setData] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState("");
-  const [groupId, setgroupId] = useState(1);
-  const [date, setDate] = useState("2024-12-05");
+  const [groupId, setGroupId] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
-  // useNavigate
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get(`/accounting/expenses/list/?type=${groupId}`, {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-          },
-        });
+        const response = await axios.get(
+          `/accounting/expenses/list/?type=${groupId}`,
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
+            },
+          }
+        );
 
         setData(response.data.results);
         setLoading(false);
-        
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
@@ -46,28 +37,39 @@ function Expenses() {
 
     fetchData();
   }, [groupId]);
-  console.log(data);
 
-  // handle get ins id
   const handleGetGroupId = (id) => {
-    console.log(id);
-    setgroupId(id);
+    setGroupId(id);
   };
-  console.log(groupId);
 
-  // toggle dropdown
+  const handleFromDateChange = (e) => {
+    setFromDate(e.target.value);
+  };
+
+  const handleToDateChange = (e) => {
+    setToDate(e.target.value);
+  };
+
+  const handleOpenExpense = () => {
+    navigate(`/expenses/expensescreate`);
+  };
+
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
-  // handle get date
-  const handleGetDate = (e) => {
-    setDate(e.target.value);
-  };
 
+  const filteredData = data.filter((item) => {
+    if (!fromDate || !toDate) {
+      return true; // If either fromDate or toDate is not set, return all items
+    }
 
-  function handleOpenExpense(){
-    navigate(`/expenses/expensescreate`)
-  }
+    // Parse dates and filter by range
+    const itemDate = new Date(item.date);
+    const filterFromDate = new Date(fromDate);
+    const filterToDate = new Date(toDate);
+
+    return itemDate >= filterFromDate && itemDate <= filterToDate;
+  });
 
   return (
     <div className="attendance">
@@ -82,15 +84,28 @@ function Expenses() {
               <p>Harajat qo'shish</p>
             </div>
             <div className="items">
-              <ExpensesType 
-              title='Harajat turi'
-               handleGetGroupId={handleGetGroupId}
-               activeDropdown={activeDropdown}
-               toggleDropdown={toggleDropdown}
+              <ExpensesType
+                title="Harajat turi"
+                handleGetGroupId={handleGetGroupId}
+                activeDropdown={activeDropdown}
+                toggleDropdown={toggleDropdown}
               />
 
-              <div className="select-date">
-                <input type="date" onChange={handleGetDate} />
+              <div className="date-range">
+                <label htmlFor="fromDate">From:</label>
+                <input
+                  type="date"
+                  id="fromDate"
+                  value={fromDate}
+                  onChange={handleFromDateChange}
+                />
+                <label htmlFor="toDate">To:</label>
+                <input
+                  type="date"
+                  id="toDate"
+                  value={toDate}
+                  onChange={handleToDateChange}
+                />
               </div>
             </div>
           </div>
@@ -106,24 +121,18 @@ function Expenses() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => {
-                  console.log(item);
-                  return (
-                    <tr key={item.id}>
-                      <td
-                        className="name-click"
-                        onClick={() => handleNameAbout(item)}
-                      >
-                        {item.comment}
-                      </td>
-                      <td>{item.amount}</td>
-                      <td>{item.date}</td>
-                    </tr>
-                  );
-                })}
+                {filteredData.map((item) => (
+                  <tr key={item.id}>
+                    <td className="name-click" onClick={() => handleNameAbout(item)}>
+                      {item.comment}
+                    </td>
+                    <td>{item.amount}</td>
+                    <td>{item.date}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-            {data.length === 0 && (
+            {filteredData.length === 0 && (
               <div className="loading">
                 <p>Ma'lumot topilmadi</p>
               </div>
