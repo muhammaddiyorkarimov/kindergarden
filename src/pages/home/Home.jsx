@@ -54,10 +54,10 @@ function Home() {
 						<h2>Harajat</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
+						<Link to='/expenses' className="first-element">
 							<img src={expends} alt="expends icon" />
 							<span>Harajat</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 				<div className="card">
@@ -65,10 +65,10 @@ function Home() {
 						<h2>Daromad</h2>
 					</div>
 					<div className="card-body">
-						<div className="first-element">
+						<Link to='/income' className="first-element">
 							<img src={income} alt="income icon" />
 							<span>Daromad</span>
-						</div>
+						</Link>
 					</div>
 				</div>
 				<div className="card">

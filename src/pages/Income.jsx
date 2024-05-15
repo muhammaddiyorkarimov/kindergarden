@@ -1,143 +1,152 @@
-import React, { useEffect, useState } from "react";
+// hooks
+import { useEffect, useState } from "react";
+// react loader
 import { ThreeDots } from "react-loader-spinner";
+// uuid
+import { v4 as uuidv4 } from 'uuid';
+
+// axios API
 import axios from "../service/Api";
-import { useNavigate } from "react-router-dom";
-import ExpensesType from "../../components/ExpensesType";
 
-function Expenses() {
-  const [data, setData] = useState([]);
-  const [activeDropdown, setActiveDropdown] = useState("");
-  const [groupId, setGroupId] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+function Income() {
+	// useState
+	const [data, setData] = useState([]);
+	const [fromDate, setFromDate] = useState(getDefaultFromDate());
+	const [toDate, setToDate] = useState(getDefaultToDate());
+	const [loading, setLoading] = useState(true);
+	const [activeDropdown, setActiveDropdown] = useState('');
+	const [organizationType, setOrganizationType] = useState('');
+	const [totalIncome, setTotalIncome] = useState(0);
 
-  const navigate = useNavigate();
+	function getDefaultFromDate() {
+		const today = new Date();
+		today.setMonth(today.getMonth() - 12);
+		return formatDate(today);
+	}
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get(
-          `/accounting/expenses/list/?type=${groupId}`,
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-            },
-          }
-        );
+	function getDefaultToDate() {
+		return formatDate(new Date());
+	}
 
-        setData(response.data.results);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    }
+	function formatDate(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	}
 
-    fetchData();
-  }, [groupId]);
+	const handleFromDateChange = (e) => {
+		setFromDate(e.target.value);
+	};
 
-  const handleGetGroupId = (id) => {
-    setGroupId(id);
-  };
+	const handleToDateChange = (e) => {
+		setToDate(e.target.value);
+	};
 
-  const handleFromDateChange = (e) => {
-    setFromDate(e.target.value);
-  };
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const response = await axios.get(
+					`/accounting/income/monthly/?from_date=${fromDate}&to_date=${toDate}`,
+					{
+						headers: {
+							Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+						}
+					}
+				);
+				const filteredData = organizationType
+					? response.data.filter(item => item.organization_type === organizationType)
+					: response.data;
+				const total = filteredData.reduce((acc, item) => acc + item.total, 0);
+				setTotalIncome(total);
+				setData(filteredData);
+				setLoading(false);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+				setLoading(false);
+			}
+		}
 
-  const handleToDateChange = (e) => {
-    setToDate(e.target.value);
-  };
+		fetchData();
+	}, [fromDate, toDate, organizationType]); // Update the useEffect dependencies to include fromDate, toDate, and organizationType
 
-  const handleOpenExpense = () => {
-    navigate(`/expenses/expensescreate`);
-  };
+	const toggleDropdown = (dropdown) => {
+		setActiveDropdown(activeDropdown === dropdown ? '' : dropdown);
+	};
 
-  const filteredData = data.filter((item) => {
-    if (!fromDate || !toDate) {
-      return true; // If either fromDate or toDate is not set, return all items
-    }
+	const handleOrganizationTypeChange = (type) => {
+		setOrganizationType(type);
+		setActiveDropdown('');
+	};
 
-    // Parse dates and filter by range
-    const itemDate = new Date(item.date);
-    const filterFromDate = new Date(fromDate);
-    const filterToDate = new Date(toDate);
-
-    return itemDate >= filterFromDate && itemDate <= filterToDate;
-  });
-
-  return (
-    <div className="attendance">
-      {loading ? (
-        <div className="loading">
-          <ThreeDots color="#222D32" />
-        </div>
-      ) : (
-        <>
-          <div className="header">
-            <div onClick={handleOpenExpense} className="a-count">
-              <p>Harajat qo'shish</p>
-            </div>
-            <div className="items">
-              <ExpensesType
-                title="Harajat turi"
-                handleGetGroupId={handleGetGroupId}
-                activeDropdown={activeDropdown}
-                toggleDropdown={toggleDropdown}
-              />
-
-              <div className="date-range">
-                <label htmlFor="fromDate">From:</label>
-                <input
-                  type="date"
-                  id="fromDate"
-                  value={fromDate}
-                  onChange={handleFromDateChange}
-                />
-                <label htmlFor="toDate">To:</label>
-                <input
-                  type="date"
-                  id="toDate"
-                  value={toDate}
-                  onChange={handleToDateChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="body">
-            <table>
-              <thead>
-                <tr>
-                  <th>Mahsulot</th>
-                  <th>Summa</th>
-                  <th>
-                    <span>Sana</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.map((item) => (
-                  <tr key={item.id}>
-                    <td className="name-click" onClick={() => handleNameAbout(item)}>
-                      {item.comment}
-                    </td>
-                    <td>{item.amount}</td>
-                    <td>{item.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {filteredData.length === 0 && (
-              <div className="loading">
-                <p>Ma'lumot topilmadi</p>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-    </div>
-  );
+	return (
+		<div className="attendance">
+			{loading ? (
+				<div className="loading">
+					<ThreeDots color="#222D32" />
+				</div>
+			) : (
+				<>
+					<div className="header">
+						<div className="a-count">
+							<span className="organization-type" onClick={() => toggleDropdown('organization-type')}>Tashkilot turi: <i
+								className={`fa-solid ${activeDropdown === 'organization-type' ? 'fa-chevron-down' : 'fa-chevron-left'}`}
+								style={{ width: '30px', fontSize: '15px', paddingLeft: '10px' }}
+							></i></span>
+							{activeDropdown === 'organization-type' && (
+								<div className="organization-dropdown">
+									<p onClick={() => handleOrganizationTypeChange('school')}>Maktab</p>
+									<p onClick={() => handleOrganizationTypeChange('kindergarten')}>Bog'cha</p>
+									<p onClick={() => handleOrganizationTypeChange('')}>Hammasi</p>
+								</div>
+							)}
+						</div>
+						<div className="items">
+							<div className="date-range">
+								<label htmlFor="fromDate">From:</label>
+								<input
+									type="date"
+									id="fromDate"
+									value={fromDate}
+									onChange={handleFromDateChange}
+								/>
+								<label htmlFor="toDate">To:</label>
+								<input
+									type="date"
+									id="toDate"
+									value={toDate}
+									onChange={handleToDateChange}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className="body">
+						<table>
+							<thead>
+								<tr>
+									<th>Izoh</th>
+									<th>To'lovlar</th>
+									<th>Sana</th>
+								</tr>
+							</thead>
+							<tbody>
+								{data.length ? (data.map(item => (
+									<tr key={uuidv4()}>
+										<td>{item.organization_type === 'school' ? "Maktab to'lovlari" : "Bog'cha to'lovlari"}</td>
+										<td>{item.total}</td>
+										<td>{item.year_month}</td>
+									</tr>
+								))) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>Ma'lumot topilmadi</td></tr>}
+								<tr>
+									<td colSpan={3}>Umumiy summa: {totalIncome}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</>
+			)}
+		</div>
+	);
 }
 
-export default Expenses;
+export default Income;
