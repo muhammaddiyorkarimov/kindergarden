@@ -1,0 +1,115 @@
+.expenses-create {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+}
+
+.expenses-title {
+    margin-top: 50px;
+}
+
+.expenses-title p {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.expenses-inputs {
+    display: flex;
+    gap:50px;
+    width: 90%;
+    height: 350px;
+    margin-top: 30px;
+}
+
+.select-expenses {
+    width: 20%;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid lightgray;
+    border-radius:8px;
+    text-align: center;
+    height: 40px;
+    position: relative;
+}
+.select-expenses span{
+    width:140px;
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+.textarea{
+    width: 40%;
+}
+.textarea .text-area{
+    width: 100%;
+    height: 235px;
+    resize: none;
+    padding: 15px 20px;
+    border-radius:8px;
+    border:1px solid lightgray;
+}
+.textarea .text-area:focus{
+    outline: none;
+}
+.input-costs input{
+width: 100%;
+height: 40px;
+border-radius:8px;
+border:1px solid lightgray;
+padding: 0px 20px;
+letter-spacing: 1.3px;
+}
+.input-costs input:focus{
+    outline: none;
+}
+.btn-class{
+    display: flex;
+    justify-content: flex-end;
+    width: 80%;
+}
+.btn-class button{
+   width: 18%;
+   height: 30px;
+   border-radius:8px;
+   border:1px solid lightgrey;
+   background-color:#FFFFFF;
+   font-weight: 500;
+   box-shadow:2px 4px 8px lightgray;
+}
+.btn-class button:hover{
+    background-color: transparent;
+}
+
+.drop-down{
+    position: absolute;
+    margin-top: 170px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius:8px;
+    width: 100%;
+    border-radius:8px;
+    border:1px solid lightgray;
+    
+}
+.drop-down ul{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color:#FFFFFF;
+    border-radius:8px;
+    padding: 10px 0px;
+
+}
+.drop-down ul li{
+    padding: 0px 20px;
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+}

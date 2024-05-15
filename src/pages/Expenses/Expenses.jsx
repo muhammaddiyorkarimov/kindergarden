@@ -83,6 +83,7 @@ function Expenses() {
             </div>
             <div className="items">
               <ExpensesType 
+              title='Harajat turi'
                handleGetGroupId={handleGetGroupId}
                activeDropdown={activeDropdown}
                toggleDropdown={toggleDropdown}

@@ -34,7 +34,11 @@ import Statistics from "./pages/Statistics";
 
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
-  return auth ? <Outlet inputValue={inputValue} filterData={filterData} /> : <Navigate to="/login" />;
+  return auth ? (
+    <Outlet inputValue={inputValue} filterData={filterData} />
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 function App() {
@@ -51,7 +55,7 @@ function App() {
     const interval = setInterval(() => {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
-    }, 100 * 60 * 1000);
+    }, 10 * 60 * 1000);
   
     return () => clearInterval(interval); 
   }, []);
@@ -70,7 +74,11 @@ const routes = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-      <Route element={<PrivateRoutes inputValue={inputValue} filterData={filterData} />}>
+      <Route
+          element={
+            <PrivateRoutes inputValue={inputValue} filterData={filterData} />
+          }
+        >
         <Route
           path="/"
           element={

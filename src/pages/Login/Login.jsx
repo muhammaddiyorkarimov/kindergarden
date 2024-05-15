@@ -3,16 +3,19 @@ import axios from "axios";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import img from '../../../public/images/school.png'
-
+import { Alert, AlertTitle } from "@mui/material";
+import img from '../../../public/images/school.png';
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
   const [rememberMe, setRememberMe] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
   const passwordInputRef = useRef(null);
   const navigate = useNavigate();
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const checkTokens = async () => {
@@ -24,10 +27,16 @@ function Login() {
             "https://kindergarten-ms.techcraft.uz/api/v1/users/token/refresh/",
             { refresh: refreshToken }
           );
-
+          setShowAlert(true);
+          setAlertType("success");
+          setAlertMessage("Token refreshed successfully!");
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
           navigateToHome();
         } catch (error) {
           console.error("Token refresh failed:", error);
+          handleAlert("error", "Token refresh failed!");
         }
       }
     };
@@ -50,30 +59,49 @@ function Login() {
       const { access, refresh } = response.data;
       Cookies.set("access_token", access);
       Cookies.set("refresh_token", refresh);
-
+      handleAlert("success", "Login successful!");
       navigateToHome();
     } catch (error) {
-      setError(error.response.data.detail);
+      handleError(error);
+      timeoutRef.current = setTimeout(() => {
+        if (!alert) {
+          window.location.reload();
+        }
+      }, 10000);
     }
   };
 
-  function validation() {
+  const validation = () => {
     if (!username || !password) {
-      alert("Please enter both username and password.");
-      
       return false;
     }
-    if (password.length < 8) {
-      alert("Password should be at least 8 characters long.");
+    if (password.length <= 8) {
       return false;
     }
     return true;
-  }
+  };
 
-  const handleLogin = () => {
-    if (validation()) {
-      handleLoginFormSubmit();
+  const handleLogin = async () => {
+    if (!validation()) {
+      handleAlert("error", "Invalid username or password!");
+      return;
     }
+
+    await handleLoginFormSubmit();
+  };
+
+  const handleError = (error) => {
+    console.log(error);
+    handleAlert("error", error.message);
+  };
+
+  const handleAlert = (type, message) => {
+    setShowAlert(true);
+    setAlertType(type);
+    setAlertMessage(message);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 2000);
   };
 
   const handleCheckboxChange = () => {
@@ -82,8 +110,25 @@ function Login() {
 
   return (
     <div className="container">
+      <div className="alert">
+        {showAlert && (
+          <Alert
+            sx={{
+              position: "display",
+              width: "500px",
+            }}
+            variant="filled"
+            severity={alertType}
+          >
+            <AlertTitle>
+              {alertType === "success" ? "Success" : "Error"}
+            </AlertTitle>
+            {alertMessage == "Request failed with status code 401" ? 'Login yoki parol xato':alertMessage}
+          </Alert>
+        )}
+      </div>
       <div className="login-wrapper">
-        <img src={img} alt="school icon" />
+        <img src={img} alt="" />
         <h3>Maktab va Bog'cha</h3>
         <div className="input-logs">
           <label htmlFor="username">Username</label>

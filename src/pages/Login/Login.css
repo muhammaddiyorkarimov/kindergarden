@@ -105,3 +105,11 @@
  background-color: #F8F8F8;
  color:#F8F8F8;
 }
+.alert{
+	position: absolute;
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	margin: 50px auto;
+}
