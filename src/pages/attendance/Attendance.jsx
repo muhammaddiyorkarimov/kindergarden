@@ -1,51 +1,41 @@
-// hooks
 import { useEffect, useState } from "react";
-// react loader
 import { ThreeDots } from "react-loader-spinner";
-
-// axios API
 import axios from "../../service/Api";
-
-// css
 import "./Attendance.css";
-// components
 import InstitutionType from "../../components/InstitutionType";
 import GroupNumber from "../../components/GroupNumber";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Attendance({ inputValue, setFilterData }) {
   const location = useLocation();
-
   const queryParams = new URLSearchParams(location.search);
-  // useState
+
   const [insId, setInsId] = useState(queryParams.get('insId') || 1);
   const [groupId, setGroupId] = useState(queryParams.get('groupId') || 1);
   const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
   const [groupNameId, setGroupNameId] = useState(queryParams.get('groupNameId') || '');
   const [data, setData] = useState([]);
-  const [attendance, setAttendance] = useState('')
+  const [attendance, setAttendance] = useState(null);  // Changed to null to handle initial loading state
   const [activeDropdown, setActiveDropdown] = useState("");
   const [date, setDate] = useState(getCurrentDate());
   const [loading, setLoading] = useState(true);
 
-  // useNavigate
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
       try {
+        setLoading(true);  // Show loading spinner while fetching data
         const response = await axios.get(
           `/users/attendance/list/?organization=${insId}&educating_group=${groupId}&type=student&date=${date}`,
           {
             headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
             },
           }
         );
         setData(response.data.results);
         setAttendance(response.data);
-        console.log(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -55,6 +45,7 @@ function Attendance({ inputValue, setFilterData }) {
 
     fetchData();
   }, [insId, groupId, date]);
+
   useEffect(() => {
     const params = new URLSearchParams();
     params.set('insId', insId);
@@ -64,7 +55,6 @@ function Attendance({ inputValue, setFilterData }) {
     navigate({ search: params.toString() });
   }, [insId, groupId, insNameId, groupNameId, navigate]);
 
-  // getCurrentDate
   function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
@@ -73,27 +63,26 @@ function Attendance({ inputValue, setFilterData }) {
     return `${year}-${month}-${day}`;
   }
 
-  // toggle dropdown
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
-  // handle get ins id
   const handleGetInsId = (id) => {
     setInsId(id);
   };
+
   const handleGetInsName = (name) => {
-    setInsNameId(name)
-  }
-  // handle get group id
+    setInsNameId(name);
+  };
+
   const handleGetGroupId = (id) => {
     setGroupId(id);
   };
+
   const handleGetGroupName = (name) => {
     setGroupNameId(name);
-  }
+  };
 
-  // handle name about
   const handleNameAbout = (item) => {
     navigate(`${item.id}`);
   };
@@ -103,9 +92,8 @@ function Attendance({ inputValue, setFilterData }) {
       item.first_name.toLowerCase().includes(inputValue)
     );
     setFilterData(filtered);
-  }, [data, inputValue]);
+  }, [data, inputValue, setFilterData]);
 
-  // handle get date
   const handleGetDate = (e) => {
     setDate(e.target.value);
   };
@@ -120,7 +108,7 @@ function Attendance({ inputValue, setFilterData }) {
         <>
           <div className="header">
             <div className="a-count">
-              <p>Davomat: {groupNameId && insNameId && `${attendance.count} dan ${attendance.total_presences}`}</p>
+              <p>Davomat: {groupNameId && insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
             </div>
             <div className="items">
               <InstitutionType
@@ -137,7 +125,7 @@ function Attendance({ inputValue, setFilterData }) {
                 toggleDropdown={toggleDropdown}
               />
               <div className="select-date">
-                <input type="date" onChange={handleGetDate} />
+                <input type="date" onChange={handleGetDate} value={date} />
               </div>
             </div>
           </div>
@@ -157,27 +145,28 @@ function Attendance({ inputValue, setFilterData }) {
               </thead>
               <tbody>
                 {insNameId && groupNameId ? (
-                  data.map((item) => {
-                    return (
-                      <tr key={item.id}>
-                        <td
-                          className="name-click"
-                          onClick={() => handleNameAbout(item)}
-                        >
-                          {item.first_name} {item.last_name} {item.middle_name}
-                        </td>
-                        <td>{date}</td>
-                        <td>
-                          <input
-                            style={{ pointerEvents: 'none' }}
-                            type="checkbox"
-                            defaultChecked={item.is_present}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
+                  data.map((item) => (
+                    <tr key={item.id}>
+                      <td
+                        className="name-click"
+                        onClick={() => handleNameAbout(item)}
+                      >
+                        {item.first_name} {item.last_name} {item.middle_name}
+                      </td>
+                      <td>{date}</td>
+                      <td>
+                        <input
+                          style={{ pointerEvents: 'none' }}
+                          type="checkbox"
+                          checked={item.is_present}  // Changed to checked
+                          readOnly
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td style={{ textAlign: 'center' }} colSpan={3}>Ma'lumot topilmadi</td></tr>
+                )}
               </tbody>
             </table>
             {data.length === 0 && (

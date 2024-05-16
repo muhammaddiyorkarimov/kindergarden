@@ -202,7 +202,7 @@ function Payment() {
     <div className='payment attendance'>
       <div className="header">
         <div className="a-count">
-          <p>To'lov: {groupNameId && insNameId && payment && payment.count} dan {payment && payment.results ? payment.results.reduce((total, item) => total + item.monthly_payments.length, 0) : 0}</p>
+          <p>To'lov: {groupNameId && insNameId && payment && payment.count} dan {insNameId && groupNameId && payment.results ? payment.results.reduce((total, item) => item.monthly_payments.length, 0) : 0}</p>
         </div>
         <div className="items">
           <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />

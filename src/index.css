@@ -13,6 +13,8 @@
 
 body {
 	font-family: 'Montserrat', sans-serif;
+	overflow: hidden;
+	min-height: 100vh;
 }
 
 i, button {

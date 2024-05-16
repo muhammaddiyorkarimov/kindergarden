@@ -1,16 +1,12 @@
-// hooks
 import { useEffect, useState } from 'react';
 // components
-import InstitutionType from '../../components/InstitutionType'
+import InstitutionType from '../../components/InstitutionType';
 // axios
 import axios from '../../service/Api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
-// material ui
 
-function Payment() {
-
-  // useNavigate
+function Salary() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -23,7 +19,7 @@ function Payment() {
   const [month, setMonth] = useState(date.slice(5));
   const [loading, setLoading] = useState(true);
   const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
-  const [payment, setPayment] = useState('');
+  const [payment, setPayment] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -34,7 +30,7 @@ function Payment() {
           }
         });
         setData(response.data.results);
-        setPayment(response.data)
+        setPayment(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -45,10 +41,9 @@ function Payment() {
     fetchData();
   }, [insId, year, month]);
 
-  // update url
+  // update URL
   const updateURL = (params) => {
     const queryParams = new URLSearchParams(location.search);
-    console.log(queryParams);
     Object.keys(params).forEach(key => {
       queryParams.set(key, params[key]);
     });
@@ -66,45 +61,51 @@ function Payment() {
   function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1);
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
   }
 
   // handle get date
   const handleGetDate = (e) => {
-    setDate(e.target.value);
-    setYear(e.target.value.slice(0, 4));
-    setMonth(e.target.value.slice(5));
-  }
+    const newDate = e.target.value;
+    setDate(newDate);
+    setYear(newDate.slice(0, 4));
+    setMonth(newDate.slice(5));
+  };
 
   // handle name about
   const handleNameAbout = (id) => {
-    navigate(`${id}`)
-  }
+    navigate(`${id}`);
+  };
 
   const handleGetInsName = (name) => {
-    setInsNameId(name)
-  }
+    setInsNameId(name);
+  };
 
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? '' : dropdown);
   };
+
   // handle get ins id
   const handleGetInsId = (id) => {
     setInsId(id);
-    updateURL({ organization: id })
+    updateURL({ organization: id });
   };
-  // showModalPayment
 
+  // showModalPayment
   const handleOpenComment = (comment) => {
-    alert(comment == '' ? 'Izoh kiritilmagan' : comment);
-  }
+    alert(comment === '' ? 'Izoh kiritilmagan' : comment);
+  };
 
   return (
     <div className='payment attendance'>
       <div className="header">
         <div className="a-count">
-          <p>To'lov: {insNameId && payment && payment.count} dan {payment && payment.results ? payment.results.reduce((total, item) => total + item.monthly_payments.length, 0) : 0}</p>
+          {payment && insNameId ? (
+            <p>To'lov: {payment.count} dan {payment.results.reduce((total, item) => item.monthly_payments.length, 0)}</p>
+          ) : (
+            <p>Yuklanmoqda...</p>
+          )}
         </div>
         <div className="items">
           <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
@@ -127,35 +128,35 @@ function Payment() {
             </tr>
           </thead>
           <tbody>
-            {data && insNameId ? (data.map(item => {
-              return (
+            {data && insNameId ? (
+              data.map(item => (
                 <tr key={item.id}>
                   <td style={{ cursor: 'pointer' }} onClick={() => { handleNameAbout(item.id) }}>{item.first_name} {item.last_name}</td>
-                  <td>
-                    {date}
+                  <td>{date}</td>
+                  <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan"))}>
+                    {item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0)}
                   </td>
-                  <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments.reduce((total, payment) => (payment.comment), "To'lov qilinmagan"))}>{item.monthly_payments.reduce((total, payment) => parseFloat(payment.amount), 0)}</td>
                   <td>
                     {item.monthly_payments.reduce((total, payment) => (
                       payment.is_completed ?
-                        <input type="checkbox" checked style={{ pointerEvents: 'none' }} />
-                        :
+                        <input type="checkbox" checked style={{ pointerEvents: 'none' }} /> :
                         <input type="checkbox" style={{ pointerEvents: 'none' }} />
                     ), "To'lanmagan")}
                   </td>
                 </tr>
-              );
-            })) : <tr><td style={{ textAlign: 'center' }} colSpan={5}>M'alumot topilmadi</td></tr>}
+              ))
+            ) : (
+              <tr><td style={{ textAlign: 'center' }} colSpan={5}>M'alumot topilmadi</td></tr>
+            )}
             <tr>
-              {insNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{payment.total_payment}</b></td>}
+              {insNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{payment ? payment.total_payment : 0}</b></td>}
             </tr>
           </tbody>
         </table>
-        {data.length === 0 && <div style={{ marginTop: '150px' }} className='loading'><ThreeDots color='#222D32' /></div>}
+        {loading && <div style={{ marginTop: '150px' }} className='loading'><ThreeDots color='#222D32' /></div>}
       </div>
     </div>
-  )
+  );
 }
 
-export default Payment
-
+export default Salary;

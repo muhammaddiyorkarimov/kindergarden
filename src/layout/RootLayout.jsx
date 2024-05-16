@@ -40,10 +40,10 @@ function RootLayout({ inputValue, filterData, handleInput }) {
           <div onClick={closeSidebar} className="menu">
             <i className="fa-solid fa-bars"></i>
           </div>
-          <div className="filters">
+          {/* <div className="filters">
             <input type="text" value={inputValue} onChange={(e) => handleInput(e.target.value)} />
             <i className="fa-solid fa-magnifying-glass"></i>
-          </div>
+          </div> */}
           <div className="account">
             <img src={img} alt="user" />
             <span
