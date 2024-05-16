@@ -100,6 +100,7 @@ function Salary() {
   return (
     <div className='payment attendance'>
       <div className="header">
+        <div className="items">
         <div className="a-count">
           {payment && insNameId ? (
             <p>To'lov: {payment.count} dan {payment.results.reduce((total, item) => item.monthly_payments.length, 0)}</p>
@@ -107,7 +108,6 @@ function Salary() {
             <p>Yuklanmoqda...</p>
           )}
         </div>
-        <div className="items">
           <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
           <div className="select-date">
             <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />

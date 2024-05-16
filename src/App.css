@@ -3,7 +3,7 @@
 
 /* "main" - rootlayout */
 .App {
-	height: 100vh
+	height: 100vh;
 }
 .root-layout {
 	width: 100%;
@@ -30,13 +30,13 @@ header {
 
 header .logo {
 	height: 100%;
-	width: 250px;
+	width: 240px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: #fff;
-	background-color: #035e7c;
 	transition: var(--primary-transition);
+	padding: 0 10px;
 }
 
 header .logo i {
@@ -44,7 +44,7 @@ header .logo i {
 }
 
 header .logo.active {
-	width: 4%;
+	width: 60px;
 }
 
 header .logo.active h1 {
@@ -60,7 +60,7 @@ header .logo h1 {
 }
 
 header .logo.active + .navbar {
-	width: 96%;
+	/* width: 96%; */
 }
 
 .navbar .menu i {
@@ -107,7 +107,7 @@ header .logo.active + .navbar {
 .navbar .account {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 20px;
 	width: 122px;
 }
 
@@ -121,11 +121,13 @@ header .logo.active + .navbar {
 	color: #fff;
 	font-weight: 400;
 	font-style: normal;
+	display: flex;
 }
 
 .navbar .account span i {
 	font-size: 14px;
 	padding-top: 5px;
+	padding-left: 10px;
 }
 
 
@@ -144,7 +146,7 @@ main {
 }
 
 .sidebar.active {
-	width: 4%;
+	width: 60px;
 }
 .sidebar.active li a {
 	display: none;
@@ -287,3 +289,39 @@ main {
   font-weight: 500;
 }
 
+@media (max-width: 875px) {
+	header .logo {
+		width: 260px;
+	}
+}
+
+@media (max-width: 460px) {
+	header {
+		width: 100%;
+		height: 110px;
+		background-color: var(--primary-bar-color);
+		flex-direction: column;
+	}
+	header .logo {
+		width: 100%;
+		background-color: #00506a;
+	}
+	header .navbar {
+		padding: 5px 20px;
+	}
+	header .logo.active {
+		width: 100%;
+	}
+	.sidebar {
+		width: 60px;
+	}
+	.sidebar li a {
+		display: none;
+	}
+	.sidebar.active {
+		width: 200px;
+	}
+	.sidebar.active li a{
+		display: block;
+	}
+}

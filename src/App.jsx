@@ -67,7 +67,6 @@ function handleClickLogOut() {
 
 const handleInput = (value) => {
   setInputValue(value.toLowerCase());
-  console.log(inputValue);
 };
 
 const routes = createBrowserRouter(

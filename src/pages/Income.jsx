@@ -88,6 +88,7 @@ function Income() {
 			) : (
 				<>
 					<div className="header">
+						<div className="items">
 						<div className="a-count">
 							<span className="organization-type" onClick={() => toggleDropdown('organization-type')}>Tashkilot turi: <i
 								className={`fa-solid ${activeDropdown === 'organization-type' ? 'fa-chevron-down' : 'fa-chevron-left'}`}
@@ -101,7 +102,6 @@ function Income() {
 								</div>
 							)}
 						</div>
-						<div className="items">
 							<div className="date-range">
 								<label htmlFor="fromDate">From:</label>
 								<input

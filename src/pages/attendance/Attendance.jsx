@@ -107,10 +107,10 @@ function Attendance({ inputValue, setFilterData }) {
       ) : (
         <>
           <div className="header">
+            <div className="items">
             <div className="a-count">
               <p>Davomat: {groupNameId && insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
             </div>
-            <div className="items">
               <InstitutionType
                 handleGetInsId={handleGetInsId}
                 handleGetInsName={handleGetInsName}

@@ -40,7 +40,10 @@ function Payment() {
   const [payment, setPayment] = useState('');
   const [getFirstPayment, setGetFirstPayment] = useState(0);
   const [openComment, setOpenComment] = useState('');
+  const [error, setError] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState('success')
+  const [alertMessage, setAlertMessage] = useState('')
 
   useEffect(() => {
     async function fetchData() {
@@ -84,7 +87,6 @@ function Payment() {
       is_completed: paidFull,
       comment: comment
     };
-    console.log(requestData);
 
     axios.post('/accounting/monthly-payments/create/', requestData, {
       headers: {
@@ -92,12 +94,17 @@ function Payment() {
       }
     })
     .then(response => {
-      console.log('Success:', response.data);
       setShowModal(false);
     })
     .catch(error => {
-      console.error('Error:', error);
+      setError(error)
+      setShowAlert(true)
       setShowModal(false);
+      setAlertType('error')
+      setAlertMessage(error.message)
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 2000);
     });
   };
 
@@ -114,12 +121,19 @@ function Payment() {
       }
     })
     .then(response => {
-      console.log('Updated:', response.data);
       setShowModal2(false);
     })
     .catch(error => {
       console.error('Error:', error);
       setShowModal2(false);
+      setError(error)
+      setShowAlert(true)
+      setShowModal(false);
+      setAlertType('error')
+      setAlertMessage(error.message)
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 2000);
     });
   };
 
@@ -142,7 +156,6 @@ function Payment() {
 
   const handleGetInsName = (name) => {
     setInsNameId(name);
-    console.log(name);
   };
 
   const handleGetGroupName = (name) => {
@@ -200,11 +213,26 @@ function Payment() {
 
   return (
     <div className='payment attendance'>
+      {showAlert && (
+          <Alert
+            sx={{
+              position: "display",
+              // width: "500px",
+            }}
+            variant="filled"
+            severity={alertType}
+          >
+            <AlertTitle>
+              {alertType === "success" ? "Success" : "Error"}
+            </AlertTitle>
+            {alertMessage == "Request failed with status code 400" ? "Modalni to'ldiring":alertMessage}
+          </Alert>
+        )}
       <div className="header">
+        <div className="items">
         <div className="a-count">
           <p>To'lov: {groupNameId && insNameId && payment && payment.count} dan {insNameId && groupNameId && payment.results ? payment.results.reduce((total, item) => item.monthly_payments.length, 0) : 0}</p>
         </div>
-        <div className="items">
           <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
           <GroupNumber handleGetGroupName={handleGetGroupName} handleGetGroupId={handleGetGroupId} insId={insId} toggleDropdown={toggleDropdown} activeDropdown={activeDropdown} />
           <div className="select-date">

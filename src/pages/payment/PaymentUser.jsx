@@ -19,7 +19,6 @@ function PaymentUser() {
 					}
 				});
 				setData(response.data);
-				console.log(response.data);
 				// setLoading(false);
 			} catch (error) {
 				console.error('Error fetching data:', error);

@@ -58,6 +58,7 @@
 	padding: 10px 20px;
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	width: 200px;
 }
 
 .attendance .header .a-count .organization-type {
@@ -72,6 +73,7 @@
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	overflow: hidden;
+	z-index: 100;
 }
 
 .attendance .header .a-count .organization-dropdown p {
@@ -85,6 +87,7 @@
 .attendance .header .items .type {
 	position: relative;
 	cursor: pointer;
+	width: 200px;
 }
 
 .attendance .header .items .type span {
@@ -101,6 +104,7 @@
 
 .attendance .header .items .type span i {
 	width: 10px;
+	padding-left: 10px;
 }
 
 .attendance .header .items .type .dropdown {
@@ -111,10 +115,12 @@
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	overflow: hidden;
+	z-index: 100;
 }
 
 .attendance .header .items .type.active .dropdown {
 	display: block;
+	z-index: 100;
 }
 
 .attendance .header .items .type .dropdown p {
@@ -136,6 +142,7 @@
 	cursor: pointer;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	transition: var(--primary-transition);
+	width: 210px;
 }
 
 .attendance .header .items .group-number span {
@@ -157,10 +164,12 @@
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	overflow: hidden;
+	z-index: 100;
 }
 
 .attendance .header .items .group-number.active .dropdown {
 	display: block;
+	z-index: 100;
 }
 
 .attendance .header .items .group-number .dropdown p {
@@ -175,6 +184,7 @@
 }
 
 .attendance .header .items .select-date input {
+	width: 200px;
 	border-radius: 10px;
 	padding: 10px 20px;
 	background-color: white;
@@ -190,6 +200,7 @@
 
 .attendance .header .items .select-date .dropdown {
 	position: absolute;
+	z-index: 100;
 }
 
 .attendance .selected-item-title {
@@ -201,35 +212,35 @@
 
 .attendance table {
 	margin-top: 20px;
-  width: 100%;
-  border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 .attendance thead th,
 tbody td {
-  padding: 10px;
-  border: 1px solid #ddd;
+	padding: 10px;
+	border: 1px solid #ddd;
 }
 
 .attendance thead th {
-  background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 .attendance tbody tr:hover {
-  background-color: #e0e0e0;
+	background-color: #e0e0e0;
 }
 
 .attendance tbody td select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  cursor: pointer;
+	width: 100%;
+	padding: 8px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	cursor: pointer;
 }
 
 .attendance tbody td span {
-  font-weight: bold;
-  color: blue;
+	font-weight: bold;
+	color: blue;
 }
 
 .attandance-save {
@@ -254,9 +265,14 @@ tbody td {
 
 /* user attendance */
 .user-attendance {
-	width: 100%;
 	height: 100vh;
 	padding: 20px;
+}
+
+.user-attendance .name {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .user-attendance .header {
@@ -295,78 +311,212 @@ tbody td {
 .user-attendance .name {
 	display: flex;
 	flex-direction: column;
-	padding: 30px 300px;
 	text-align: center;
+	padding: 0 80px;
+	margin-top: 30px;
+	overflow-x: scroll;
 }
 
+
 .user-attendance .name .title {
-	font-size: 32px;
+	font-size: 24px;
 	font-weight: 500;
 }
 
 .user-attendance table {
 	margin-top: 20px;
-  width: 100%;
-  border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 .user-attendance thead th,
 tbody td {
-  padding: 10px;
-  border: 1px solid #ddd;
+	padding: 10px;
+	border: 1px solid #ddd;
 }
 
 .user-attendance thead th {
-  background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 .user-attendance tbody td:hover {
-  background-color: #e0e0e0;
+	background-color: #e0e0e0;
 }
 
 .user-attendance tbody td select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  cursor: pointer;
+	width: 100%;
+	padding: 8px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	cursor: pointer;
 }
 
 .user-attendance tbody td span {
-  font-weight: bold;
-  color: blue;
+	font-weight: bold;
+	color: blue;
 }
 
 .reports {
 	width: 100%;
 	height: 100vh;
 	color: #ccc;
-	font-size: 36px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
+.user-calendar {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  background-color: #f2f2f2;
+}
+
+.calendar-header div {
+  padding: 10px;
+  font-weight: bold;
+}
+
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-week {
+  display: contents;
+}
+
+.calendar-day {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+@media (max-width: 600px) {
+  .calendar-header div,
+  .calendar-day {
+    padding: 5px;
+    font-size: 12px;
+  }
+}
+
 
 @media (max-width: 768px) {
-  thead {
-    display: none;
-  }
-  
-  tbody tr {
-    display: block;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-  }
+	thead {
+		display: none;
+	}
 
-  tbody td {
-    display: block;
-    text-align: left;
-  }
+	tbody tr {
+		display: block;
+		border: 1px solid #ddd;
+		margin-bottom: 10px;
+	}
 
-  tbody td:before {
-    content: attr(data-label);
-    font-weight: bold;
-    float: left;
-    text-transform: uppercase;
-  }
+	tbody td {
+		display: block;
+		text-align: left;
+	}
+
+	tbody td:before {
+		content: attr(data-label);
+		font-weight: bold;
+		float: left;
+		text-transform: uppercase;
+	}
+}
+
+@media (max-width: 1211px) {
+	.user-attendance .header {
+		width: 100%;
+		justify-content: start !important;
+		align-items: start !important;
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 945px) {
+	.header .items {
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 768px) {
+	.td-wrapper button {
+		width: 100% !important;
+	}
+}
+
+@media (max-width: 653px) {
+	.header .items {
+		width: 100%;
+		gap: 10px !important;
+	}
+
+	.header .items .a-count {
+		width: 100% !important;
+	}
+
+	.header .items .type {
+		width: 100% !important;
+	}
+
+	.header .items .group-number {
+		width: 100% !important;
+	}
+
+	.header .items .select-date {
+		width: 100% !important;
+		padding-top: 1px;
+	}
+
+	.header .items .select-date input {
+		width: 100% !important;
+	}
+
+	.selected-item-title {
+		flex-direction: column;
+		gap: 5px !important;
+		justify-content: start;
+		align-items: start;
+		text-align: start;
+	}
+
+	.user-attendance .header span,
+	input,
+	div {
+		width: 100%;
+	}
+
+	.date-range {
+		flex-direction: column;
+		align-items: start;
+		justify-content: start;
+	}
+	.date-range label {
+		display: flex;
+		justify-content: start;
+		justify-content: start !important;
+		gap: 5px;
+	}
+	.attendance .header .a-count .organization-dropdown {
+		top: 120px;
+		width: 100px;
+
+	}
+	.attendance .header .a-count .organization-dropdown p {
+		width: 100px;
+	}
+}
+
+@media (max-width: 400px) {
+	.attendance .header .a-count .organization-dropdown {
+		top: 175px;
+		width: 100px;
+		left: 230px;
+	}
 }

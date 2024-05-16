@@ -93,10 +93,10 @@ function Attendance({ }) {
       ) : (
         <>
           <div className="header">
+            <div className="items">
             <div className="a-count">
               <p>Davomat: {insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
             </div>
-            <div className="items">
               <InstitutionType
                 handleGetInsId={handleGetInsId}
                 handleGetInsName={handleGetInsName}

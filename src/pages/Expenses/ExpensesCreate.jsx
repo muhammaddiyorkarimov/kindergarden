@@ -27,7 +27,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         });
 
         setExpenses(response.data.results);
-        console.log(19, response.data.results);
       } catch (error) {
         console.log(error.message);
       }
@@ -66,7 +65,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         }
       );
       setData(response.data);
-      console.log("Post successful:", response.data);
       setComment("");
       setAmount("");
       setAlert(false)
@@ -81,7 +79,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
 
   const handleClick = (id) => {
     toggleDropdown("");
-    console.log(id);
     setType(id);
   };
   const toggleDropdown = (dropdown) => {

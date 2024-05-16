@@ -80,10 +80,10 @@ function Expenses() {
       ) : (
         <>
           <div className="header">
+            <div className="items">
             <div onClick={handleOpenExpense} className="a-count">
               <p>Harajat qo'shish</p>
             </div>
-            <div className="items">
               <ExpensesType
                 title="Harajat turi"
                 handleGetGroupId={handleGetGroupId}

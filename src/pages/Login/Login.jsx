@@ -91,7 +91,6 @@ function Login() {
   };
 
   const handleError = (error) => {
-    console.log(error);
     handleAlert("error", error.message);
   };
 
