@@ -10,19 +10,20 @@ import { ThreeDots } from 'react-loader-spinner';
 
 function Payment() {
 
+  // useNavigate
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
   const [data, setData] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState('');
   const [insId, setInsId] = useState(1);
   const [date, setDate] = useState(getCurrentDate());
-  const [year, setYear] = useState('2024');
-  const [month, setMonth] = useState('05');
+  const [year, setYear] = useState(date.slice(0, 4));
+  const [month, setMonth] = useState(date.slice(5));
   const [loading, setLoading] = useState(true);
-  const [insNameId, setInsNameId] = useState('');
+  const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
   const [payment, setPayment] = useState('');
-
-  // useNavigate
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     async function fetchData() {
@@ -54,6 +55,12 @@ function Payment() {
     navigate(`${location.pathname}?${queryParams.toString()}`, { replace: false });
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('insId', insId);
+    params.set('insNameId', insNameId);
+    navigate({ search: params.toString() });
+  }, [insId, insNameId, navigate]);
 
   // getCurrentDate
   function getCurrentDate() {

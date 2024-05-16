@@ -11,17 +11,20 @@ import "./Attendance.css";
 // components
 import InstitutionType from "../../components/InstitutionType";
 import GroupNumber from "../../components/GroupNumber";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Attendance({ inputValue, setFilterData }) {
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
   // useState
+  const [insId, setInsId] = useState(queryParams.get('insId') || 1);
+  const [groupId, setGroupId] = useState(queryParams.get('groupId') || 1);
+  const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
+  const [groupNameId, setGroupNameId] = useState(queryParams.get('groupNameId') || '');
   const [data, setData] = useState([]);
   const [attendance, setAttendance] = useState('')
   const [activeDropdown, setActiveDropdown] = useState("");
-  const [insId, setInsId] = useState(1);
-  const [insNameId, setInsNameId] = useState('');
-  const [groupId, setgroupId] = useState(1);
-  const [groupNameId, setGroupNameId] = useState('');
   const [date, setDate] = useState(getCurrentDate());
   const [loading, setLoading] = useState(true);
 
@@ -52,6 +55,14 @@ function Attendance({ inputValue, setFilterData }) {
 
     fetchData();
   }, [insId, groupId, date]);
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('insId', insId);
+    params.set('groupId', groupId);
+    params.set('insNameId', insNameId);
+    params.set('groupNameId', groupNameId);
+    navigate({ search: params.toString() });
+  }, [insId, groupId, insNameId, groupNameId, navigate]);
 
   // getCurrentDate
   function getCurrentDate() {
@@ -76,7 +87,7 @@ function Attendance({ inputValue, setFilterData }) {
   }
   // handle get group id
   const handleGetGroupId = (id) => {
-    setgroupId(id);
+    setGroupId(id);
   };
   const handleGetGroupName = (name) => {
     setGroupNameId(name);

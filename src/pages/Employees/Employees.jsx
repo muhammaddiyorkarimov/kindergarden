@@ -8,71 +8,93 @@ import axios from "../../service/Api";
 
 // components
 import InstitutionType from "../../components/InstitutionType";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Attendance({ }) {
-	// useState
-	const [data, setData] = useState([]);
-	const [attendance, setAttendance] = useState('')
-	const [activeDropdown, setActiveDropdown] = useState("");
-	const [insId, setInsId] = useState(1);
-	const [insNameId, setInsNameId] = useState('');
-	const [date, setDate] = useState(getCurrentDate());
-	const [loading, setLoading] = useState(true);
+  // useState
+  const [data, setData] = useState([]);
+  const [attendance, setAttendance] = useState('')
+  const [activeDropdown, setActiveDropdown] = useState("");
+  const [insId, setInsId] = useState(1);
+  const [insNameId, setInsNameId] = useState('');
+  const [date, setDate] = useState(getCurrentDate());
+  const [loading, setLoading] = useState(true);
 
-	// useNavigate
-	const navigate = useNavigate();
+  // useNavigate and useLocation
+  const navigate = useNavigate();
+  const location = useLocation();
 
-	useEffect(() => {
-		async function fetchData() {
-			try {
-				const response = await axios.get(`/users/attendance/list/?organization=${insId}&type=worker&date=${date}`, {
-					headers: {
-						Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
-					}
-				});
-				setData(response.data.results);
-				setAttendance(response.data);
-				setLoading(false);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-				setLoading(false);
-			}
-		}
+  const queryParams = new URLSearchParams(location.search);
 
-		fetchData();
-	}, [insId, date]);
-	// getCurrentDate
-	function getCurrentDate() {
-		const today = new Date();
-		const year = today.getFullYear();
-		const month = String(today.getMonth() + 1).padStart(2, "0");
-		const day = String(today.getDate()).padStart(2, "0");
-		return `${year}-${month}-${day}`;
-	}
+  useEffect(() => {
+    const insIdParam = queryParams.get('insId');
+    const insNameIdParam = queryParams.get('insNameId');
+    const dateParam = queryParams.get('date');
 
-	// toggle dropdown
-	const toggleDropdown = (dropdown) => {
-		setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
-	};
+    if (insIdParam) setInsId(insIdParam);
+    if (insNameIdParam) setInsNameId(insNameIdParam);
+    if (dateParam) setDate(dateParam);
+  }, []);
 
-	// handle get ins id
-	const handleGetInsId = (id) => {
-		setInsId(id);
-	};
-	const handleGetInsName = (name) => {
-		setInsNameId(name)
-	}
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(`/users/attendance/list/?organization=${insId}&type=worker&date=${date}`, {
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+          }
+        });
+        setData(response.data.results);
+        setAttendance(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    }
 
-	// handle name about
-	const handleNameAbout = (item) => {
-		navigate(`${item.id}`);
-	};
+    fetchData();
+  }, [insId, date]);
 
-	// handle get date
-	const handleGetDate = (e) => {
-		setDate(e.target.value);
-	};
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('insId', insId);
+    params.set('insNameId', insNameId);
+    params.set('date', date);
+    navigate({ search: params.toString() });
+  }, [insId, insNameId, date, navigate]);
+
+  // getCurrentDate
+  function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  // toggle dropdown
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
+  };
+
+  // handle get ins id
+  const handleGetInsId = (id) => {
+    setInsId(id);
+  };
+  const handleGetInsName = (name) => {
+    setInsNameId(name)
+  }
+
+  // handle name about
+  const handleNameAbout = (item) => {
+    navigate(`${item.id}`);
+  };
+
+  // handle get date
+  const handleGetDate = (e) => {
+    setDate(e.target.value);
+  };
 
 	return (
 		<div className="attendance">
@@ -114,7 +136,6 @@ function Attendance({ }) {
 							<tbody>
 								{insNameId ? (
 									data.map((item) => {
-										console.log(item.is_present);
 										return (
 											<tr key={item.id}>
 												<td className="name-click" onClick={() => handleNameAbout(item)}>
