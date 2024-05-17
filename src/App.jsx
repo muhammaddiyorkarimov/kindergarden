@@ -31,6 +31,8 @@ import UserSalary from "./pages/salary/UserSalary";
 import Reports from "./pages/Reports";
 import Income from "./pages/Income";
 import Statistics from "./pages/Statistics";
+import GroupNumber from "./components/GroupNumber";
+import InstitutionType from "./components/InstitutionType";
 
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
@@ -49,74 +51,58 @@ function App() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-  };  
+  };
 
-function handleClickLogOut() {
-  // handleLogout();
-}
+  function handleClickLogOut() {
+    // handleLogout();
+  }
 
-const handleInput = (value) => {
-  setInputValue(value.toLowerCase());
-};
+  const handleInput = (value) => {
+    setInputValue(value.toLowerCase());
+  };
 
-const routes = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/login" element={<Login handleLogin={handleLogin} />} />
-      <Route
-          element={
-            <PrivateRoutes inputValue={inputValue} filterData={filterData} />
-          }
-        >
-        <Route
-          path="/"
-          element={
-            <RootLayout
-              filterData={filterData}
-              inputValue={inputValue}
-              handleInput={handleInput}
-              handleClickLogOut={handleClickLogOut}
-            />
-          }
-        >
-          <Route index element={<Home />} />
-          <Route
-            path="/attendance"
-            element={
-              <Attendance
-                setFilterData={setFilterData}
-                inputValue={inputValue}
-              />
-            }
-          />
-          <Route path="/attendance/:id" element={<UserAttendance />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/salary" element={<Salary />} />
-          <Route path="/expenses" element={<Expenses />} />
-          <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />
-          <Route path="/attendance" element={<Attendance />} />
-          <Route path='/attendance/:id' element={<UserAttendance />} />
-          <Route path='/payment' element={<Payment />} />
-          <Route path='/payment/:id' element={<PaymentUser />} />
-          <Route path="/employees" element={<Employees />} />
-          <Route path='/employees/:id' element={<UserEmployees />} />
-          <Route path="/salary" element={<Salary />} />
-          <Route path='/salary/:id' element={<UserSalary />} />
-          <Route path="/income" element={<Income />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/statistics" element={<Statistics />} />
+  const routes = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+        <Route element={<PrivateRoutes inputValue={inputValue} filterData={filterData} />}>
+          <Route path="/" element={<RootLayout
+            filterData={filterData}
+            inputValue={inputValue}
+            handleInput={handleInput}
+            handleClickLogOut={handleClickLogOut} />}>
+            <Route index element={<Home />} />
+            <Route path="/attendance" element={<Attendance />}>
+              <Route path="organizations/list/" element={<InstitutionType />} />
+              <Route path="groups/list/" element={<GroupNumber />} />
+            </Route>
+            <Route path='/attendance/:id' element={<UserAttendance />} />
+            <Route path="/attendance/:id" element={<UserAttendance />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/salary" element={<Salary />} />
+            <Route path="/expenses" element={<Expenses />} />
+            <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />
+            <Route path='/payment' element={<Payment />} />
+            <Route path='/payment/:id' element={<PaymentUser />} />
+            <Route path="/employees" element={<Employees />} />
+            <Route path='/employees/:id' element={<UserEmployees />} />
+            <Route path="/salary" element={<Salary />} />
+            <Route path='/salary/:id' element={<UserSalary />} />
+            <Route path="/income" element={<Income />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/statistics" element={<Statistics />} />
+          </Route>
         </Route>
-      </Route>
-    </>
-  )
-);
+      </>
+    )
+  );
 
-return (
-  <div className="App">
-    <RouterProvider router={routes} />
-    <Outlet inputValue={inputValue} filterData={filterData} />
-  </div>
-);
+  return (
+    <div className="App">
+      <RouterProvider router={routes} />
+      <Outlet inputValue={inputValue} filterData={filterData} />
+    </div>
+  );
 }
 
 export default App;

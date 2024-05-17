@@ -7,29 +7,26 @@ import GroupNumber from "../../components/GroupNumber";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Attendance() {
-  const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
 
-  const [insId, setInsId] = useState('');
-  const [groupId, setGroupId] = useState('');
-  const [insNameId, setInsNameId] = useState('');
-  const [groupNameId, setGroupNameId] = useState('');
-  const [data, setData] = useState([]);
-  const [attendance, setAttendance] = useState(null);
+  const [insId, setInsId] = useState(localStorage.getItem('insId') || '');
+  const [groupId, setGroupId] = useState(localStorage.getItem('groupId') || '');
+  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
+  const [groupNameId, setGroupNameId] = useState(localStorage.getItem('groupNameId') || '');
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
+  const [attendance, setAttendance] = useState(JSON.parse(localStorage.getItem('attendance')) || null);
   const [activeDropdown, setActiveDropdown] = useState("");
-  const [date, setDate] = useState(getCurrentDate());
+  const [date, setDate] = useState(localStorage.getItem('date') || getCurrentDate());
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (queryParams.get('insId') && queryParams.get('groupId')) {
-  //     setInsId(queryParams.get('insId'));
-  //     setGroupId(queryParams.get('groupId'));
-  //     setInsNameId(queryParams.get('insNameId') || '');
-  //     setGroupNameId(queryParams.get('groupNameId') || '');
-  //   }
-  // }, [location.search]);
+  useEffect(() => {
+    localStorage.setItem('insId', insId);
+    localStorage.setItem('groupId', groupId);
+    localStorage.setItem('insNameId', insNameId);
+    localStorage.setItem('groupNameId', groupNameId);
+    localStorage.setItem('date', date);
+  }, [insId, groupId, insNameId, groupNameId, date]);
 
   useEffect(() => {
     if (insId && groupId) {
@@ -47,6 +44,10 @@ function Attendance() {
           setData(response.data.results);
           setAttendance(response.data);
           setLoading(false);
+
+          // Save data to local storage
+          localStorage.setItem('data', JSON.stringify(response.data.results));
+          localStorage.setItem('attendance', JSON.stringify(response.data));
         } catch (error) {
           console.error("Error fetching data:", error);
           setLoading(false);
@@ -55,15 +56,6 @@ function Attendance() {
       fetchData();
     }
   }, [insId, groupId, date]);
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams();
-  //   if (insId) params.set('insId', insId);
-  //   if (groupId) params.set('groupId', groupId);
-  //   if (insNameId) params.set('insNameId', insNameId);
-  //   if (groupNameId) params.set('groupNameId', groupNameId);
-  //   navigate({ search: params.toString() });
-  // }, [insId, groupId, insNameId, groupNameId, navigate]);
 
   function getCurrentDate() {
     const today = new Date();
@@ -161,7 +153,7 @@ function Attendance() {
                         <input
                           style={{ pointerEvents: 'none' }}
                           type="checkbox"
-                          checked={item.is_present}  // Changed to checked
+                          checked={item.is_present}
                           readOnly
                         />
                       </td>

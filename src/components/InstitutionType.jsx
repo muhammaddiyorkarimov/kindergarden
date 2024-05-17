@@ -1,6 +1,7 @@
 // InstitutionType.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../service/Api';
+import { Link } from 'react-router-dom';
 
 function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName }) {
 	const [institutions, setInstitutions] = useState([]);
@@ -34,7 +35,9 @@ function InstitutionType({ activeDropdown, toggleDropdown, handleGetInsId, handl
 				<div className="dropdown">
 					{institutions.map(institution => {
 						return (
-							<p key={institution.id} onClick={() => handleClick(institution)}>{institution.name}</p>
+							<Link to={`?organization=${institution.id}`} key={institution.id} onClick={() => handleClick(institution)}>
+								<p>{institution.name}</p>
+							</Link>
 						);
 					})}
 				</div>
