@@ -59,9 +59,7 @@ header .logo h1 {
 	font-weight: 500;
 }
 
-header .logo.active + .navbar {
-	/* width: 96%; */
-}
+
 
 .navbar .menu i {
 	color: white;
