@@ -49,17 +49,7 @@ function App() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      Cookies.remove("access_token");
-      Cookies.remove("refresh_token");
-    }, 10 * 60 * 1000);
-  
-    return () => clearInterval(interval); 
-  }, []);
-  
+  };  
 
 function handleClickLogOut() {
   // handleLogout();

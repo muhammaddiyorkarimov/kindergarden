@@ -10,48 +10,59 @@ function Attendance({ inputValue, setFilterData }) {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
-  const [insId, setInsId] = useState(queryParams.get('insId') || 1);
-  const [groupId, setGroupId] = useState(queryParams.get('groupId') || 1);
-  const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
-  const [groupNameId, setGroupNameId] = useState(queryParams.get('groupNameId') || '');
+  const [insId, setInsId] = useState('');
+  const [groupId, setGroupId] = useState('');
+  const [insNameId, setInsNameId] = useState('');
+  const [groupNameId, setGroupNameId] = useState('');
   const [data, setData] = useState([]);
-  const [attendance, setAttendance] = useState(null);  // Changed to null to handle initial loading state
+  const [attendance, setAttendance] = useState(null);
   const [activeDropdown, setActiveDropdown] = useState("");
   const [date, setDate] = useState(getCurrentDate());
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);  // Show loading spinner while fetching data
-        const response = await axios.get(
-          `/users/attendance/list/?organization=${insId}&educating_group=${groupId}&type=student&date=${date}`,
-          {
-            headers: {
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-            },
-          }
-        );
-        setData(response.data.results);
-        setAttendance(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
+    if (queryParams.get('insId') && queryParams.get('groupId')) {
+      setInsId(queryParams.get('insId'));
+      setGroupId(queryParams.get('groupId'));
+      setInsNameId(queryParams.get('insNameId') || '');
+      setGroupNameId(queryParams.get('groupNameId') || '');
     }
+  }, [location.search]);
 
-    fetchData();
+  useEffect(() => {
+    if (insId && groupId) {
+      async function fetchData() {
+        try {
+          setLoading(true);
+          const response = await axios.get(
+            `/users/attendance/list/?organization=${insId}&educating_group=${groupId}&type=student&date=${date}`,
+            {
+              headers: {
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
+              },
+            }
+          );
+          setData(response.data.results);
+          setAttendance(response.data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setLoading(false);
+        }
+      }
+
+      fetchData();
+    }
   }, [insId, groupId, date]);
 
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set('insId', insId);
-    params.set('groupId', groupId);
-    params.set('insNameId', insNameId);
-    params.set('groupNameId', groupNameId);
+    if (insId) params.set('insId', insId);
+    if (groupId) params.set('groupId', groupId);
+    if (insNameId) params.set('insNameId', insNameId);
+    if (groupNameId) params.set('groupNameId', groupNameId);
     navigate({ search: params.toString() });
   }, [insId, groupId, insNameId, groupNameId, navigate]);
 
@@ -89,7 +100,7 @@ function Attendance({ inputValue, setFilterData }) {
 
   useEffect(() => {
     const filtered = data.filter((item) =>
-      item.first_name.toLowerCase().includes(inputValue)
+      item.first_name.toLowerCase().includes(inputValue.toLowerCase())
     );
     setFilterData(filtered);
   }, [data, inputValue, setFilterData]);
@@ -108,9 +119,9 @@ function Attendance({ inputValue, setFilterData }) {
         <>
           <div className="header">
             <div className="items">
-            <div className="a-count">
-              <p>Davomat: {groupNameId && insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
-            </div>
+              <div className="a-count">
+                <p>Davomat: {groupNameId && insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
+              </div>
               <InstitutionType
                 handleGetInsId={handleGetInsId}
                 handleGetInsName={handleGetInsName}
@@ -158,7 +169,7 @@ function Attendance({ inputValue, setFilterData }) {
                         <input
                           style={{ pointerEvents: 'none' }}
                           type="checkbox"
-                          checked={item.is_present}  // Changed to checked
+                          checked={item.is_present}
                           readOnly
                         />
                       </td>

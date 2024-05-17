@@ -100,7 +100,7 @@ function UserAttendance() {
     <div className='attendance user-attendance'>
       <div className="header">
         <span>Davomat: {selectedMonthDaysCount} {calendar.length && `kundan dan ${data.total_attended_days}`}</span>
-        <input type="date" id="date" value={selectedDate} onChange={handleDateChange} />
+        <input type="month" id="date" defaultValue={selectedDate} onChange={handleDateChange} />
         <div className='selected-date'>{selectedDate}</div>
       </div>
       <div className="name">
