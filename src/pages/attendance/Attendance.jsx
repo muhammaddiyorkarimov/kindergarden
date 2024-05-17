@@ -6,9 +6,9 @@ import InstitutionType from "../../components/InstitutionType";
 import GroupNumber from "../../components/GroupNumber";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function Attendance({ inputValue, setFilterData }) {
+function Attendance() {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  // const queryParams = new URLSearchParams(location.search);
 
   const [insId, setInsId] = useState('');
   const [groupId, setGroupId] = useState('');
@@ -22,14 +22,14 @@ function Attendance({ inputValue, setFilterData }) {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (queryParams.get('insId') && queryParams.get('groupId')) {
-      setInsId(queryParams.get('insId'));
-      setGroupId(queryParams.get('groupId'));
-      setInsNameId(queryParams.get('insNameId') || '');
-      setGroupNameId(queryParams.get('groupNameId') || '');
-    }
-  }, [location.search]);
+  // useEffect(() => {
+  //   if (queryParams.get('insId') && queryParams.get('groupId')) {
+  //     setInsId(queryParams.get('insId'));
+  //     setGroupId(queryParams.get('groupId'));
+  //     setInsNameId(queryParams.get('insNameId') || '');
+  //     setGroupNameId(queryParams.get('groupNameId') || '');
+  //   }
+  // }, [location.search]);
 
   useEffect(() => {
     if (insId && groupId) {
@@ -52,19 +52,18 @@ function Attendance({ inputValue, setFilterData }) {
           setLoading(false);
         }
       }
-
       fetchData();
     }
   }, [insId, groupId, date]);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (insId) params.set('insId', insId);
-    if (groupId) params.set('groupId', groupId);
-    if (insNameId) params.set('insNameId', insNameId);
-    if (groupNameId) params.set('groupNameId', groupNameId);
-    navigate({ search: params.toString() });
-  }, [insId, groupId, insNameId, groupNameId, navigate]);
+  // useEffect(() => {
+  //   const params = new URLSearchParams();
+  //   if (insId) params.set('insId', insId);
+  //   if (groupId) params.set('groupId', groupId);
+  //   if (insNameId) params.set('insNameId', insNameId);
+  //   if (groupNameId) params.set('groupNameId', groupNameId);
+  //   navigate({ search: params.toString() });
+  // }, [insId, groupId, insNameId, groupNameId, navigate]);
 
   function getCurrentDate() {
     const today = new Date();
@@ -97,13 +96,6 @@ function Attendance({ inputValue, setFilterData }) {
   const handleNameAbout = (item) => {
     navigate(`${item.id}`);
   };
-
-  useEffect(() => {
-    const filtered = data.filter((item) =>
-      item.first_name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setFilterData(filtered);
-  }, [data, inputValue, setFilterData]);
 
   const handleGetDate = (e) => {
     setDate(e.target.value);
@@ -169,7 +161,7 @@ function Attendance({ inputValue, setFilterData }) {
                         <input
                           style={{ pointerEvents: 'none' }}
                           type="checkbox"
-                          checked={item.is_present}
+                          checked={item.is_present}  // Changed to checked
                           readOnly
                         />
                       </td>
