@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, handleGetGroupName }) {
   const [groups, setGroups] = useState([]);
   const [getInsId, setGetInsId] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,8 +18,10 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
         });
         setGetInsId(insId)
         setGroups(response.data);
+        setLoading(false);
       } catch (error) {
         console.log(error.message);
+        setLoading(false);
       }
     };
     fetchData();
@@ -36,7 +39,7 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
       <div className={`group-number ${activeDropdown === 'group-number' ? `active` : ''}`}>
         <span onClick={() => toggleDropdown('group-number')}>Guruh sinf raqami <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i></span>
         <div className="dropdown">
-          {groups.map(group => {
+          {loading ? <p>Yuklanmoqda...</p> : groups.map(group => {
             return (
               <Link to={`/attendance?organization=${getInsId}&educating_group=${group.id}`} key={group.id} onClick={() => handleClick(group)}>
                 <p>{group.name}</p>

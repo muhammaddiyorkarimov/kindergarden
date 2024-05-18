@@ -125,11 +125,6 @@ function Attendance() {
             </div>
           </div>
           <div className="body">
-            <div className="selected-item-title">
-              <span>Muassasa turi: {insNameId}</span>
-              <span>Guruh sinf raqami: {groupNameId}</span>
-              <span>Sana: {date}</span>
-            </div>
             <table>
               <thead>
                 <tr>

@@ -58,7 +58,7 @@
 	padding: 10px 20px;
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-	width: 200px;
+	min-width: 200px;
 }
 
 .attendance .header .a-count .organization-type {
@@ -87,7 +87,7 @@
 .attendance .header .items .type {
 	position: relative;
 	cursor: pointer;
-	width: 200px;
+	width: 100%;
 }
 
 .attendance .header .items .type span {
@@ -142,7 +142,8 @@
 	cursor: pointer;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	transition: var(--primary-transition);
-	width: 210px;
+	min-width: 210px;
+	width: 100%;
 }
 
 .attendance .header .items .group-number span {
@@ -184,7 +185,8 @@
 }
 
 .attendance .header .items .select-date input {
-	width: 200px;
+	min-width: 200px;
+	width: 100%;
 	border-radius: 10px;
 	padding: 10px 20px;
 	background-color: white;

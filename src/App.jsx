@@ -37,7 +37,7 @@ import InstitutionType from "./components/InstitutionType";
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
   return auth ? (
-    <Outlet inputValue={inputValue} filterData={filterData} />
+    <Outlet context={{ inputValue, filterData }} />
   ) : (
     <Navigate to="/login" />
   );
@@ -53,9 +53,11 @@ function App() {
     setIsLoggedIn(true);
   };
 
-  function handleClickLogOut() {
-    // handleLogout();
-  }
+  const handleClickLogOut = () => {
+    // handleLogout(); // This should be implemented or removed
+    Cookies.remove("access_token"); // Added this for logging out
+    setIsLoggedIn(false);
+  };
 
   const handleInput = (value) => {
     setInputValue(value.toLowerCase());
@@ -66,28 +68,31 @@ function App() {
       <>
         <Route path="/login" element={<Login handleLogin={handleLogin} />} />
         <Route element={<PrivateRoutes inputValue={inputValue} filterData={filterData} />}>
-          <Route path="/" element={<RootLayout
-            filterData={filterData}
-            inputValue={inputValue}
-            handleInput={handleInput}
-            handleClickLogOut={handleClickLogOut} />}>
+          <Route
+            path="/"
+            element={
+              <RootLayout
+                filterData={filterData}
+                inputValue={inputValue}
+                handleInput={handleInput}
+                handleClickLogOut={handleClickLogOut}
+              />
+            }
+          >
             <Route index element={<Home />} />
             <Route path="/attendance" element={<Attendance />}>
               <Route path="organizations/list/" element={<InstitutionType />} />
               <Route path="groups/list/" element={<GroupNumber />} />
             </Route>
-            <Route path='/attendance/:id' element={<UserAttendance />} />
             <Route path="/attendance/:id" element={<UserAttendance />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/salary" element={<Salary />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />
-            <Route path='/payment' element={<Payment />} />
-            <Route path='/payment/:id' element={<PaymentUser />} />
+            <Route path="/payment/:id" element={<PaymentUser />} />
             <Route path="/employees" element={<Employees />} />
-            <Route path='/employees/:id' element={<UserEmployees />} />
-            <Route path="/salary" element={<Salary />} />
-            <Route path='/salary/:id' element={<UserSalary />} />
+            <Route path="/employees/:id" element={<UserEmployees />} />
+            <Route path="/salary/:id" element={<UserSalary />} />
             <Route path="/income" element={<Income />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/statistics" element={<Statistics />} />
@@ -100,7 +105,6 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={routes} />
-      <Outlet inputValue={inputValue} filterData={filterData} />
     </div>
   );
 }
