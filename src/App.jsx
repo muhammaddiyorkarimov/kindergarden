@@ -28,7 +28,6 @@ import PaymentUser from "./pages/payment/PaymentUser";
 import Employees from "./pages/Employees/Employees";
 import UserEmployees from "./pages/Employees/UserEmployees";
 import UserSalary from "./pages/salary/UserSalary";
-import Reports from "./pages/Reports";
 import Income from "./pages/Income";
 import Statistics from "./pages/Statistics";
 import GroupNumber from "./components/GroupNumber";
@@ -94,7 +93,6 @@ function App() {
             <Route path="/employees/:id" element={<UserEmployees />} />
             <Route path="/salary/:id" element={<UserSalary />} />
             <Route path="/income" element={<Income />} />
-            <Route path="/reports" element={<Reports />} />
             <Route path="/statistics" element={<Statistics />} />
           </Route>
         </Route>

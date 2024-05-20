@@ -20,7 +20,7 @@ function Statistics() {
 	};
 
 	const averageTuitionFeeMapping = {
-		kindergartens: "Bog'chalar",
+		kindergarteners: "Bog'chalar",
 		school_students: "Maktab o'quvchilari",
 	};
 
@@ -50,6 +50,7 @@ function Statistics() {
 
 		fetchData();
 	}, []);
+
 
 	return (
 		<div className="attendance">

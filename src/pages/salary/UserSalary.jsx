@@ -61,40 +61,42 @@ function PaymentUser() {
 
 	return (
 		<div className='attendance payment-user'>
-			{loading ? <ThreeDots color="#222D32" /> : error ? <p>{error}</p> : <>
-			<div className="header">
-				<div className="select-date">
-					<span>Yilni kiriting: </span>
-					<input defaultValue={getCurrenDate()} type='number' onChange={handleGetDate} />
+			{loading ? <div className="loading">
+				<ThreeDots color="#222D32" />
+			</div> : error ? <p>{error}</p> : <>
+				<div className="header">
+					<div className="select-date">
+						<span>Yilni kiriting: </span>
+						<input defaultValue={getCurrenDate()} type='number' onChange={handleGetDate} />
+					</div>
 				</div>
-			</div>
-			<div className="body">
-				{data && data.monthly_payments && <table>
-					<thead>
-						<tr>
-							<th colSpan={4}>{data.first_name} {data.last_name} {data.middle_name}</th>
-						</tr>
-					</thead>
-					<tbody>
-						{data && data.monthly_payments && data.monthly_payments.length > 0 ? (
-							data.monthly_payments.map(payment => {
-								return (
-									<tr key={payment.id}>
-										<td>{getMonthName(new Date(payment.paid_month))}</td>
-										<td>{date}</td>
-										<td>{payment.amount}</td>
-										<td>
-											{payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}
-											{!payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }}/>}
-										</td>
-									</tr>
-								)
-							})
-						) : <tr><td className='user-payment-empty'>Hali to'lov qilinmagan</td></tr>}
-					</tbody>
-				</table>}
-				{data.length === 0 && <div className='loading'><ThreeDots color='#222D32' /></div>}
-			</div></>}
+				<div className="body">
+					{data && data.monthly_payments && <table>
+						<thead>
+							<tr>
+								<th colSpan={4}>{data.first_name} {data.last_name} {data.middle_name}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data && data.monthly_payments && data.monthly_payments.length > 0 ? (
+								data.monthly_payments.map(payment => {
+									return (
+										<tr key={payment.id}>
+											<td>{getMonthName(new Date(payment.paid_month))}</td>
+											<td>{date}</td>
+											<td>{payment.amount}</td>
+											<td>
+												{payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}
+												{!payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}
+											</td>
+										</tr>
+									)
+								})
+							) : <tr><td className='user-payment-empty'>Hali to'lov qilinmagan</td></tr>}
+						</tbody>
+					</table>}
+					{data.length === 0 && <div className='loading'><ThreeDots color='#222D32' /></div>}
+				</div></>}
 		</div>
 	)
 }

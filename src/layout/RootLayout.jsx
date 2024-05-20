@@ -1,12 +1,10 @@
-// hooks
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-// react router dom
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-import img from '../../public/images/user.png'
+import img from '../../public/images/user.png';
 
-function RootLayout({ inputValue, filterData, handleInput }) {
+function RootLayout() {
   const [activeDropdown, setActiveDropdown] = useState("");
   const [active, setActive] = useState(false);
 
@@ -23,11 +21,30 @@ function RootLayout({ inputValue, filterData, handleInput }) {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
-  function handleClickLogOut() {
-    Cookies.remove('access_token')
-    Cookies.remove('refresh_token')
-    navigate(`/login`)
-  } 
+  const handleClickLogOut = () => {
+    Cookies.remove('access_token');
+    Cookies.remove('refresh_token');
+    navigate(`/login`);
+  };
+
+  const handleClickOutside = (e) => {
+    if (window.innerWidth <= 460 && active) {
+      setActive(false);
+      setActiveDropdown("");
+    }
+  };
+
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (window.innerWidth <= 460 && !e.target.closest('.sidebar') && !e.target.closest('.menu')) {
+        handleClickOutside();
+      }
+    };
+    document.addEventListener("click", handleDocumentClick);
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [active]);
 
   return (
     <div className="root-layout">
@@ -40,10 +57,6 @@ function RootLayout({ inputValue, filterData, handleInput }) {
           <div onClick={closeSidebar} className="menu">
             <i className="fa-solid fa-bars"></i>
           </div>
-          {/* <div className="filters">
-            <input type="text" value={inputValue} onChange={(e) => handleInput(e.target.value)} />
-            <i className="fa-solid fa-magnifying-glass"></i>
-          </div> */}
           <div className="account">
             <img src={img} alt="user" />
             <span
@@ -77,7 +90,6 @@ function RootLayout({ inputValue, filterData, handleInput }) {
         </div>
       </header>
       <main>
-        {/* left sidebar */}
         <div className={!active ? `sidebar` : `sidebar active`}>
           <ul>
             <li className="children" onClick={() => toggleDropdown("children")}>
@@ -144,10 +156,6 @@ function RootLayout({ inputValue, filterData, handleInput }) {
             <li>
               <i className="sidebar-icon fa-solid fa-hand-holding-dollar"></i>
               <Link to="/income">Daromad</Link>
-            </li>
-            <li>
-              <i className="sidebar-icon fa-solid fa-book"></i>
-              <Link to="/reports">Hisobotlar</Link>
             </li>
             <li>
               <i className="sidebar-icon fa-solid fa-chart-line"></i>

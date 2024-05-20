@@ -123,7 +123,6 @@ function Attendance() {
 		window.location.reload();
 	};
 
-
 	return (
 		<div className="attendance">
 			{loading ? (
@@ -133,7 +132,9 @@ function Attendance() {
 							<button className="reload-btn" onClick={handleReload}>Reload</button>
 						</div>
 					) : (
-						<ThreeDots color="#222D32" />
+						<div className="loading">
+							<ThreeDots color="#222D32" />
+						</div>
 					)}
 				</div>
 			) : error ? (
@@ -147,11 +148,9 @@ function Attendance() {
 							<div className="a-count">
 								<p>
 									Davomat:{" "}
-									{groupNameId && insNameId && attendance
+									{attendance
 										? `${attendance.count} dan ${attendance.total_presences}`
-										: insNameId && attendance
-											? `${attendance.count} dan ${attendance.total_presences}`
-											: ""}
+										: ""}
 								</p>
 							</div>
 							<InstitutionType

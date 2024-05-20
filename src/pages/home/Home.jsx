@@ -73,17 +73,6 @@ function Home() {
 				</div>
 				<div className="card">
 					<div className="card-header">
-						<h2>Hisobotlar</h2>
-					</div>
-					<div className="card-body">
-						<Link to='/reports' className="first-element">
-							<img src={report} alt="report icon" />
-							<span>Hisobotlar</span>
-						</Link>
-					</div>
-				</div>
-				<div className="card">
-					<div className="card-header">
 						<h2>Statistika</h2>
 					</div>
 					<div className="card-body">

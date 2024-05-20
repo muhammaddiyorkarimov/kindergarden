@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import './Attendance.css';
+import { ThreeDots } from 'react-loader-spinner';
 
 function UserAttendance() {
   const [data, setData] = useState([]);
@@ -91,7 +92,9 @@ function UserAttendance() {
 
   return (
     <div className='attendance user-attendance'>
-      {loading ? <ThreeDots color="#222D32" /> : error ? <div className="error-message">{error}</div> : (
+      {loading ? <div className="loading">
+        <ThreeDots color="#222D32" />
+      </div> : error ? <div className="error-message">{error}</div> : (
         <>
           <div className="header">
             <span>Davomat: {selectedMonthDaysCount} {calendar.length && `kundan dan ${data.total_attended_days}`}</span>

@@ -83,10 +83,10 @@ function Income() {
 			) : (
 				<>
 					<div className="header">
+						<div className="items">
 						<div className="a-count">
 							Umumiy summa: {totalIncome}
 						</div>
-						<div className="items">
 							<div className="date-range">
 								<label htmlFor="fromDate">From:</label>
 								<input

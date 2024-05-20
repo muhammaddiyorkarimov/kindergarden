@@ -124,7 +124,9 @@ function Salary() {
               <button className="reload-btn" onClick={handleReload}>Reload</button>
             </div>
           ) : (
-            <ThreeDots color="#222D32" />
+            <div className="loading">
+              <ThreeDots color="#222D32" />
+            </div>
           )}
         </div>
       ) : error ? (

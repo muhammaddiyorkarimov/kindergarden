@@ -366,15 +366,6 @@ tbody td {
 	font-weight: bold;
 	color: blue;
 }
-
-.reports {
-	width: 100%;
-	height: 100vh;
-	color: #ccc;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
 .user-calendar {
   display: grid;
   gap: 5px;

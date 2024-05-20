@@ -6,6 +6,7 @@ import "./ExpensesCreate.css";
 import axios from "../../service/Api";
 import { Alert, AlertTitle } from "@mui/material";
 import Cookies from 'js-cookie';
+import { ThreeDots } from "react-loader-spinner";
 
 function ExpensesCreate({ handleGetGroupId, expenseId }) {
   const [data, setData] = useState([]);
@@ -26,8 +27,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         const token = Cookies.get('access_token');
         const response = await axios.get(`/accounting/expenses/list/`, {
           headers: {
-						Authorization: `Bearer ${token}`,
-					},
+            Authorization: `Bearer ${token}`,
+          },
         });
         setLoading(false)
         setExpenses(response.data.results);
@@ -40,7 +41,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
   }, [expenseId]);
 
   function Validation() {
-    return type && amount.length<=14 && comment;
+    return type && amount.length <= 14 && comment;
   }
 
   const handlePostData = async () => {
@@ -65,8 +66,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         PostData,
         {
           headers: {
-						Authorization: `Bearer ${token}`,
-					},
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setLoading(false)
@@ -107,72 +108,72 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
             width: "500px",
           }}
           variant="filled"
-          severity={alert?'error':'success'}
+          severity={alert ? 'error' : 'success'}
         >
-          <AlertTitle>{alert?'error':'success'}</AlertTitle>
+          <AlertTitle>{alert ? 'error' : 'success'}</AlertTitle>
           {alert ? "Iltimos to'ldiring" : "Muvaffaqiyatli saqlandi!"}
         </Alert>
       )}
-      {loading ? <ThreeDots color="#222D32" /> : error ? <p>{error}</p> : <>
-      <div className="expenses-title">
-        <p>Harajat qo'shish</p>
-      </div>
-      <div className="expenses-inputs">
-        <div
-          className={`select-expenses group-number ${
-            activeDropdown === "group-number" ? `active` : ""
-          }`}
-        >
-          <span onClick={() => toggleDropdown("group-number")}>
-            Harajat turi{" "}
-            <i
-              className={`fa-solid ${
-                activeDropdown === "group-number"
-                  ? "fa-chevron-down"
-                  : "fa-chevron-left"
-              }`}
-            ></i>
-          </span>
+      {loading ? <div className="loading">
+        <ThreeDots color="#222D32" />
+      </div> : error ? <p>{error}</p> : <>
+        <div className="expenses-title">
+          <p>Harajat qo'shish</p>
+        </div>
+        <div className="expenses-inputs">
           <div
-            style={{
-              display: activeDropdown === "group-number" ? "block" : "none",
-            }}
-            className={`dropdown drop-down`}
+            className={`select-expenses group-number ${activeDropdown === "group-number" ? `active` : ""
+              }`}
           >
-            <ul>
-              {uniqueExpenses.map((expense) => {
-                return (
-                  <li
-                    key={expense.id}
-                    onClick={() => handleClick(expense.type.id)}
-                  >
-                    {expense.type.name}
-                  </li>
-                );
-              })}
-            </ul>
+            <span onClick={() => toggleDropdown("group-number")}>
+              Harajat turi{" "}
+              <i
+                className={`fa-solid ${activeDropdown === "group-number"
+                    ? "fa-chevron-down"
+                    : "fa-chevron-left"
+                  }`}
+              ></i>
+            </span>
+            <div
+              style={{
+                display: activeDropdown === "group-number" ? "block" : "none",
+              }}
+              className={`dropdown drop-down`}
+            >
+              <ul>
+                {uniqueExpenses.map((expense) => {
+                  return (
+                    <li
+                      key={expense.id}
+                      onClick={() => handleClick(expense.type.id)}
+                    >
+                      {expense.type.name}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+          <div className="textarea">
+            <textarea
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+              placeholder="Izoh..."
+              className="text-area"
+            />
+          </div>
+          <div className="input-costs">
+            <input
+              onChange={(e) => setAmount(e.target.value)}
+              value={amount}
+              placeholder="Summani kiriting"
+              type="text"
+            />
           </div>
         </div>
-        <div className="textarea">
-          <textarea
-            onChange={(e) => setComment(e.target.value)}
-            value={comment}
-            placeholder="Izoh..."
-            className="text-area"
-          />
-        </div>
-        <div className="input-costs">
-          <input
-            onChange={(e) => setAmount(e.target.value)}
-            value={amount}
-            placeholder="Summani kiriting"
-            type="text"
-          />
-        </div>
-      </div>
-      <div className="btn-class">
-        <button onClick={handlePostData}>Saqlash</button>
-      </div></>}
+        <div className="btn-class">
+          <button onClick={handlePostData}>Saqlash</button>
+        </div></>}
     </div>
   );
 }
