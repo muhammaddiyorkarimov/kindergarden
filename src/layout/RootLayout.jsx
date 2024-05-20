@@ -82,7 +82,7 @@ function RootLayout({ inputValue, filterData, handleInput }) {
           <ul>
             <li className="children" onClick={() => toggleDropdown("children")}>
               <i className="sidebar-icon fa-solid fa-users"></i>
-              <Link>
+              <Link to='/'>
                 <div>
                   Bolalar{" "}
                   <i

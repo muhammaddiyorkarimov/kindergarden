@@ -1,54 +1,69 @@
-// GroupNumber.jsx
 import React, { useEffect, useState } from 'react';
 import axios from '../service/Api';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, handleGetGroupName }) {
   const [groups, setGroups] = useState([]);
-  const [getInsId, setGetInsId] = useState(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [groupNumber, setGroupNumber] = useState('Guruh sinf raqami');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = Cookies.get('access_token');
         const response = await axios.get(`/organizations/educating-groups/?organization=${insId}`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+            Authorization: `Bearer ${token}`,
           }
         });
-        setGetInsId(insId)
         setGroups(response.data);
         setLoading(false);
       } catch (error) {
-        console.log(error.message);
+        setError(error.message);
         setLoading(false);
       }
     };
-    fetchData();
+
+    if (insId) {
+      fetchData();
+    }
   }, [insId]);
 
+  useEffect(() => {
+    if (groups.length > 0) {
+      const query = new URLSearchParams(window.location.search);
+      const groupId = query.get('educating_group');
+      if (groupId) {
+        const selectedGroup = groups.find(group => group.id === parseInt(groupId));
+        if (selectedGroup) {
+          setGroupNumber(selectedGroup.name);
+        }
+      }
+    }
+  }, [groups]);
+
   const handleClick = (item) => {
-    toggleDropdown('')
-    handleGetGroupId(item.id)
-    handleGetGroupName(item.name)
+    toggleDropdown('');
+    handleGetGroupId(item.id);
+    handleGetGroupName(item.name);
+    setGroupNumber(item.name);
   }
 
-
   return (
-    <>
-      <div className={`group-number ${activeDropdown === 'group-number' ? `active` : ''}`}>
-        <span onClick={() => toggleDropdown('group-number')}>Guruh sinf raqami <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i></span>
-        <div className="dropdown">
-          {loading ? <p>Yuklanmoqda...</p> : groups.map(group => {
-            return (
-              <Link to={`/attendance?organization=${getInsId}&educating_group=${group.id}`} key={group.id} onClick={() => handleClick(group)}>
-                <p>{group.name}</p>
-              </Link>
-            );
-          })}
-        </div>
+    <div className={`group-number ${activeDropdown === 'group-number' ? 'active' : ''}`}>
+      <span onClick={() => toggleDropdown('group-number')}>
+        {groupNumber} <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
+      </span>
+      <div className="dropdown">
+        {loading ? <p>Yuklanmoqda...</p> : error ? <p>{error}</p> : groups.map(group => (
+          <Link to={`?organization=${insId}&educating_group=${group.id}`} key={group.id} onClick={() => handleClick(group)}>
+            <p>{group.name}</p>
+          </Link>
+        ))}
       </div>
-    </>
+    </div>
   );
 }
 

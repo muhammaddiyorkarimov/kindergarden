@@ -4,24 +4,30 @@ import { useParams } from 'react-router-dom';
 
 import './Employees.css'
 import '../attendance/Attendance.css'
+import Cookies from 'js-cookie';
 
 function UserAttendance() {
   const [data, setData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
   const [calendar, setCalendar] = useState([]);
   const { id } = useParams();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = Cookies.get('access_token');
         const response = await axios.get(`/users/${id}/monthly-attendance/?year=2024&month=05`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+            Authorization: `Bearer ${token}`,
           }
         });
+        setLoading(false)
         setData(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        setError('Error fetching data:' + error.message);
+        setLoading(false)
       }
     };
 
@@ -84,14 +90,15 @@ function UserAttendance() {
 
   const fetchData = async (year, month) => {
     try {
+      const token = Cookies.get('access_token');
       const response = await axios.get(`/users/${id}/monthly-attendance/?year=${year}&month=${month}`, {
         headers: {
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+          Authorization: `Bearer ${token}`,
         }
       });
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      ('Error fetching data:' + error.message);
     }
   };
 
@@ -107,44 +114,48 @@ function UserAttendance() {
 
   return (
     <div className='employees-user attendance user-attendance'>
-      <div className="header">
-        <span>Davomat: {selectedMonthDaysCount} {calendar.length && `kundan dan ${data.total_attended_days}`}</span>
-        <input type="month" id="date" defaultValue={selectedDate} onChange={handleDateChange} />
-      </div>
-      <div className="name">
-        {data.user && <h1 className="title">{data.user.first_name} {data.user.middle_name} {data.user.last_name}</h1>}
-        <div className="user-calender">
-          <div className="user-calendar">
-            <div className="calendar-header">
-              <div>Yak</div>
-              <div>Du</div>
-              <div>Se</div>
-              <div>Chor</div>
-              <div>Pay</div>
-              <div>Jum</div>
-              <div>Shan</div>
-            </div>
-            <div className="calendar-body">
-              {calendar.map((week, weekIndex) => (
-                <div className="calendar-week" key={weekIndex}>
-                  {week.map((day, dayIndex) => (
-                    <div
-                      className="calendar-day"
-                      key={dayIndex}
-                      style={{
-                        color: data.attended_days && data.attended_days.includes(day) ? 'green' : 'red',
-                      }}
-                    >
-                      {day}
+      {loading ? <ThreeDots color="#222D32" /> : error ? <div className="error-message">{error}</div> : (
+        <>
+          <div className="header">
+            <span>Davomat: {selectedMonthDaysCount} {calendar.length && `kundan dan ${data.total_attended_days}`}</span>
+            <input type="month" id="date" defaultValue={selectedDate} onChange={handleDateChange} />
+          </div>
+          <div className="name">
+            {data.user && <h1 className="title">{data.user.first_name} {data.user.middle_name} {data.user.last_name}</h1>}
+            <div className="user-calender">
+              <div className="user-calendar">
+                <div className="calendar-header">
+                  <div>Yak</div>
+                  <div>Du</div>
+                  <div>Se</div>
+                  <div>Chor</div>
+                  <div>Pay</div>
+                  <div>Jum</div>
+                  <div>Shan</div>
+                </div>
+                <div className="calendar-body">
+                  {calendar.map((week, weekIndex) => (
+                    <div className="calendar-week" key={weekIndex}>
+                      {week.map((day, dayIndex) => (
+                        <div
+                          className="calendar-day"
+                          key={dayIndex}
+                          style={{
+                            color: data.attended_days && data.attended_days.includes(day) ? 'green' : 'red',
+                          }}
+                        >
+                          {day}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>
-              ))}
+              </div>
+
             </div>
           </div>
-
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

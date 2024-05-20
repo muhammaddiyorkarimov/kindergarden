@@ -2,27 +2,31 @@ import { useEffect, useState } from 'react'
 import axios from '../../service/Api'
 import { useParams } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
+import Cookies from 'js-cookie';
 
 function PaymentUser() {
 
 	const [data, setData] = useState([])
 	const [date, setDate] = useState(getCurrenDate())
+	const [error, setError] = useState(null)
+	const [loading, setLoading] = useState(true)
 
 	const { id } = useParams()
 
 	useEffect(() => {
 		async function fetchData() {
+			const token = Cookies.get('access_token');
 			try {
 				const response = await axios.get(`accounting/monthly-payments/${id}/yearly/?year=${date}`, {
 					headers: {
-						Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+						Authorization: `Bearer ${token}`,
 					}
 				});
+				setLoading(false)
 				setData(response.data);
-				// setLoading(false);
 			} catch (error) {
-				console.error('Error fetching data:', error);
-				// setLoading(false);
+				setLoading(false)
+				setError('Error fetching data:' + error.message);
 			}
 		}
 
@@ -33,8 +37,8 @@ function PaymentUser() {
 	function getCurrenDate() {
 		const today = new Date();
 		const year = today.getFullYear();
-		const month = today.getMonth();
-		const day = today.getDay();
+		const month = today.getMonth() < 10 ? ("0" + today.getMonth()) : today.getMonth();
+		const day = today.getDay() < 10 ? ("0" + today.getMonth()) : today.getMonth();
 		return `${year}-${month}-${day}`;
 	}
 
@@ -57,6 +61,7 @@ function PaymentUser() {
 
 	return (
 		<div className='attendance payment-user'>
+			{loading ? <ThreeDots color="#222D32" /> : error ? <p>{error}</p> : <>
 			<div className="header">
 				<div className="select-date">
 					<span>Yilni kiriting: </span>
@@ -85,11 +90,11 @@ function PaymentUser() {
 									</tr>
 								)
 							})
-						) : <tr><td className='user-payment-empty'>Hali to'lov qilmagan</td></tr>}
+						) : <tr><td className='user-payment-empty'>Hali to'lov qilinmagan</td></tr>}
 					</tbody>
 				</table>}
 				{data.length === 0 && <div className='loading'><ThreeDots color='#222D32' /></div>}
-			</div>
+			</div></>}
 		</div>
 	)
 }

@@ -13,6 +13,7 @@ function Login() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+  const [error, setError] = useState(null)
   const passwordInputRef = useRef(null);
   const navigate = useNavigate();
   const timeoutRef = useRef(null);
@@ -35,7 +36,7 @@ function Login() {
           }, 2000);
           navigateToHome();
         } catch (error) {
-          console.error("Token refresh failed:", error);
+          setError("Token refresh failed:", error);
           handleAlert("error", "Token refresh failed!");
         }
       }
@@ -109,6 +110,7 @@ function Login() {
 
   return (
     <div className="container">
+      {error ? <p>{error} </p> : <>
       <div className="alert">
         {showAlert && (
           <Alert
@@ -165,7 +167,7 @@ function Login() {
           </div>
           <button onClick={handleLogin}>Kirish</button>
         </div>
-      </div>
+      </div></>}
     </div>
   );
 }

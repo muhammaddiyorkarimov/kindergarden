@@ -1,45 +1,75 @@
 import React, { useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import axios from "../../service/Api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ExpensesType from "../../components/ExpensesType";
+import Cookies from 'js-cookie';
 
 function Expenses() {
-  const [data, setData] = useState([]);
-  const [activeDropdown, setActiveDropdown] = useState("");
-  const [groupId, setGroupId] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('expensesData')) || []);
+  const [activeDropdown, setActiveDropdown] = useState("");
+  const [groupId, setGroupId] = useState(localStorage.getItem('expensesGroupId') || "");
+  const [loading, setLoading] = useState(true);
+  const [fromDate, setFromDate] = useState(localStorage.getItem('expensesFromDate') || "");
+  const [toDate, setToDate] = useState(localStorage.getItem('expensesToDate') || "");
+  const [error, setError] = useState(null);
+  const [selectedTypeName, setSelectedTypeName] = useState(localStorage.getItem('selectedTypeName') || "Hammasi");
 
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const type = queryParams.get('type') || "";
+    const name = type ? localStorage.getItem(`expenseTypeName_${type}`) || "Hammasi" : "Hammasi";
+
+    setGroupId(type);
+    setSelectedTypeName(name);
+
+    localStorage.setItem('expensesGroupId', type);
+    localStorage.setItem('selectedTypeName', name);
+
     async function fetchData() {
+      const token = Cookies.get('access_token');
       try {
-        const response = await axios.get(
-          `/accounting/expenses/list/?type=${groupId}`,
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-            },
-          }
-        );
+        setLoading(true);
+        const url = type && type !== "all"
+          ? `/accounting/expenses/list/?type=${type}`
+          : `/accounting/expenses/list/`;
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setData(response.data.results);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        setError("Error fetching data: " + error.message);
         setLoading(false);
       }
     }
 
     fetchData();
-  }, [groupId]);
+  }, [location.search]);
 
-  const handleGetGroupId = (id) => {
-    setGroupId(id);
+  useEffect(() => {
+    localStorage.setItem('expensesData', JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
+    localStorage.setItem('expensesFromDate', fromDate);
+  }, [fromDate]);
+
+  useEffect(() => {
+    localStorage.setItem('expensesToDate', toDate);
+  }, [toDate]);
+
+  const handleGetGroupId = (id, name) => {
+    setGroupId(id || "");
+    setSelectedTypeName(name || "Hammasi");
+    navigate(`?type=${id}`);
+    localStorage.setItem('expenseTypeName_' + id, name || "Hammasi");
   };
 
   const handleFromDateChange = (e) => {
@@ -60,10 +90,9 @@ function Expenses() {
 
   const filteredData = data.filter((item) => {
     if (!fromDate || !toDate) {
-      return true; // If either fromDate or toDate is not set, return all items
+      return true;
     }
 
-    // Parse dates and filter by range
     const itemDate = new Date(item.date);
     const filterFromDate = new Date(fromDate);
     const filterToDate = new Date(toDate);
@@ -77,20 +106,23 @@ function Expenses() {
         <div className="loading">
           <ThreeDots color="#222D32" />
         </div>
+      ) : error ? (
+        <div className="error">
+          <p>{error}</p>
+        </div>
       ) : (
         <>
           <div className="header">
             <div className="items">
-            <div onClick={handleOpenExpense} className="a-count">
-              <p>Harajat qo'shish</p>
-            </div>
+              <div onClick={handleOpenExpense} className="a-count">
+                <p>Harajat qo'shish</p>
+              </div>
               <ExpensesType
-                title="Harajat turi"
+                selectedTypeName={selectedTypeName}
                 handleGetGroupId={handleGetGroupId}
                 activeDropdown={activeDropdown}
                 toggleDropdown={toggleDropdown}
               />
-
               <div className="date-range">
                 <label htmlFor="fromDate">From:</label>
                 <input
@@ -123,7 +155,7 @@ function Expenses() {
               <tbody>
                 {filteredData.map((item) => (
                   <tr key={item.id}>
-                    <td className="name-click" onClick={() => handleNameAbout(item)}>
+                    <td className="name-click" onClick={() => handleOpenExpense(item)}>
                       {item.comment}
                     </td>
                     <td>{item.amount}</td>

@@ -5,57 +5,71 @@ import InstitutionType from '../../components/InstitutionType';
 import axios from '../../service/Api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
+import Cookies from 'js-cookie';
 
 function Salary() {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const query = new URLSearchParams(location.search);
+  const urlInsId = query.get('organization') || '';
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
   const [activeDropdown, setActiveDropdown] = useState('');
-  const [insId, setInsId] = useState(1);
+  const [insId, setInsId] = useState(localStorage.getItem('insId') || '');
   const [date, setDate] = useState(getCurrentDate());
-  const [year, setYear] = useState(date.slice(0, 4));
-  const [month, setMonth] = useState(date.slice(5));
+  const [year, setYear] = useState(localStorage.getItem('year') || date.slice(0, 4));
+  const [month, setMonth] = useState(localStorage.getItem('month') || date.slice(5));
   const [loading, setLoading] = useState(true);
-  const [insNameId, setInsNameId] = useState(queryParams.get('insNameId') || '');
-  const [payment, setPayment] = useState(null);
+  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
+  const [payment, setPayment] = useState(JSON.parse(localStorage.getItem('salary')) || null);
+  const [error, setError] = useState(null);
+  const [timeoutExpired, setTimeoutExpired] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('insId', insId);
+    localStorage.setItem('insNameId', insNameId);
+    localStorage.setItem('year', year);
+    localStorage.setItem('month', month);
+  }, [insId, insNameId, year, month]);
 
   useEffect(() => {
     async function fetchData() {
+      const token = Cookies.get('access_token');
+      const timeout = setTimeout(() => {
+        setTimeoutExpired(true);
+        setLoading(false);
+      }, 4000);
       try {
         const response = await axios.get(`accounting/monthly-payments/list/?organization=${insId}&type=worker&year=${year}&month=${month}`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+            Authorization: `Bearer ${token}`,
           }
         });
+
+        clearTimeout(timeout);
         setData(response.data.results);
         setPayment(response.data);
         setLoading(false);
+        localStorage.setItem('data', JSON.stringify(response.data.results));
+        localStorage.setItem('salary', JSON.stringify(response.data));
       } catch (error) {
-        console.error('Error fetching data:', error);
+        setError('Error fetching data:' + error.message);
         setLoading(false);
       }
     }
 
-    fetchData();
+    if (insId) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
   }, [insId, year, month]);
 
-  // update URL
-  const updateURL = (params) => {
-    const queryParams = new URLSearchParams(location.search);
-    Object.keys(params).forEach(key => {
-      queryParams.set(key, params[key]);
-    });
-    navigate(`${location.pathname}?${queryParams.toString()}`, { replace: false });
-  };
-
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set('insId', insId);
-    params.set('insNameId', insNameId);
-    navigate({ search: params.toString() });
-  }, [insId, insNameId, navigate]);
+    if (urlInsId) {
+      setInsId(urlInsId);
+    }
+  }, [urlInsId]);
 
   // getCurrentDate
   function getCurrentDate() {
@@ -89,7 +103,7 @@ function Salary() {
   // handle get ins id
   const handleGetInsId = (id) => {
     setInsId(id);
-    updateURL({ organization: id });
+    navigate(`/salary?organization=${id}`);
   };
 
   // showModalPayment
@@ -97,64 +111,83 @@ function Salary() {
     alert(comment === '' ? 'Izoh kiritilmagan' : comment);
   };
 
+  const handleReload = () => {
+    window.location.reload();
+  };
+
   return (
     <div className='payment attendance'>
-      <div className="header">
-        <div className="items">
-        <div className="a-count">
-          {payment && insNameId ? (
-            <p>To'lov: {payment.count} dan {payment.results.reduce((total, item) => item.monthly_payments.length, 0)}</p>
+      {loading ? (
+        <div className="loading">
+          {timeoutExpired ? (
+            <div>
+              <button className="reload-btn" onClick={handleReload}>Reload</button>
+            </div>
           ) : (
-            <p>Yuklanmoqda...</p>
+            <ThreeDots color="#222D32" />
           )}
         </div>
-          <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
-          <div className="select-date">
-            <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />
+      ) : error ? (
+        <div className="error">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <>
+          <div className="header">
+            <div className="items">
+              <div className="a-count">
+                {payment && insNameId ? (
+                  <p>To'lov: {payment.count} dan {payment.results.reduce((total, item) => item.monthly_payments.length, 0)}</p>
+                ) : (
+                  <p>Yuklanmoqda...</p>
+                )}
+              </div>
+              <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
+              <div className="select-date">
+                <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="body">
-        <div className="selected-item-title">
-          <span>Muassasa turi: {insNameId}</span>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Ism</th>
-              <th>Sana</th>
-              <th>To'langan Summa (izoh)</th>
-              <th>To'liq to'landimi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data && insNameId ? (
-              data.map(item => (
-                <tr key={item.id}>
-                  <td style={{ cursor: 'pointer' }} onClick={() => { handleNameAbout(item.id) }}>{item.first_name} {item.last_name}</td>
-                  <td>{date}</td>
-                  <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan"))}>
-                    {item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0)}
-                  </td>
-                  <td>
-                    {item.monthly_payments.reduce((total, payment) => (
-                      payment.is_completed ?
-                        <input type="checkbox" checked style={{ pointerEvents: 'none' }} /> :
-                        <input type="checkbox" style={{ pointerEvents: 'none' }} />
-                    ), "To'lanmagan")}
-                  </td>
+          <div className="body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ism</th>
+                  <th>Sana</th>
+                  <th>To'langan Summa (izoh)</th>
+                  <th>To'liq to'landimi</th>
                 </tr>
-              ))
-            ) : (
-              <tr><td style={{ textAlign: 'center' }} colSpan={5}>M'alumot topilmadi</td></tr>
-            )}
-            <tr>
-              {insNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{payment ? payment.total_payment : 0}</b></td>}
-            </tr>
-          </tbody>
-        </table>
-        {loading && <div style={{ marginTop: '150px' }} className='loading'><ThreeDots color='#222D32' /></div>}
-      </div>
+              </thead>
+              <tbody>
+                {data && insNameId ? (
+                  data.map(item => (
+                    <tr key={item.id}>
+                      <td style={{ cursor: 'pointer' }} onClick={() => { handleNameAbout(item.id) }}>{item.first_name} {item.last_name}</td>
+                      <td>{date}</td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan"))}>
+                        {item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0)}
+                      </td>
+                      <td>
+                        {item.monthly_payments.reduce((total, payment) => (
+                          payment.is_completed ?
+                            <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} /> :
+                            <input type="checkbox" style={{ pointerEvents: 'none' }} />
+                        ), "To'lanmagan")}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td style={{ textAlign: 'center' }} colSpan={5}>M'alumot topilmadi</td></tr>
+                )}
+                <tr>
+                  {insNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{payment ? payment.total_payment : 0}</b></td>}
+                </tr>
+              </tbody>
+            </table>
+            {loading && <div style={{ marginTop: '150px' }} className='loading'><ThreeDots color='#222D32' /></div>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

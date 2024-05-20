@@ -138,12 +138,15 @@
         grid-template-columns: auto;
         row-gap: 20px;
     }
+
     .expenses-inputs .select-expenses {
         width: 100%;
     }
+
     .expenses-inputs .textarea {
         width: 100%;
     }
+
     .expenses-inputs .input-costs {
         width: 100%;
     }

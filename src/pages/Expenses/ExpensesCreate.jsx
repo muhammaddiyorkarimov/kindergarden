@@ -5,6 +5,7 @@ import "./ExpensesCreate.css";
 //axios
 import axios from "../../service/Api";
 import { Alert, AlertTitle } from "@mui/material";
+import Cookies from 'js-cookie';
 
 function ExpensesCreate({ handleGetGroupId, expenseId }) {
   const [data, setData] = useState([]);
@@ -15,20 +16,24 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
   const [comment, setComment] = useState("");
   const [alert, setAlert] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true)
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = Cookies.get('access_token');
         const response = await axios.get(`/accounting/expenses/list/`, {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-          },
+						Authorization: `Bearer ${token}`,
+					},
         });
-
+        setLoading(false)
         setExpenses(response.data.results);
       } catch (error) {
-        console.log(error.message);
+        setError(error.message);
+        setLoading(false)
       }
     };
     fetchData();
@@ -49,6 +54,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     }
 
     try {
+      const token = Cookies.get('access_token');
       const PostData = {
         type: type,
         amount: parseFloat(amount),
@@ -59,11 +65,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         PostData,
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I",
-          },
+						Authorization: `Bearer ${token}`,
+					},
         }
       );
+      setLoading(false)
       setData(response.data);
       setComment("");
       setAmount("");
@@ -73,7 +79,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
         setShowAlert(false);
       }, 2000);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
+      setLoading(false);
     }
   };
 
@@ -91,10 +98,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     return expenses.find((expense) => expense.type.name === name);
   });
 
-  // const handleClose = () => {
-  //   setShowAlert(false);
-  // };
-
   return (
     <div className="attendance expenses-create">
       {showAlert && (
@@ -110,6 +113,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
           {alert ? "Iltimos to'ldiring" : "Muvaffaqiyatli saqlandi!"}
         </Alert>
       )}
+      {loading ? <ThreeDots color="#222D32" /> : error ? <p>{error}</p> : <>
       <div className="expenses-title">
         <p>Harajat qo'shish</p>
       </div>
@@ -137,7 +141,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
           >
             <ul>
               {uniqueExpenses.map((expense) => {
-                console.log(uniqueExpenses);
                 return (
                   <li
                     key={expense.id}
@@ -169,7 +172,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
       </div>
       <div className="btn-class">
         <button onClick={handlePostData}>Saqlash</button>
-      </div>
+      </div></>}
     </div>
   );
 }

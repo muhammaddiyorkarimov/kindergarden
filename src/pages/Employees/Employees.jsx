@@ -3,58 +3,77 @@ import { ThreeDots } from "react-loader-spinner";
 import axios from "../../service/Api";
 import InstitutionType from "../../components/InstitutionType";
 import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from 'js-cookie';
 
-function Attendance({ }) {
-  const [data, setData] = useState([]);
-  const [attendance, setAttendance] = useState(null); // Initialize to null
-  const [activeDropdown, setActiveDropdown] = useState("");
-  const [insId, setInsId] = useState(1);
-  const [insNameId, setInsNameId] = useState('');
-  const [date, setDate] = useState(getCurrentDate());
-  const [loading, setLoading] = useState(true);
-
+function Attendance() {
   const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+  const query = new URLSearchParams(location.search);
+  const urlInsId = query.get('organization') || '';
+
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('employeesData')) || []);
+  const [employees, setEmployees] = useState(JSON.parse(localStorage.getItem('employees')) || null);
+  const [activeDropdown, setActiveDropdown] = useState(urlInsId);
+  const [insId, setInsId] = useState(localStorage.getItem('employeesInsId') || 1);
+  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
+  const [date, setDate] = useState(localStorage.getItem('employeesDate') || getCurrentDate());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const insIdParam = queryParams.get('insId');
-    const insNameIdParam = queryParams.get('insNameId');
-    const dateParam = queryParams.get('date');
+    localStorage.setItem('employeesData', JSON.stringify(data));
+  }, [data]);
 
-    if (insIdParam) setInsId(insIdParam);
-    if (insNameIdParam) setInsNameId(insNameIdParam);
-    if (dateParam) setDate(dateParam);
-  }, []);
+  useEffect(() => {
+    localStorage.setItem('employees', JSON.stringify(employees));
+  }, [employees]);
+
+  useEffect(() => {
+    localStorage.setItem('employeesInsId', insId);
+  }, [insId]);
+
+  useEffect(() => {
+    localStorage.setItem('insNameId', insNameId);
+  }, [insNameId]);
+
+  useEffect(() => {
+    localStorage.setItem('employeesDate', date);
+  }, [date]);
+
 
   useEffect(() => {
     async function fetchData() {
+      const token = Cookies.get('access_token');
       try {
         setLoading(true);
         const response = await axios.get(`/users/attendance/list/?organization=${insId}&type=worker&date=${date}`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
+            Authorization: `Bearer ${token}`,
           }
         });
         setData(response.data.results);
-        setAttendance(response.data); // Update attendance state
+        setEmployees(response.data); // Update attendance state
         setLoading(false);
+        localStorage.setItem('employeesData', JSON.stringify(response.data.results));
+        localStorage.setItem('employees', JSON.stringify(response.data));
       } catch (error) {
-        console.error('Error fetching data:', error);
+        setError('Error fetching data: ' + error.message);
         setLoading(false);
       }
     }
 
-    fetchData();
+    if (insId) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
   }, [insId, date]);
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set('insId', insId);
-    params.set('insNameId', insNameId);
-    params.set('date', date);
-    navigate({ search: params.toString() });
-  }, [insId, insNameId, date, navigate]);
+    if (urlInsId) {
+      setInsId(urlInsId);
+    }
+  }, [urlInsId]);
 
   function getCurrentDate() {
     const today = new Date();
@@ -70,6 +89,7 @@ function Attendance({ }) {
 
   const handleGetInsId = (id) => {
     setInsId(id);
+    navigate(`/employees?organization=${id}`);
   };
 
   const handleGetInsName = (name) => {
@@ -90,17 +110,22 @@ function Attendance({ }) {
         <div className="loading">
           <ThreeDots color="#222D32" />
         </div>
+      ) : error ? (
+        <div className="error">
+          <p>{error}</p>
+        </div>
       ) : (
         <>
           <div className="header">
             <div className="items">
-            <div className="a-count">
-              <p>Davomat: {insNameId && attendance && `${attendance.count} dan ${attendance.total_presences}`}</p>
-            </div>
+              <div className="a-count">
+                <p>Davomat: {insNameId && employees && `${employees.count} dan ${employees.total_presences}`}</p>
+              </div>
               <InstitutionType
                 handleGetInsId={handleGetInsId}
                 handleGetInsName={handleGetInsName}
                 activeDropdown={activeDropdown}
+                insNameId={insNameId}
                 toggleDropdown={toggleDropdown}
               />
               <div className="select-date">
@@ -109,10 +134,6 @@ function Attendance({ }) {
             </div>
           </div>
           <div className="body">
-            <div className="selected-item-title">
-              <span>Muassasa turi: {insNameId}</span>
-              <span>Sana: {date}</span>
-            </div>
             <table>
               <thead>
                 <tr>

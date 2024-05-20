@@ -80,12 +80,12 @@ function App() {
             }
           >
             <Route index element={<Home />} />
-            <Route path="/attendance" element={<Attendance />}>
-              <Route path="organizations/list/" element={<InstitutionType />} />
+            <Route path="/attendance" element={<Attendance />}/>
+            <Route path="/attendance/:id" element={<UserAttendance />} />
+            <Route path="/payment" element={<Payment />}>
+              <Route path="monthly-payments/list" element={<InstitutionType />} />
               <Route path="groups/list/" element={<GroupNumber />} />
             </Route>
-            <Route path="/attendance/:id" element={<UserAttendance />} />
-            <Route path="/payment" element={<Payment />} />
             <Route path="/salary" element={<Salary />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />

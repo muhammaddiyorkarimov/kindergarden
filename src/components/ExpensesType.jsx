@@ -1,31 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../service/Api';
+import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 
-function ExpensesType({ activeDropdown, toggleDropdown, expenseId, handleGetGroupId, title }) {
+function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, selectedTypeName }) {
   const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = Cookies.get('access_token');
         const response = await axios.get(`/accounting/expenses/list/`, {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MTAwMDAwLCJpYXQiOjE3MTU0OTUyMDAsImp0aSI6ImNkMjk1MmNkMGYxMTQ2MDI4MDI4MzY0NmZkNTliNDBhIiwidXNlcl9pZCI6Mn0.jVbUeu07YwETmBh47hYakUjS5jCCO77lEVVMkDzor5I'
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         setExpenses(response.data.results);
-        console.log("Expenses fetched:", response.data.results);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching expenses:", error.message);
+        setError("Error fetching expenses:" + error.message);
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [expenseId]);
+  }, []);
 
-  const handleClick = (id) => {
+  const handleClick = (id, name) => {
     toggleDropdown('');
-    handleGetGroupId(id);
+    handleGetGroupId(id, name);
   };
 
   const uniqueExpenses = Array.from(
@@ -37,14 +43,19 @@ function ExpensesType({ activeDropdown, toggleDropdown, expenseId, handleGetGrou
   return (
     <div className={`group-number ${activeDropdown === 'group-number' ? 'active' : ''}`}>
       <span onClick={() => toggleDropdown('group-number')}>
-        {title} <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
+        {selectedTypeName} <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
       </span>
       {activeDropdown === 'group-number' && (
         <div className="dropdown">
+          <Link to="?type=all">
+            <p onClick={() => handleClick("", "Hammasi")}>Hammasi</p>
+          </Link>
           {uniqueExpenses.map((expense) => (
-            <p key={expense.id} onClick={() => handleClick(expense.type.id)}>
-              {expense.type.name}
-            </p>
+            <Link key={expense.type.id} to={`?type=${expense.type.id}`}>
+              <p onClick={() => handleClick(expense.type.id, expense.type.name)}>
+                {expense.type.name}
+              </p>
+            </Link>
           ))}
         </div>
       )}
