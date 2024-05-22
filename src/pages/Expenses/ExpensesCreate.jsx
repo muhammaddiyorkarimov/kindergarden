@@ -19,6 +19,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true)
+  const [ExpensesType, setExpensesType] = useState('Harajat turi')
 
 
   useEffect(() => {

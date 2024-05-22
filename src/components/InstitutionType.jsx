@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName }) {
   const [institutions, setInstitutions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [insType, setInsType] = useState(insNameId || 'Muassasa turi');
+  const [insType, setInsType] = useState(localStorage.getItem('selectedInstitution') || 'Muassasa turi');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -31,6 +31,7 @@ function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, han
   useEffect(() => {
     if (insNameId) {
       setInsType(insNameId);
+      localStorage.setItem('selectedInstitution', insNameId);
     }
   }, [insNameId]);
 
@@ -38,6 +39,7 @@ function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, han
     setInsType(item.name);
     handleGetInsId(item.id);
     handleGetInsName(item.name);
+    localStorage.setItem('selectedInstitution', item.name);
     toggleDropdown('');
   };
 

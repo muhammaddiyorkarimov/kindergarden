@@ -202,6 +202,13 @@
 	background-color: #45a049;
 }
 
+.get-comment {
+	padding: 20px;
+	background-color: #fefefe;
+	border-radius: 16px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+	color: #000;
+}
 
 /* Modal Overlay */
 .modal-overlay {
@@ -212,4 +219,22 @@
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 9998;
+}
+
+.mui-alert {
+	position: fixed;
+	z-index: 100;
+}
+
+@media (max-width: 460px) {
+	.mui-alert {
+		max-width: 400px;
+		width: 100%;
+	}
+}
+@media (min-width: 46px) {
+	.mui-alert {
+		max-width: 300px;
+		width: 100%;
+	}
 }
