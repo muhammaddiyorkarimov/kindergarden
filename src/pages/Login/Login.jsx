@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "../../service/Api";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Alert, AlertTitle } from "@mui/material";
 import img from '../../../public/images/school.png';
-import axios from "../../service/Api";
-
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -37,7 +36,8 @@ function Login() {
           }, 2000);
           navigateToHome();
         } catch (error) {
-          setError("Token refresh failed:", error);
+          console.error("Token refresh failed:", error);
+          setError("Token refresh failed");
           handleAlert("error", "Token refresh failed!");
         }
       }
@@ -66,6 +66,7 @@ function Login() {
       handleAlert("success", "Login successful!");
       navigateToHome();
     } catch (error) {
+      console.error("Login request failed:", error);
       handleError(error);
       timeoutRef.current = setTimeout(() => {
         if (!alert) {
