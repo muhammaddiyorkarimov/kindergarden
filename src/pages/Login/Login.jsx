@@ -25,7 +25,7 @@ function Login() {
       if (accessToken && refreshToken) {
         try {
           await axios.post(
-            "https://kindergarten-ms.techcraft.uz/api/v1/users/token/refresh/",
+            "http://0.0.0.0:8000/api/v1/users/token/refresh/",
             { refresh: refreshToken }
           );
           setShowAlert(true);
@@ -53,7 +53,7 @@ function Login() {
   const handleLoginFormSubmit = async () => {
     try {
       const response = await axios.post(
-        token,
+        "http://0.0.0.0:8000/api/v1/users/token/",
         {
           username: username,
           password: password,
