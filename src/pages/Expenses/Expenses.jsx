@@ -9,33 +9,34 @@ function Expenses() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('expensesData')) || []);
+  const [data, setData] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState("");
-  const [groupId, setGroupId] = useState(localStorage.getItem('expensesGroupId') || "");
+  const [groupId, setGroupId] = useState(new URLSearchParams(location.search).get('type') || "");
   const [loading, setLoading] = useState(true);
-  const [fromDate, setFromDate] = useState(localStorage.getItem('expensesFromDate') || "");
-  const [toDate, setToDate] = useState(localStorage.getItem('expensesToDate') || "");
+  const [fromDate, setFromDate] = useState(new URLSearchParams(location.search).get('fromDate') || "");
+  const [toDate, setToDate] = useState(new URLSearchParams(location.search).get('toDate') || "");
   const [error, setError] = useState(null);
-  const [selectedTypeName, setSelectedTypeName] = useState(localStorage.getItem('selectedTypeName') || "Hammasi");
+  const [selectedTypeName, setSelectedTypeName] = useState("Hammasi");
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const type = queryParams.get('type') || "";
-    const name = type ? localStorage.getItem(`expenseTypeName_${type}`) || "Hammasi" : "Hammasi";
+    const fromDateParam = queryParams.get('fromDate') || "";
+    const toDateParam = queryParams.get('toDate') || "";
+    const name = type ? "Hammasi" : "Hammasi";
 
     setGroupId(type);
     setSelectedTypeName(name);
-
-    localStorage.setItem('expensesGroupId', type);
-    localStorage.setItem('selectedTypeName', name);
+    setFromDate(fromDateParam);
+    setToDate(toDateParam);
 
     async function fetchData() {
       const token = Cookies.get('access_token');
       try {
         setLoading(true);
         const url = type && type !== "all"
-          ? `/accounting/expenses/list/?type=${type}`
-          : `/accounting/expenses/list/`;
+          ? `/accounting/expenses/list/?type=${type}&fromDate=${fromDateParam}&toDate=${toDateParam}`
+          : `/accounting/expenses/list/?fromDate=${fromDateParam}&toDate=${toDateParam}`;
         const response = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,31 +54,24 @@ function Expenses() {
     fetchData();
   }, [location.search]);
 
-  useEffect(() => {
-    localStorage.setItem('expensesData', JSON.stringify(data));
-  }, [data]);
-
-  useEffect(() => {
-    localStorage.setItem('expensesFromDate', fromDate);
-  }, [fromDate]);
-
-  useEffect(() => {
-    localStorage.setItem('expensesToDate', toDate);
-  }, [toDate]);
-
   const handleGetGroupId = (id, name) => {
-    setGroupId(id || "");
-    setSelectedTypeName(name || "Hammasi");
-    navigate(`?type=${id}`);
-    localStorage.setItem('expenseTypeName_' + id, name || "Hammasi");
+    const newId = id || "";
+    const newName = name || "Hammasi";
+    setGroupId(newId);
+    setSelectedTypeName(newName);
+    navigate(`?type=${newId}&fromDate=${fromDate}&toDate=${toDate}`);
   };
 
   const handleFromDateChange = (e) => {
-    setFromDate(e.target.value);
+    const newFromDate = e.target.value;
+    setFromDate(newFromDate);
+    navigate(`?type=${groupId}&fromDate=${newFromDate}&toDate=${toDate}`);
   };
 
   const handleToDateChange = (e) => {
-    setToDate(e.target.value);
+    const newToDate = e.target.value;
+    setToDate(newToDate);
+    navigate(`?type=${groupId}&fromDate=${fromDate}&toDate=${newToDate}`);
   };
 
   const handleOpenExpense = () => {

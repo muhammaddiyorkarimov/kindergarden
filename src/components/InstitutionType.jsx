@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName }) {
   const [institutions, setInstitutions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [insType, setInsType] = useState(localStorage.getItem('selectedInstitution') || 'Muassasa turi');
+  const [insType, setInsType] = useState('Muassasa turi');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -31,20 +31,31 @@ function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, han
   useEffect(() => {
     if (insNameId) {
       setInsType(insNameId);
-      localStorage.setItem('selectedInstitution', insNameId);
     }
   }, [insNameId]);
+
+  useEffect(() => {
+    if (institutions.length > 0) {
+      const query = new URLSearchParams(window.location.search);
+      const insId = query.get('organization');
+      if (insId) {
+        const selectedGroup = institutions.find(ins => ins.id === parseInt(insId));
+        if (selectedGroup) {
+          setInsType(selectedGroup.name);
+        }
+      }
+    }
+  }, [institutions]);
 
   const handleClick = (item) => {
     setInsType(item.name);
     handleGetInsId(item.id);
     handleGetInsName(item.name);
-    localStorage.setItem('selectedInstitution', item.name);
     toggleDropdown('');
   };
 
   return (
-    <div className={`type ${activeDropdown === 'type' ? `active` : ''}`}>
+    <div className={`type ${activeDropdown === 'type' ? 'active' : ''}`}>
       <span onClick={() => toggleDropdown('type')}>
         {insType} <i className={`fa-solid ${activeDropdown === 'type' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
       </span>

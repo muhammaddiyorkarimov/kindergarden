@@ -7,42 +7,47 @@ import '../attendance/Attendance.css'
 import Cookies from 'js-cookie';
 import { ThreeDots } from 'react-loader-spinner';
 
-function UserAttendance() {
+function UserEmployees() {
   const [data, setData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
   const [calendar, setCalendar] = useState([]);
   const { id } = useParams();
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('access_token');
-        const response = await axios.get(`/users/${id}/monthly-attendance/?year=2024&month=05`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        });
-        setLoading(false)
-        setData(response.data);
-      } catch (error) {
-        setError('Error fetching data:' + error.message);
-        setLoading(false)
-      }
-    };
-
-    fetchData();
+    fetchData(getCurrentYear(), getCurrentMonth());
   }, [id]);
 
   useEffect(() => {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const todayString = `${today.getFullYear()}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-    setSelectedDate(todayString);
-    displayMonthAndYear(todayString);
-  }, []);
+    displayMonthAndYear(selectedDate);
+  }, [selectedDate]);
+
+  const fetchData = async (year, month) => {
+    try {
+      const token = Cookies.get('access_token');
+      const response = await axios.get(`/users/${id}/monthly-attendance/?year=${year}&month=${month}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      setLoading(false);
+      setData(response.data);
+    } catch (error) {
+      setError('Error fetching data: ' + error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleDateChange = (event) => {
+    const inputDate = event.target.value;
+    setSelectedDate(inputDate);
+
+    const year = inputDate.substring(0, 4);
+    const month = inputDate.substring(5, 7);
+
+    fetchData(year, month);
+  };
 
   const displayMonthAndYear = (inputDate) => {
     const selectedDate = new Date(inputDate);
@@ -78,37 +83,22 @@ function UserAttendance() {
     setCalendar(newCalendar);
   };
 
-  const handleDateChange = (event) => {
-    const inputDate = event.target.value;
-    setSelectedDate(inputDate);
-    displayMonthAndYear(inputDate);
-
-    const year = inputDate.substring(0, 4);
-    const month = inputDate.substring(5, 7);
-
-    fetchData(year, month);
-  };
-
-  const fetchData = async (year, month) => {
-    try {
-      const token = Cookies.get('access_token');
-      const response = await axios.get(`/users/${id}/monthly-attendance/?year=${year}&month=${month}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-      setData(response.data);
-    } catch (error) {
-      ('Error fetching data:' + error.message);
-    }
-  };
-
-  // getCurrentDate
+  // getCurrentDate function
   function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1);
+    const month = String((today.getMonth() + 1)).padStart(2, '0');
     return `${year}-${month}`;
+  }
+
+  // getCurrentYear function
+  function getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  // getCurrentMonth function
+  function getCurrentMonth() {
+    return String(new Date().getMonth() + 1).padStart(2, '0');
   }
 
   const selectedMonthDaysCount = calendar.reduce((acc, week) => acc + week.filter(day => !!day).length, 0);
@@ -163,4 +153,4 @@ function UserAttendance() {
   );
 }
 
-export default UserAttendance;
+export default UserEmployees;

@@ -20,7 +20,6 @@ const PaymentModal = ({ selectedUser, hideModal, year, month, showAlert }) => {
       comment: comment,
     };
 
-    console.log(requestData);
 
     try {
       const response = await axios.post('/accounting/monthly-payments/create/', requestData, {
@@ -33,7 +32,6 @@ const PaymentModal = ({ selectedUser, hideModal, year, month, showAlert }) => {
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'An error occurred';
-      console.error('Error response:', error.response?.data);
       showAlert('error', errorMessage);
       hideModal();
     }

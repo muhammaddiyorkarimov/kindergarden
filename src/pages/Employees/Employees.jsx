@@ -5,41 +5,21 @@ import InstitutionType from "../../components/InstitutionType";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-function Attendance() {
+function Employees() {
   const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const urlInsId = query.get('organization') || '';
+  const urlDate = query.get('date') || getCurrentDate();
 
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('employeesData')) || []);
-  const [employees, setEmployees] = useState(JSON.parse(localStorage.getItem('employees')) || null);
+  const [data, setData] = useState([]);
+  const [employees, setEmployees] = useState(null);
   const [activeDropdown, setActiveDropdown] = useState(urlInsId);
-  const [insId, setInsId] = useState(localStorage.getItem('employeesInsId') || 1);
-  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
-  const [date, setDate] = useState(localStorage.getItem('employeesDate') || getCurrentDate());
+  const [insId, setInsId] = useState(urlInsId || '');
+  const [insNameId, setInsNameId] = useState('');
+  const [date, setDate] = useState(urlDate);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    localStorage.setItem('employeesData', JSON.stringify(data));
-  }, [data]);
-
-  useEffect(() => {
-    localStorage.setItem('employees', JSON.stringify(employees));
-  }, [employees]);
-
-  useEffect(() => {
-    localStorage.setItem('employeesInsId', insId);
-  }, [insId]);
-
-  useEffect(() => {
-    localStorage.setItem('insNameId', insNameId);
-  }, [insNameId]);
-
-  useEffect(() => {
-    localStorage.setItem('employeesDate', date);
-  }, [date]);
-
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,10 +32,8 @@ function Attendance() {
           }
         });
         setData(response.data.results);
-        setEmployees(response.data); // Update attendance state
+        setEmployees(response.data);
         setLoading(false);
-        localStorage.setItem('employeesData', JSON.stringify(response.data.results));
-        localStorage.setItem('employees', JSON.stringify(response.data));
       } catch (error) {
         setError('Error fetching data: ' + error.message);
         setLoading(false);
@@ -89,7 +67,7 @@ function Attendance() {
 
   const handleGetInsId = (id) => {
     setInsId(id);
-    navigate(`/employees?organization=${id}`);
+    navigate(`/employees?organization=${id}&type=worker&date=${date}`);
   };
 
   const handleGetInsName = (name) => {
@@ -101,7 +79,9 @@ function Attendance() {
   };
 
   const handleGetDate = (e) => {
-    setDate(e.target.value);
+    const newDate = e.target.value;
+    setDate(newDate);
+    navigate(`/employees?organization=${insId}&type=worker&date=${newDate}`);
   };
 
   return (
@@ -119,7 +99,7 @@ function Attendance() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                <p>Davomat: {insNameId && employees && `${employees.count} dan ${employees.total_presences}`}</p>
+                <p>Davomat: {employees && `${employees.count} dan ${employees.total_presences}`}</p>
               </div>
               <InstitutionType
                 handleGetInsId={handleGetInsId}
@@ -143,7 +123,7 @@ function Attendance() {
                 </tr>
               </thead>
               <tbody>
-                {insNameId ? (
+                {data.length > 0 ? (
                   data.map((item) => (
                     <tr key={item.id}>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
@@ -154,7 +134,7 @@ function Attendance() {
                         <input
                           style={{ pointerEvents: 'none' }}
                           type="checkbox"
-                          checked={item.is_present} // Changed to checked
+                          checked={item.is_present}
                           readOnly
                         />
                       </td>
@@ -163,11 +143,6 @@ function Attendance() {
                 ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
-            {data.length === 0 && (
-              <div className="loading">
-                <p>Ma'lumot topilmadi</p>
-              </div>
-            )}
           </div>
         </>
       )}
@@ -175,4 +150,4 @@ function Attendance() {
   );
 }
 
-export default Attendance;
+export default Employees;

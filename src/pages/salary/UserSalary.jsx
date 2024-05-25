@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 
-function PaymentUser() {
+function UserSalary() {
 
 	const [data, setData] = useState([])
 	const [date, setDate] = useState(getCurrenDate())
@@ -101,4 +101,4 @@ function PaymentUser() {
 	)
 }
 
-export default PaymentUser
+export default UserSalary

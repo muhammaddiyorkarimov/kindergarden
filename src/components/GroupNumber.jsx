@@ -26,10 +26,8 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
       }
     };
 
-    if (insId) {
-      fetchData();
-    }
-  }, [insId]);
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (groups.length > 0) {

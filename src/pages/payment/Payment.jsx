@@ -16,12 +16,12 @@ function Payment() {
   const query = new URLSearchParams(location.search);
   const urlInsId = query.get('organization') || '';
   const urlGroupId = query.get('educating_group') || '';
-  const [insId, setInsId] = useState(urlInsId || localStorage.getItem('insId') || '');
-  const [groupId, setGroupId] = useState(urlGroupId || localStorage.getItem('groupId') || '');
-  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
-  const [groupNameId, setGroupNameId] = useState(localStorage.getItem('groupNameId') || '');
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
-  const [date, setDate] = useState(localStorage.getItem('date') || getCurrentDate());
+  const [insId, setInsId] = useState(urlInsId);
+  const [groupId, setGroupId] = useState(urlGroupId);
+  const [insNameId, setInsNameId] = useState('');
+  const [groupNameId, setGroupNameId] = useState('');
+  const [data, setData] = useState([]);
+  const [date, setDate] = useState(getCurrentDate());
   const [year, setYear] = useState(date.slice(0, 4));
   const [month, setMonth] = useState(date.slice(5));
   const [loading, setLoading] = useState(true);
@@ -37,17 +37,8 @@ function Payment() {
   const token = Cookies.get('access_token');
 
   useEffect(() => {
-    localStorage.setItem('insId', insId);
-    localStorage.setItem('groupId', groupId);
-    localStorage.setItem('insNameId', insNameId);
-    localStorage.setItem('groupNameId', groupNameId);
-    localStorage.setItem('date', date);
-  }, [insId, groupId, insNameId, groupNameId, date]);
-
-  useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
         const response = await axios.get(
           `accounting/monthly-payments/list/?organization=${insId}&educating_group=${groupId}&type=student&year=${year}&month=${month}`,
           {
@@ -57,19 +48,16 @@ function Payment() {
           }
         );
         setData(response.data.results);
-        setLoading(false);
-        localStorage.setItem('data', JSON.stringify(response.data.results));
       } catch (error) {
-        console.error('Error fetching data:', error.message);
-        setError(error);
+        setError(error.message);
+      } finally {
         setLoading(false);
       }
     }
 
-    if (insId) {
-      fetchData();
-    }
-  }, [insId, groupId, year, month]);
+    fetchData();
+
+  }, [insId, groupId, year, month, token]);
 
   useEffect(() => {
     setInsId(urlInsId);
@@ -84,7 +72,6 @@ function Payment() {
       setShowAlert(false);
     }, 2000);
   };
-
 
   function getCurrentDate() {
     const today = new Date();
@@ -113,7 +100,6 @@ function Payment() {
   const handleNameAbout = (id) => {
     navigate(`${id}`);
     const selectedUser = data.find(user => user.id === id);
-    // navigate(`/payment-user/${id}`, { state: { selectedUser } });
   };
 
   const handleGetInsName = (name) => {
@@ -175,7 +161,7 @@ function Payment() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                {(insNameId && data) ? (
+                {(data.length > 0) ? (
                   <p>To'lov: {data.length} dan {insNameId && data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
                 ) : (
                   <p>To'lov: {data.length} dan {insNameId && groupNameId && data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
@@ -200,13 +186,13 @@ function Payment() {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {data.length == 0 ? (
                   <tr>
-                    <td colSpan={5}>
-                      <h3>Yuklanmoqda...</h3>
+                    <td style={{textAlign: 'center'}} colSpan={5}>
+                      Ma'lumot topilmadi
                     </td>
                   </tr>
-                ) : data && insNameId && groupNameId ? (
+                ) : data.length > 0 ? (
                   data.map(item => (
                     <tr key={item.id}>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
@@ -245,11 +231,10 @@ function Payment() {
                   </tr>
                 )}
                 <tr>
-                  {insNameId && groupNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0)}</b></td>}
+                  {data.length > 0 && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0)}</b></td>}
                 </tr>
               </tbody>
             </table>
-            {data.length === 0 && <div style={{ marginTop: '150px' }} className='loading'><p>Ma'lumot topilmadi</p></div>}
           </div>
           {showModal && (
             <PaymentModal

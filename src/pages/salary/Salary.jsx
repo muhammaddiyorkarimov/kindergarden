@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-// components
 import InstitutionType from '../../components/InstitutionType';
-// axios
 import axios from '../../service/Api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
@@ -12,25 +10,20 @@ function Salary() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const urlInsId = query.get('organization') || '';
+  const urlYear = query.get('year') || '';
+  const urlMonth = query.get('month') || '';
 
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')) || []);
+  const [data, setData] = useState([]);
   const [activeDropdown, setActiveDropdown] = useState('');
-  const [insId, setInsId] = useState(localStorage.getItem('insId') || '');
+  const [insId, setInsId] = useState(urlInsId || '');
   const [date, setDate] = useState(getCurrentDate());
-  const [year, setYear] = useState(localStorage.getItem('year') || date.slice(0, 4));
-  const [month, setMonth] = useState(localStorage.getItem('month') || date.slice(5));
+  const [year, setYear] = useState(urlYear || date.slice(0, 4));
+  const [month, setMonth] = useState(urlMonth || date.slice(5));
   const [loading, setLoading] = useState(true);
-  const [insNameId, setInsNameId] = useState(localStorage.getItem('insNameId') || '');
-  const [payment, setPayment] = useState(JSON.parse(localStorage.getItem('salary')) || null);
+  const [insNameId, setInsNameId] = useState('');
+  const [payment, setPayment] = useState(null);
   const [error, setError] = useState(null);
   const [timeoutExpired, setTimeoutExpired] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('insId', insId);
-    localStorage.setItem('insNameId', insNameId);
-    localStorage.setItem('year', year);
-    localStorage.setItem('month', month);
-  }, [insId, insNameId, year, month]);
 
   useEffect(() => {
     async function fetchData() {
@@ -50,10 +43,8 @@ function Salary() {
         setData(response.data.results);
         setPayment(response.data);
         setLoading(false);
-        localStorage.setItem('data', JSON.stringify(response.data.results));
-        localStorage.setItem('salary', JSON.stringify(response.data));
       } catch (error) {
-        setError('Error fetching data:' + error.message);
+        setError('Error fetching data: ' + error.message);
         setLoading(false);
       }
     }
@@ -66,12 +57,16 @@ function Salary() {
   }, [insId, year, month]);
 
   useEffect(() => {
-    if (urlInsId) {
-      setInsId(urlInsId);
-    }
-  }, [urlInsId]);
+    const query = new URLSearchParams(location.search);
+    const newInsId = query.get('organization') || '';
+    const newYear = query.get('year') || getCurrentDate().slice(0, 4);
+    const newMonth = query.get('month') || getCurrentDate().slice(5);
 
-  // getCurrentDate
+    setInsId(newInsId);
+    setYear(newYear);
+    setMonth(newMonth);
+  }, [location.search]);
+
   function getCurrentDate() {
     const today = new Date();
     const year = today.getFullYear();
@@ -79,15 +74,16 @@ function Salary() {
     return `${year}-${month}`;
   }
 
-  // handle get date
   const handleGetDate = (e) => {
     const newDate = e.target.value;
+    const newYear = newDate.slice(0, 4);
+    const newMonth = newDate.slice(5);
     setDate(newDate);
-    setYear(newDate.slice(0, 4));
-    setMonth(newDate.slice(5));
+    setYear(newYear);
+    setMonth(newMonth);
+    navigate(`/salary?organization=${insId}&year=${newYear}&month=${newMonth}`);
   };
 
-  // handle name about
   const handleNameAbout = (id) => {
     navigate(`${id}`);
   };
@@ -100,13 +96,11 @@ function Salary() {
     setActiveDropdown(activeDropdown === dropdown ? '' : dropdown);
   };
 
-  // handle get ins id
   const handleGetInsId = (id) => {
     setInsId(id);
-    navigate(`/salary?organization=${id}`);
+    navigate(`/salary?organization=${id}&type=worker&year=${year}&month=${month}`);
   };
 
-  // showModalPayment
   const handleOpenComment = (comment) => {
     alert(comment === '' ? 'Izoh kiritilmagan' : comment);
   };
@@ -138,15 +132,11 @@ function Salary() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                {payment && insNameId ? (
-                  <p>To'lov: {payment.count} dan {payment.results.reduce((total, item) => item.monthly_payments.length, 0)}</p>
-                ) : (
-                  <p>Yuklanmoqda...</p>
-                )}
+                <p>To'lov: {payment && `${payment.count} dan ${payment.results ? payment.results.reduce((total, item) => item.monthly_payments.length, 0) : 0}`}</p>
               </div>
               <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
               <div className="select-date">
-                <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />
+                <input defaultValue={`${year}-${month}`} type='month' onChange={handleGetDate} />
               </div>
             </div>
           </div>
@@ -161,20 +151,20 @@ function Salary() {
                 </tr>
               </thead>
               <tbody>
-                {data && insNameId ? (
+                {data ? (
                   data.map(item => (
                     <tr key={item.id}>
                       <td style={{ cursor: 'pointer' }} onClick={() => { handleNameAbout(item.id) }}>{item.first_name} {item.last_name}</td>
                       <td>{date}</td>
-                      <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan"))}>
-                        {item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0)}
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan") : "To'lov qilinmagan")}>
+                        {item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0}
                       </td>
                       <td>
-                        {item.monthly_payments.reduce((total, payment) => (
+                        {item.monthly_payments ? item.monthly_payments.reduce((total, payment) => (
                           payment.is_completed ?
                             <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} /> :
                             <input type="checkbox" style={{ pointerEvents: 'none' }} />
-                        ), "To'lanmagan")}
+                        ), "To'lanmagan") : "To'lanmagan"}
                       </td>
                     </tr>
                   ))
