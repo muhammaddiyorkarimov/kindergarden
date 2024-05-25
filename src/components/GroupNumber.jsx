@@ -3,7 +3,7 @@ import axios from '../service/Api';
 import { Link, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, handleGetGroupName }) {
+function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, handleGetGroupName, date, type }) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [groupNumber, setGroupNumber] = useState('Guruh sinf raqami');
@@ -26,8 +26,12 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
       }
     };
 
-    fetchData();
-  }, []);
+    if (insId) {
+      fetchData();
+    } else {
+      fetchData();
+    }
+  }, [insId]);
 
   useEffect(() => {
     if (groups.length > 0) {
@@ -56,7 +60,7 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
       </span>
       <div className="dropdown">
         {loading ? <p>Yuklanmoqda...</p> : error ? <p>{error}</p> : groups.map(group => (
-          <Link to={`?organization=${insId}&educating_group=${group.id}`} key={group.id} onClick={() => handleClick(group)}>
+          <Link to={`?organization=${insId}&educating_group=${group.id}&${type}&${date}`} key={group.id} onClick={() => handleClick(group)}>
             <p>{group.name}</p>
           </Link>
         ))}

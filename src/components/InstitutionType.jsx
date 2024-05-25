@@ -3,11 +3,12 @@ import axios from '../service/Api';
 import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName }) {
+function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, handleGetInsId, handleGetInsName, date, type }) {
   const [institutions, setInstitutions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [insType, setInsType] = useState('Muassasa turi');
   const [error, setError] = useState(null);
+  const [getDate, setGetDate] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +62,7 @@ function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, han
       </span>
       <div className="dropdown">
         {loading ? <p>Yuklanmoqda...</p> : error ? <p>{error}</p> : institutions.map(institution => (
-          <Link to={`?organization=${institution.id}`} key={institution.id} onClick={() => handleClick(institution)}>
+          <Link to={`?organization=${institution.id}&${type}&${date}`} key={institution.id} onClick={() => handleClick(institution)}>
             <p>{institution.name}</p>
           </Link>
         ))}

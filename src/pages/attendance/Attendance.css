@@ -534,7 +534,7 @@ tbody td {
 
 @media (max-width: 400px) {
 	.loading {
-		margin-left: 110px;
+		margin-left: 50px;
 	}
 	.attendance .header .a-count .organization-dropdown {
 		top: 175px;

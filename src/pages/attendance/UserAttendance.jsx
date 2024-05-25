@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../service/Api';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import './Attendance.css';
@@ -11,21 +11,28 @@ function UserAttendance() {
   const [selectedDate, setSelectedDate] = useState('');
   const [calendar, setCalendar] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const queryDate = query.get('date') || getCurrentDate();
+    setSelectedDate(queryDate);
+    displayMonthAndYear(queryDate);
+
+    const year = queryDate.substring(0, 4);
+    const month = queryDate.substring(5, 7);
+    fetchData(year, month);
+  }, [id, location.search]);
+
+  const getCurrentDate = () => {
     const today = new Date();
     const month = today.getMonth() + 1;
     const day = today.getDate();
-    const todayString = `${today.getFullYear()}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-    setSelectedDate(todayString);
-    displayMonthAndYear(todayString);
-
-    const year = today.getFullYear();
-    const monthString = month < 10 ? '0' + month : month;
-    fetchData(year, monthString);
-  }, [id]);
+    return `${today.getFullYear()}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+  };
 
   const displayMonthAndYear = (inputDate) => {
     const selectedDate = new Date(inputDate);
@@ -69,6 +76,7 @@ function UserAttendance() {
     const month = inputDate.substring(5, 7);
 
     fetchData(year, month);
+    navigate(`${location.pathname}?date=${inputDate}`);
   };
 
   const fetchData = async (year, month) => {
@@ -80,10 +88,10 @@ function UserAttendance() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setLoading(false)
+      setLoading(false);
       setData(response.data);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       setError('Error fetching data: ' + error.message);
     }
   };
@@ -92,13 +100,17 @@ function UserAttendance() {
 
   return (
     <div className='attendance user-attendance'>
-      {loading ? <div className="loading">
-        <ThreeDots color="#222D32" />
-      </div> : error ? <div className="error-message">{error}</div> : (
+      {loading ? (
+        <div className="loading">
+          <ThreeDots color="#222D32" />
+        </div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
         <>
           <div className="header">
             <span>Davomat: {selectedMonthDaysCount} {calendar.length && `kundan dan ${data.total_attended_days}`}</span>
-            <input type="month" id="date" defaultValue={selectedDate} onChange={handleDateChange} />
+            <input type="month" id="date" value={selectedDate} onChange={handleDateChange} />
             <div className='selected-date'>{selectedDate}</div>
           </div>
           <div className="name">

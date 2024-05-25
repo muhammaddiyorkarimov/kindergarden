@@ -21,12 +21,13 @@ function Employees() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
-    async function fetchData() {
+    const fetchAttendanceData = async (url) => {
       const token = Cookies.get('access_token');
       try {
         setLoading(true);
-        const response = await axios.get(`/users/attendance/list/?organization=${insId}&type=worker&date=${date}`, {
+        const response = await axios.get(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           }
@@ -39,11 +40,12 @@ function Employees() {
         setLoading(false);
       }
     }
-
     if (insId) {
-      fetchData();
+      const url = `/users/attendance/list/?organization=${insId}&type=worker&date=${date}`;
+      fetchAttendanceData(url);
     } else {
-      setLoading(false);
+      const url = `/users/attendance/list/?type=worker&date=${date}`;
+      fetchAttendanceData(url);
     }
   }, [insId, date]);
 
@@ -52,6 +54,12 @@ function Employees() {
       setInsId(urlInsId);
     }
   }, [urlInsId]);
+  
+  useEffect(() => {
+    if (!query.get('date')) {
+      navigate(`/employees?${insId ? `organization=${insId}&` : ''}&type=worker&date=${date}`);
+    }
+  }, []);
 
   function getCurrentDate() {
     const today = new Date();
@@ -107,6 +115,8 @@ function Employees() {
                 activeDropdown={activeDropdown}
                 insNameId={insNameId}
                 toggleDropdown={toggleDropdown}
+                type="worker"
+                date={date}
               />
               <div className="select-date">
                 <input type="date" onChange={handleGetDate} value={date} />

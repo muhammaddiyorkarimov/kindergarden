@@ -69,6 +69,10 @@ function Income() {
     fetchData();
   }, [fromDate, toDate]);
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   return (
     <div className="attendance">
       {loading ? (
@@ -84,21 +88,19 @@ function Income() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                Umumiy summa: {totalIncome}
+                Umumiy summa: {formatNumberWithCommas(totalIncome)}
               </div>
               <div className="date-range">
                 <label htmlFor="fromDate">From:</label>
                 <input
                   type="date"
                   id="fromDate"
-                  value={fromDate}
                   onChange={handleFromDateChange}
                 />
                 <label htmlFor="toDate">To:</label>
                 <input
                   type="date"
                   id="toDate"
-                  value={toDate}
                   onChange={handleToDateChange}
                 />
               </div>
@@ -117,7 +119,7 @@ function Income() {
                 {data.monthly_incomes.length ? (data.monthly_incomes.map(item => (
                   <tr key={uuidv4()}>
                     <td>{item.organization_type === 'school' ? "Maktab to'lovlari" : "Bog'cha to'lovlari"}</td>
-                    <td>{item.total}</td>
+                    <td>{formatNumberWithCommas(item.total)}</td>
                     <td>{item.year_month}</td>
                   </tr>
                 ))) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>Ma'lumot topilmadi</td></tr>}

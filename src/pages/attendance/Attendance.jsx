@@ -63,6 +63,9 @@ function Attendance() {
         ? `/users/attendance/list/?${insId ? `organization=${insId}&` : ''}educating_group=${groupId}&type=student&date=${date}`
         : `/users/attendance/list/?organization=${insId}&type=student&date=${date}`;
       fetchAttendanceData(url);
+    } else {
+      const url = `/users/attendance/list/?type=student&date=${date}`;
+      fetchAttendanceData(url);
     }
   }, [insId, groupId, date]);
 
@@ -79,6 +82,12 @@ function Attendance() {
       setDate(urlDate);
     }
   }, [urlInsId, urlGroupId, urlDate]);
+
+  useEffect(() => {
+    if (!query.get('date')) {
+      navigate(`/attendance?${insId ? `organization=${insId}&` : ''}${groupId ? `educating_group=${groupId}&` : ''}&type=student&date=${date}`);
+    }
+  }, []);
 
   function getCurrentDate() {
     const today = new Date();
@@ -162,8 +171,10 @@ function Attendance() {
                 insNameId={insNameId}
                 activeDropdown={activeDropdown}
                 toggleDropdown={toggleDropdown}
+                type="student"
+                date={date}
               />
-              {<GroupNumber
+              <GroupNumber
                 handleGetGroupId={handleGetGroupId}
                 handleGetGroupName={handleGetGroupName}
                 insId={insId}
@@ -171,7 +182,9 @@ function Attendance() {
                 groupNameId={groupNameId}
                 activeDropdown={activeDropdown}
                 toggleDropdown={toggleDropdown}
-              />}
+                type="student"
+                date={date}
+              />
               <div className="select-date">
                 <input type="date" onChange={handleGetDate} value={date} />
               </div>

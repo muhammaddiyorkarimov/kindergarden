@@ -58,6 +58,9 @@ function UserSalary() {
 		return monthNames[monthIndex];
 	}
 
+	function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
 	return (
 		<div className='attendance payment-user'>
@@ -74,7 +77,7 @@ function UserSalary() {
 					{data && data.monthly_payments && <table>
 						<thead>
 							<tr>
-								<th colSpan={4}>{data.first_name} {data.last_name} {data.middle_name}</th>
+								<th colSpan={5}>{data.first_name} {data.last_name} {data.middle_name}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -83,8 +86,9 @@ function UserSalary() {
 									return (
 										<tr key={payment.id}>
 											<td>{getMonthName(new Date(payment.paid_month))}</td>
-											<td>{date}</td>
-											<td>{payment.amount}</td>
+											<td>{payment.paid_month}</td>
+											<td>Izoh: {payment.comment}</td>
+											<td>{formatNumberWithCommas(payment.amount)}</td>
 											<td>
 												{payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}
 												{!payment.is_completed && <input type="checkbox" defaultChecked={payment.is_completed} style={{ pointerEvents: 'none' }} />}

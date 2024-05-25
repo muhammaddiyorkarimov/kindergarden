@@ -67,7 +67,7 @@ function Statistics() {
 					</thead>
 					<tbody>
 						<tr>
-							<th colSpan={2}>O'rtacha davomat</th>
+							<th colSpan={2}>O'tan oygi o'rtacha davomat</th>
 						</tr>
 						{data.average_attendance && Object.entries(data.average_attendance).map(([key, value]) => (
 							<tr key={key}>
@@ -76,7 +76,7 @@ function Statistics() {
 							</tr>
 						))}
 						<tr>
-							<th colSpan={2}>O'rtacha ish haqi</th>
+							<th colSpan={2}>O'tgan oygi o'rtacha ish haqi</th>
 						</tr>
 						{data.average_salary && Object.entries(data.average_salary).map(([key, value]) => (
 							<tr key={key}>
@@ -85,7 +85,7 @@ function Statistics() {
 							</tr>
 						))}
 						<tr>
-							<th colSpan={2}>O'rtacha o'qish to'lovi</th>
+							<th colSpan={2}>O'tgan oygi o'rtacha o'qish to'lovi</th>
 						</tr>
 						{data.average_tuition_fee && Object.entries(data.average_tuition_fee).map(([key, value]) => (
 							<tr key={key}>

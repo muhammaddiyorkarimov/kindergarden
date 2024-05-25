@@ -3,12 +3,13 @@ import axios from '../service/Api';
 import Cookies from 'js-cookie';
 import { Alert, AlertTitle } from '@mui/material';
 
-const UpdatePaymentModal = ({ selectedUser, hideModal, year, month, showAlert }) => {
+const UpdatePaymentModal = ({ selectedUser, hideModal, year, month, showAlert,  isCompleted }) => {
   const [amount, setAmount] = useState('');
   const [paidFull, setPaidFull] = useState(false);
   const [comment, setComment] = useState('');
   const [getFirstPayment, setGetFirstPayment] = useState(0);
   const [userId2, setUserId2] = useState(1);
+
 
   const token = Cookies.get('access_token');
 
@@ -24,7 +25,7 @@ const UpdatePaymentModal = ({ selectedUser, hideModal, year, month, showAlert })
   const handleSubmit2 = () => {
     const updatedData = {
       user: userId2,
-      amount: parseInt(amount) + getFirstPayment,
+      amount: parseFloat(amount),
       is_completed: paidFull,
       comment: comment,
     };
@@ -45,6 +46,10 @@ const UpdatePaymentModal = ({ selectedUser, hideModal, year, month, showAlert })
     });
   };
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   return (
     <div className="modal" onClick={hideModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -54,14 +59,16 @@ const UpdatePaymentModal = ({ selectedUser, hideModal, year, month, showAlert })
             <span>Sana: {year} yil {month} uchun</span>
           </div>
           <span>To'lov miqdorini kiriting</span>
-          <input type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <input type="text" placeholder={isCompleted ? `To'langan summa ${formatNumberWithCommas(getFirstPayment)}` : `Avvalgi summa ${formatNumberWithCommas(getFirstPayment)}`} value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div className="comment">
           <span>Izoh</span>
           <textarea onChange={(e) => setComment(e.target.value)}></textarea>
         </div>
         <div className="paid-full">
+          {isCompleted ? <input type="checkbox" checked={true} onChange={(e) => setPaidFull(e.target.checked)} /> : 
           <input type="checkbox" checked={paidFull} onChange={(e) => setPaidFull(e.target.checked)} />
+          }
           <span>To'liq to'landi</span>
         </div>
         <button className='edit-btn' onClick={handleSubmit2}>Yangilash</button>

@@ -16,15 +16,17 @@ function Payment() {
   const query = new URLSearchParams(location.search);
   const urlInsId = query.get('organization') || '';
   const urlGroupId = query.get('educating_group') || '';
+  const urlDate = query.get('date') || getCurrentDate();
+
   const [insId, setInsId] = useState(urlInsId);
   const [groupId, setGroupId] = useState(urlGroupId);
   const [insNameId, setInsNameId] = useState('');
   const [groupNameId, setGroupNameId] = useState('');
   const [data, setData] = useState([]);
-  const [date, setDate] = useState(getCurrentDate());
+  const [date, setDate] = useState(urlDate);
   const [year, setYear] = useState(date.slice(0, 4));
   const [month, setMonth] = useState(date.slice(5));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -33,14 +35,22 @@ function Payment() {
   const [alertType, setAlertType] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
   const [activeDropdown, setActiveDropdown] = useState('');
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  useEffect(() => {
+    if (!query.get('date')) {
+      navigate(`?${insId ? `organization=${insId}&` : ''}${groupId ? `educating_group=${groupId}&` : ''}date=${date}`);
+    }
+  }, []);
 
   const token = Cookies.get('access_token');
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchAttendanceData = async (url) => {
       try {
-        const response = await axios.get(
-          `accounting/monthly-payments/list/?organization=${insId}&educating_group=${groupId}&type=student&year=${year}&month=${month}`,
+        setLoading(true);
+        setError(null);
+        const response = await axios.get(url,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -48,15 +58,21 @@ function Payment() {
           }
         );
         setData(response.data.results);
+        setLoading(false);
       } catch (error) {
         setError(error.message);
-      } finally {
         setLoading(false);
       }
     }
-
-    fetchData();
-
+    if (insId || groupId) {
+      const url = groupId
+        ? `accounting/monthly-payments/list/?${insId ? `organization=${insId}&` : ''}educating_group=${groupId}&type=student&year=${year}&month=${month}`
+        : `accounting/monthly-payments/list/?${insId ? `organization=${insId}&` : ''}&type=student&year=${year}&month=${month}`
+        fetchAttendanceData(url);
+      } else {
+        const url = `accounting/monthly-payments/list/?type=student&year=${year}&month=${month}`
+        fetchAttendanceData(url);
+    }
   }, [insId, groupId, year, month, token]);
 
   useEffect(() => {
@@ -95,6 +111,8 @@ function Payment() {
     setDate(newDate);
     setYear(newDate.slice(0, 4));
     setMonth(newDate.slice(5));
+
+    navigate(`?${insId ? `organization=${insId}&` : ''}${groupId ? `educating_group=${groupId}&` : ''}date=${newDate}`);
   };
 
   const handleNameAbout = (id) => {
@@ -128,12 +146,18 @@ function Payment() {
   const showModalPayment = (user) => {
     setShowModal(true);
     setSelectedUser(user);
+    setIsCompleted(user.monthly_payments.some(payment => payment.is_completed));
   };
 
   const showModalUpdate = (user) => {
     setShowModal2(true);
     setSelectedUser(user);
+    setIsCompleted(user.monthly_payments.some(payment => payment.is_completed));
   };
+
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   return (
     <div className='payment attendance'>
@@ -161,14 +185,12 @@ function Payment() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                {(data.length > 0) ? (
-                  <p>To'lov: {data.length} dan {insNameId && data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
-                ) : (
-                  <p>To'lov: {data.length} dan {insNameId && groupNameId && data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
-                )}
+                <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
               </div>
-              <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
-              <GroupNumber handleGetGroupName={handleGetGroupName} handleGetGroupId={handleGetGroupId} insId={insId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
+              <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="student"
+                date={date} />
+              <GroupNumber handleGetGroupName={handleGetGroupName} handleGetGroupId={handleGetGroupId} insId={insId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="student"
+                date={date} />
               <div className="select-date">
                 <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />
               </div>
@@ -180,7 +202,7 @@ function Payment() {
                 <tr>
                   <th>Ism</th>
                   <th>Sana</th>
-                  <th>To'langan Summa (izoh)</th>
+                  <th>To'langan Summa</th>
                   <th>To'liq to'landimi</th>
                   <th>To'lov</th>
                 </tr>
@@ -188,7 +210,7 @@ function Payment() {
               <tbody>
                 {data.length == 0 ? (
                   <tr>
-                    <td style={{textAlign: 'center'}} colSpan={5}>
+                    <td style={{ textAlign: 'center' }} colSpan={5}>
                       Ma'lumot topilmadi
                     </td>
                   </tr>
@@ -197,16 +219,18 @@ function Payment() {
                     <tr key={item.id}>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
                       <td>{date}</td>
-                      <td style={{ cursor: 'pointer' }} onClick={() => showAlertMessage('eslatma', item.monthly_payments.reduce((total, payment) => (payment.comment), "To'lov qilinmagan"))}>
-                        {item.monthly_payments.reduce((total, payment) => parseFloat(payment.amount), 0)}
+                      <td style={{ cursor: 'pointer' }}>
+                        {formatNumberWithCommas(item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0))}
                       </td>
                       <td>
-                        {item.monthly_payments.reduce((total, payment) => (
-                          payment.is_completed ?
-                            <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} />
-                            :
-                            <input type="checkbox" style={{ pointerEvents: 'none' }} />
-                        ), "To'lanmagan")}
+                        {item.monthly_payments.reduce((total, payment) => {
+                          return (
+                            payment.is_completed ?
+                              <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} />
+                              :
+                              <input type="checkbox" style={{ pointerEvents: 'none' }} />
+                          )
+                        }, "To'lanmagan")}
                       </td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
@@ -231,7 +255,7 @@ function Payment() {
                   </tr>
                 )}
                 <tr>
-                  {data.length > 0 && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0)}</b></td>}
+                  {data.length > 0 && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
                 </tr>
               </tbody>
             </table>
@@ -243,6 +267,7 @@ function Payment() {
               year={year}
               month={month}
               showAlert={showAlertMessage}
+              isCompleted={isCompleted}
             />
           )}
           {showModal2 && (
@@ -252,6 +277,7 @@ function Payment() {
               year={year}
               month={month}
               showAlert={showAlertMessage}
+              isCompleted={isCompleted}
             />
           )}
         </>

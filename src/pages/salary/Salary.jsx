@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
-import InstitutionType from '../../components/InstitutionType';
-import axios from '../../service/Api';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ThreeDots } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
+import axios from '../../service/Api';
+import { ThreeDots } from 'react-loader-spinner';
+import { Alert, AlertTitle } from "@mui/material";
+import InstitutionType from '../../components/InstitutionType';
+import PaymentModal from './../../components/PaymentModal';
+import UpdatePaymentModal from './../../components/UpdatePaymentModal';
 
 function Salary() {
   const navigate = useNavigate();
@@ -19,20 +22,34 @@ function Salary() {
   const [date, setDate] = useState(getCurrentDate());
   const [year, setYear] = useState(urlYear || date.slice(0, 4));
   const [month, setMonth] = useState(urlMonth || date.slice(5));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [insNameId, setInsNameId] = useState('');
   const [payment, setPayment] = useState(null);
   const [error, setError] = useState(null);
   const [timeoutExpired, setTimeoutExpired] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertType, setAlertType] = useState('success');
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
+    if (!urlYear || !urlMonth) {
+      navigate(`/salary?organization=${insId}&year=${year}&month=${month}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchAttendanceData = async () => {
       const token = Cookies.get('access_token');
       const timeout = setTimeout(() => {
         setTimeoutExpired(true);
         setLoading(false);
       }, 4000);
       try {
+        setLoading(true)
         const response = await axios.get(`accounting/monthly-payments/list/?organization=${insId}&type=worker&year=${year}&month=${month}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,9 +67,9 @@ function Salary() {
     }
 
     if (insId) {
-      fetchData();
+      fetchAttendanceData();
     } else {
-      setLoading(false);
+      fetchAttendanceData();
     }
   }, [insId, year, month]);
 
@@ -98,7 +115,7 @@ function Salary() {
 
   const handleGetInsId = (id) => {
     setInsId(id);
-    navigate(`/salary?organization=${id}&type=worker&year=${year}&month=${month}`);
+    navigate(`/salary?organization=${id}&year=${year}&month=${month}`);
   };
 
   const handleOpenComment = (comment) => {
@@ -108,6 +125,40 @@ function Salary() {
   const handleReload = () => {
     window.location.reload();
   };
+
+  const hideModalPayment = () => {
+    setShowModal(false);
+    setSelectedUser(null);
+  };
+
+  const hideModalUpdate = () => {
+    setShowModal2(false);
+    setSelectedUser(null);
+  };
+
+  const showModalPayment = (user) => {
+    setShowModal(true);
+    setSelectedUser(user);
+    setIsCompleted(user.monthly_payments.some(payment => payment.is_completed));
+  };
+
+  const showModalUpdate = (user) => {
+    setShowModal2(true);
+    setSelectedUser(user);
+    setIsCompleted(user.monthly_payments.some(payment => payment.is_completed));
+  };
+
+  const showAlertMessage = (type, message) => {
+    setAlertType(type);
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 2000);
+  };
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 
   return (
     <div className='payment attendance'>
@@ -129,14 +180,28 @@ function Salary() {
         </div>
       ) : (
         <>
+          {showAlert && (
+            <Alert
+              sx={{ position: "fixed" }}
+              variant="filled"
+              severity={alertType}
+              className='mui-alert'
+            >
+              <AlertTitle>
+                {alertType === "success" ? "Success" : "Error"}
+              </AlertTitle>
+              {alertMessage}
+            </Alert>
+          )}
           <div className="header">
             <div className="items">
               <div className="a-count">
-                <p>To'lov: {payment && `${payment.count} dan ${payment.results ? payment.results.reduce((total, item) => item.monthly_payments.length, 0) : 0}`}</p>
+              <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
               </div>
-              <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} />
+              <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="worker"
+                date={date} />
               <div className="select-date">
-                <input defaultValue={`${year}-${month}`} type='month' onChange={handleGetDate} />
+                <input value={`${year}-${month}`} type='month' onChange={handleGetDate} />
               </div>
             </div>
           </div>
@@ -148,16 +213,23 @@ function Salary() {
                   <th>Sana</th>
                   <th>To'langan Summa (izoh)</th>
                   <th>To'liq to'landimi</th>
+                  <th>To'lov</th>
                 </tr>
               </thead>
               <tbody>
-                {data ? (
+                {data.length == 0 ? (
+                  <tr>
+                    <td style={{ textAlign: 'center' }} colSpan={5}>
+                      Ma'lumot topilmadi
+                    </td>
+                  </tr>
+                ) : data.length > 0 ? (
                   data.map(item => (
                     <tr key={item.id}>
-                      <td style={{ cursor: 'pointer' }} onClick={() => { handleNameAbout(item.id) }}>{item.first_name} {item.last_name}</td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
                       <td>{date}</td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan") : "To'lov qilinmagan")}>
-                        {item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0}
+                        {formatNumberWithCommas(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0)}
                       </td>
                       <td>
                         {item.monthly_payments ? item.monthly_payments.reduce((total, payment) => (
@@ -166,20 +238,40 @@ function Salary() {
                             <input type="checkbox" style={{ pointerEvents: 'none' }} />
                         ), "To'lanmagan") : "To'lanmagan"}
                       </td>
+                      <td className='td-wrapper'>
+                        {item.monthly_payments.length > 0 && (
+                          <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>
+                            {item.monthly_payments.reduce((total, payment) => (
+                              payment.is_completed ?
+                                "To'landi"
+                                :
+                                "Yangilash"
+                            ), "Yangilash")}
+                          </button>
+                        )}
+                        {item.monthly_payments.length === 0 && (
+                          <button className='payment-btn' onClick={() => showModalPayment(item)}>To'lov</button>
+                        )}
+                      </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td style={{ textAlign: 'center' }} colSpan={5}>M'alumot topilmadi</td></tr>
+                  <tr>
+                    <td style={{ textAlign: 'center' }} colSpan={5}>
+                      Ma'lumot yo'q
+                    </td>
+                  </tr>
                 )}
                 <tr>
-                  {insNameId && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{payment ? payment.total_payment : 0}</b></td>}
+                  {data.length > 0 && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
                 </tr>
               </tbody>
             </table>
-            {loading && <div style={{ marginTop: '150px' }} className='loading'><ThreeDots color='#222D32' /></div>}
           </div>
         </>
       )}
+      {showModal && <PaymentModal isCompleted={isCompleted} showAlert={showAlertMessage} hideModal={hideModalPayment} userId={selectedUser.id} selectedUser={selectedUser} insId={insId} year={year} month={month} />}
+      {showModal2 && <UpdatePaymentModal isCompleted={isCompleted} showAlert={showAlertMessage} hideModal={hideModalUpdate} userId={selectedUser.id} selectedUser={selectedUser} insId={insId} year={year} month={month} />}
     </div>
   );
 }

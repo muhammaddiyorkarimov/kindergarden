@@ -94,6 +94,10 @@ function Expenses() {
     return itemDate >= filterFromDate && itemDate <= filterToDate;
   });
 
+  function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   return (
     <div className="attendance">
       {loading ? (
@@ -152,7 +156,7 @@ function Expenses() {
                     <td className="name-click" onClick={() => handleOpenExpense(item)}>
                       {item.comment}
                     </td>
-                    <td>{item.amount}</td>
+                    <td>{formatNumberWithCommas(item.amount)}</td>
                     <td>{item.date}</td>
                   </tr>
                 ))}
