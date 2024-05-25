@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { Alert, AlertTitle } from "@mui/material";
 import img from '../../../public/images/school.png';
+import axios from "../../service/Api";
+
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -25,7 +27,7 @@ function Login() {
       if (accessToken && refreshToken) {
         try {
           await axios.post(
-            "http://0.0.0.0:8000/api/v1/users/token/refresh/",
+            "/users/token/refresh/",
             { refresh: refreshToken }
           );
           setShowAlert(true);
@@ -53,7 +55,7 @@ function Login() {
   const handleLoginFormSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://0.0.0.0:8000/api/v1/users/token/",
+        "/users/token/",
         {
           username: username,
           password: password,
