@@ -48,10 +48,12 @@ function Login() {
     navigate("/");
   };
 
+  const token = Cookies.get('access_token');
+
   const handleLoginFormSubmit = async () => {
     try {
       const response = await axios.post(
-        "https://kindergarten-ms.techcraft.uz/api/v1/users/token/",
+        token,
         {
           username: username,
           password: password,
