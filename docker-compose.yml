@@ -10,5 +10,5 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_REACT_APP_BACKEND_URL=http://host.docker.internal:8000/api/v1
-extra_hosts:
-  - "host.docker.internal:host-gateway"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
