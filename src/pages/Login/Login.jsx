@@ -151,7 +151,6 @@ function Login() {
           <label htmlFor="password">Password</label>
           <div className="input-wrap">
             <input
-              value={password}
               ref={passwordInputRef}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
