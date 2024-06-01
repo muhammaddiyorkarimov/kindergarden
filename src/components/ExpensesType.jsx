@@ -57,12 +57,12 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
                 <p onClick={() => handleClick("", "Hammasi")}>Hammasi</p>
               </Link>
               {uniqueExpenses.map((expense) => (
-                  <Link key={expense.type.id} to={`?type=${expense.type.id}`}>
-                    <p onClick={() => handleClick(expense.type.id, expense.type.name)}>
-                      {expense.type.name}
-                    </p>
-                  </Link>
-                ))}
+                <Link key={expense.id} to={`?type=${expense.id}`}>
+                  <p onClick={() => handleClick(expense.id, expense.type.name)}>
+                    {expense.type.name}
+                  </p>
+                </Link>
+              ))}
             </>
           )}
         </div>
