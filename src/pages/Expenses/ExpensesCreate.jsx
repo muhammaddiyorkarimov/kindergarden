@@ -91,11 +91,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
-  const uniqueExpenses = expenses.length > 0 ? Array.from(
+  const uniqueExpenses = expenses.length > 0 && Array.from(
     new Set(expenses.map((expense) => expense.type.name))
   ).map((name) => {
     return expenses.find((expense) => expense.type.name === name);
-  }) : [];
+  });
 
   return (
     <div className="attendance expenses-create">
