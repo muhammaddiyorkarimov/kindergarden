@@ -143,7 +143,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
                   ) : (
                     uniqueExpenses.map((expense) => (
                       <li key={expense.id} onClick={() => handleClick(expense)}>
-                        {expense.type.name}
+                        {expense.name}
                       </li>
                     ))
                   )}
