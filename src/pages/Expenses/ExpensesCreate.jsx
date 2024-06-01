@@ -92,9 +92,9 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
   };
 
   const uniqueExpenses = expenses.length > 0 ? Array.from(
-    new Set(expenses.map((expense) => expense.type.name))
+    new Set(expenses.map((expense) => expense.name))
   ).map((name) => {
-    return expenses.find((expense) => expense.type.name === name);
+    return expenses.find((expense) => expense.name === name);
   }) : [];
 
   return (
