@@ -27,8 +27,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
             Authorization: `Bearer ${token}`,
           },
         });
+        setExpenses(response.data.results || []);
         setLoading(false);
-        setExpenses(response.data.results);
       } catch (error) {
         setError(error.message);
         setLoading(false);
@@ -67,7 +67,6 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
           },
         }
       );
-      setLoading(false);
       setData(response.data);
       setComment("");
       setAmount("");
@@ -78,8 +77,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
       }, 2000);
     } catch (error) {
       setError(error.message);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleClick = (expense) => {
@@ -126,17 +125,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
           </div>
           <div className="expenses-inputs">
             <div
-              className={`select-expenses group-number ${activeDropdown === "group-number" ? `active` : ""
-                }`}
+              className={`select-expenses group-number ${activeDropdown === "group-number" ? `active` : ""}`}
             >
               <span onClick={() => toggleDropdown("group-number")}>
                 {expensesType}{" "}
-                <i
-                  className={`fa-solid ${activeDropdown === "group-number"
-                    ? "fa-chevron-down"
-                    : "fa-chevron-left"
-                    }`}
-                ></i>
+                <i className={`fa-solid ${activeDropdown === "group-number" ? "fa-chevron-down" : "fa-chevron-left"}`}></i>
               </span>
               <div
                 style={{
@@ -148,16 +141,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
                   {uniqueExpenses.length === 0 ? (
                     <li>Ma'lumot topilmadi</li>
                   ) : (
-                    uniqueExpenses.map((expense) => {
-                      return (
-                        <li
-                          key={expense.id}
-                          onClick={() => handleClick(expense)}
-                        >
-                          {expense.type.name}
-                        </li>
-                      );
-                    })
+                    uniqueExpenses.map((expense) => (
+                      <li key={expense.id} onClick={() => handleClick(expense)}>
+                        {expense.type.name}
+                      </li>
+                    ))
                   )}
                 </ul>
               </div>
