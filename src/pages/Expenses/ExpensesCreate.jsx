@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-// css
 import "./ExpensesCreate.css";
-//axios
 import axios from "../../service/Api";
 import { Alert, AlertTitle } from "@mui/material";
 import Cookies from 'js-cookie';
@@ -95,11 +92,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
 
-  const uniqueExpenses = Array.from(
+  const uniqueExpenses = expenses.length > 0 ? Array.from(
     new Set(expenses.map((expense) => expense.type.name))
   ).map((name) => {
     return expenses.find((expense) => expense.type.name === name);
-  });
+  }) : [];
 
   return (
     <div className="attendance expenses-create">
@@ -136,8 +133,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
                 {expensesType}{" "}
                 <i
                   className={`fa-solid ${activeDropdown === "group-number"
-                      ? "fa-chevron-down"
-                      : "fa-chevron-left"
+                    ? "fa-chevron-down"
+                    : "fa-chevron-left"
                     }`}
                 ></i>
               </span>

@@ -21,7 +21,7 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
         setExpenses(response.data.results);
         setLoading(false);
       } catch (error) {
-        setError("Error fetching expenses:" + error.message);
+        setError("Harajat turlarini olishda xatolik: " + error.message);
         setLoading(false);
       }
     };
@@ -34,11 +34,11 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
     handleGetGroupId(id, name);
   };
 
-  const uniqueExpenses = Array.from(
+  const uniqueExpenses = expenses.length > 0 ? Array.from(
     new Set(expenses.map((expense) => expense.type.name))
   ).map((name) => {
     return expenses.find((expense) => expense.type.name === name);
-  });
+  }) : [];
 
   return (
     <div className={`group-number ${activeDropdown === 'group-number' ? 'active' : ''}`}>
@@ -47,16 +47,24 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
       </span>
       {activeDropdown === 'group-number' && (
         <div className="dropdown">
-          <Link to="?type=all">
-            <p onClick={() => handleClick("", "Hammasi")}>Hammasi</p>
-          </Link>
-          {uniqueExpenses.map((expense) => (
-            <Link key={expense.type.id} to={`?type=${expense.type.id}`}>
-              <p onClick={() => handleClick(expense.type.id, expense.type.name)}>
-                {expense.type.name}
-              </p>
-            </Link>
-          ))}
+          {loading ? (
+            <p>Yuklanmoqda...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <>
+              <Link to="?type=all">
+                <p onClick={() => handleClick("", "Hammasi")}>Hammasi</p>
+              </Link>
+              {uniqueExpenses.map((expense) => (
+                <Link key={expense.type.id} to={`?type=${expense.type.id}`}>
+                  <p onClick={() => handleClick(expense.type.id, expense.type.name)}>
+                    {expense.type.name}
+                  </p>
+                </Link>
+              ))}
+            </>
+          )}
         </div>
       )}
     </div>
