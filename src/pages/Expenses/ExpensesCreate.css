@@ -42,6 +42,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: absolute;
 }
 
 .textarea {
@@ -99,29 +100,20 @@
 
 .drop-down {
     position: absolute;
-    margin-top: 170px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 8px;
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid lightgray;
-
-}
-
-.drop-down ul {
+    top: 40px;
     display: flex;
     flex-direction: column;
     gap: 5px;
     background-color: #FFFFFF;
     border-radius: 8px;
     padding: 10px 0px;
-
+    max-width: 300px;
+    width: 100%;
 }
 
 .drop-down ul li {
-    padding: 0px 20px;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 20px;
     display: flex;
     justify-content: flex-start;
     cursor: pointer;
