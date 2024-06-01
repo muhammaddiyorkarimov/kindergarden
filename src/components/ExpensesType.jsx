@@ -18,7 +18,7 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
           },
         });
 
-        setExpenses(response.data.results || []);
+        setExpenses(response.data || []);
         setLoading(false);
       } catch (error) {
         setError("Harajat turlarini olishda xatolik: " + error.message);

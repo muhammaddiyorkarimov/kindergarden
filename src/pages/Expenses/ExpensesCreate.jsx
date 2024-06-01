@@ -27,7 +27,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
             Authorization: `Bearer ${token}`,
           },
         });
-        setExpenses(response.data.results || []);
+        setExpenses(response.data || []);
         setLoading(false);
       } catch (error) {
         setError(error.message);
