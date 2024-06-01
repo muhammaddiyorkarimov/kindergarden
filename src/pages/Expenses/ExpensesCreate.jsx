@@ -83,8 +83,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
 
   const handleClick = (expense) => {
     toggleDropdown("");
-    setType(expense.type.id);
-    setExpensesType(expense.type.name);
+    setType(expense.id);
+    setExpensesType(expense.name);
   };
 
   const toggleDropdown = (dropdown) => {
