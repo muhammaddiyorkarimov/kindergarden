@@ -25,7 +25,7 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     const fetchData = async () => {
       try {
         const token = Cookies.get('access_token');
-        const response = await axios.get(`/accounting/expenses/list/`, {
+        const response = await axios.get(`/accounting/expense-type/list/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
