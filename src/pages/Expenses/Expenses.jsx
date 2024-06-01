@@ -17,6 +17,7 @@ function Expenses() {
   const [toDate, setToDate] = useState(new URLSearchParams(location.search).get('toDate') || "");
   const [error, setError] = useState(null);
   const [selectedTypeName, setSelectedTypeName] = useState("Hammasi");
+  const [allExpenses, setAllExpenses] = useState(null);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -42,7 +43,7 @@ function Expenses() {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        setAllExpenses(response.data);
         setData(response.data.results);
         setLoading(false);
       } catch (error) {
@@ -97,6 +98,7 @@ function Expenses() {
   function formatNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
 
   return (
     <div className="attendance">
@@ -160,6 +162,9 @@ function Expenses() {
                     <td>{item.date}</td>
                   </tr>
                 ))}
+                <tr>
+                  <td colSpan={3}>Umumiy xarajatlar: {formatNumberWithCommas(allExpenses.total_payment)}</td>
+                </tr>
               </tbody>
             </table>
             {filteredData.length === 0 && (

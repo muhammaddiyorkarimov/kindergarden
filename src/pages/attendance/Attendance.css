@@ -119,6 +119,17 @@
 	z-index: 100;
 }
 
+.attendance .header .items .type .dropdown .all{
+	font-size: 14px;
+	background-color: white;
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+	text-transform: uppercase;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .attendance .header .items .type.active .dropdown {
 	display: block;
 	z-index: 100;
@@ -145,6 +156,17 @@
 	transition: var(--primary-transition);
 	min-width: 210px;
 	width: 100%;
+}
+
+.attendance .header .items .group-number .dropdown .all{
+	font-size: 14px;
+	background-color: white;
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+	text-transform: uppercase;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .attendance .header .items .group-number span {

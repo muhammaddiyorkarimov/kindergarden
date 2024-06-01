@@ -18,9 +18,8 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
   const [alert, setAlert] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true)
-  const [ExpensesType, setExpensesType] = useState('Harajat turi')
-
+  const [loading, setLoading] = useState(true);
+  const [expensesType, setExpensesType] = useState('Harajat turi');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,11 +30,11 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
             Authorization: `Bearer ${token}`,
           },
         });
-        setLoading(false)
+        setLoading(false);
         setExpenses(response.data.results);
       } catch (error) {
         setError(error.message);
-        setLoading(false)
+        setLoading(false);
       }
     };
     fetchData();
@@ -57,25 +56,25 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
 
     try {
       const token = Cookies.get('access_token');
-      const PostData = {
+      const postData = {
         type: type,
         amount: parseFloat(amount),
         comment: comment,
       };
       const response = await axios.post(
         `/accounting/expenses/create/`,
-        PostData,
+        postData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setLoading(false)
+      setLoading(false);
       setData(response.data);
       setComment("");
       setAmount("");
-      setAlert(false)
+      setAlert(false);
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
@@ -86,10 +85,12 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
     }
   };
 
-  const handleClick = (id) => {
+  const handleClick = (expense) => {
     toggleDropdown("");
-    setType(id);
+    setType(expense.type.id);
+    setExpensesType(expense.type.name);
   };
+
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? "" : dropdown);
   };
@@ -115,66 +116,77 @@ function ExpensesCreate({ handleGetGroupId, expenseId }) {
           {alert ? "Iltimos to'ldiring" : "Muvaffaqiyatli saqlandi!"}
         </Alert>
       )}
-      {loading ? <div className="loading">
-        <ThreeDots color="#222D32" />
-      </div> : error ? <p>{error}</p> : <>
-        <div className="expenses-title">
-          <p>Harajat qo'shish</p>
+      {loading ? (
+        <div className="loading">
+          <ThreeDots color="#222D32" />
         </div>
-        <div className="expenses-inputs">
-          <div
-            className={`select-expenses group-number ${activeDropdown === "group-number" ? `active` : ""
-              }`}
-          >
-            <span onClick={() => toggleDropdown("group-number")}>
-              Harajat turi{" "}
-              <i
-                className={`fa-solid ${activeDropdown === "group-number"
-                    ? "fa-chevron-down"
-                    : "fa-chevron-left"
-                  }`}
-              ></i>
-            </span>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        <>
+          <div className="expenses-title">
+            <p>Harajat qo'shish</p>
+          </div>
+          <div className="expenses-inputs">
             <div
-              style={{
-                display: activeDropdown === "group-number" ? "block" : "none",
-              }}
-              className={`dropdown drop-down`}
+              className={`select-expenses group-number ${activeDropdown === "group-number" ? `active` : ""
+                }`}
             >
-              <ul>
-                {uniqueExpenses.map((expense) => {
-                  return (
-                    <li
-                      key={expense.id}
-                      onClick={() => handleClick(expense.type.id)}
-                    >
-                      {expense.type.name}
-                    </li>
-                  );
-                })}
-              </ul>
+              <span onClick={() => toggleDropdown("group-number")}>
+                {expensesType}{" "}
+                <i
+                  className={`fa-solid ${activeDropdown === "group-number"
+                      ? "fa-chevron-down"
+                      : "fa-chevron-left"
+                    }`}
+                ></i>
+              </span>
+              <div
+                style={{
+                  display: activeDropdown === "group-number" ? "block" : "none",
+                }}
+                className={`dropdown drop-down`}
+              >
+                <ul>
+                  {uniqueExpenses.length === 0 ? (
+                    <li>Ma'lumot topilmadi</li>
+                  ) : (
+                    uniqueExpenses.map((expense) => {
+                      return (
+                        <li
+                          key={expense.id}
+                          onClick={() => handleClick(expense)}
+                        >
+                          {expense.type.name}
+                        </li>
+                      );
+                    })
+                  )}
+                </ul>
+              </div>
+            </div>
+            <div className="textarea">
+              <textarea
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
+                placeholder="Izoh..."
+                className="text-area"
+              />
+            </div>
+            <div className="input-costs">
+              <input
+                onChange={(e) => setAmount(e.target.value)}
+                value={amount}
+                placeholder="Summani kiriting"
+                type="text"
+              />
             </div>
           </div>
-          <div className="textarea">
-            <textarea
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-              placeholder="Izoh..."
-              className="text-area"
-            />
+          <div className="btn-class">
+            <button onClick={handlePostData}>Saqlash</button>
           </div>
-          <div className="input-costs">
-            <input
-              onChange={(e) => setAmount(e.target.value)}
-              value={amount}
-              placeholder="Summani kiriting"
-              type="text"
-            />
-          </div>
-        </div>
-        <div className="btn-class">
-          <button onClick={handlePostData}>Saqlash</button>
-        </div></>}
+        </>
+      )}
     </div>
   );
 }

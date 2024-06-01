@@ -59,6 +59,7 @@ function GroupNumber({ activeDropdown, toggleDropdown, insId, handleGetGroupId, 
         {groupNumber} <i className={`fa-solid ${activeDropdown === 'group-number' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
       </span>
       <div className="dropdown">
+        <Link className='all' to={`?organization=${insId}&educating_group=&${type}&${date}`}>Barchasi</Link>
         {loading ? <p>Yuklanmoqda...</p> : error ? <p>{error}</p> : groups.map(group => (
           <Link to={`?organization=${insId}&educating_group=${group.id}&${type}&${date}`} key={group.id} onClick={() => handleClick(group)}>
             <p>{group.name}</p>

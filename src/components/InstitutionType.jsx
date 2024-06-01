@@ -61,6 +61,7 @@ function InstitutionType({ insId, insNameId, activeDropdown, toggleDropdown, han
         {insType} <i className={`fa-solid ${activeDropdown === 'type' ? 'fa-chevron-down' : 'fa-chevron-left'}`}></i>
       </span>
       <div className="dropdown">
+        <Link className='all' to={`?organization=&${type}&${date}`}>Barchasi</Link>
         {loading ? <p>Yuklanmoqda...</p> : error ? <p>{error}</p> : institutions.map(institution => (
           <Link to={`?organization=${institution.id}&${type}&${date}`} key={institution.id} onClick={() => handleClick(institution)}>
             <p>{institution.name}</p>
