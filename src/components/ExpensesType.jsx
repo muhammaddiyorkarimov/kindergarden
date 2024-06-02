@@ -12,13 +12,20 @@ function ExpensesType({ activeDropdown, toggleDropdown, handleGetGroupId, select
     const fetchData = async () => {
       try {
         const token = Cookies.get('access_token');
+        if (!token) {
+          throw new Error('Token mavjud emas');
+        }
         const response = await axios.get(`/accounting/expense-type/list/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setExpenses(response.data || []);
+        if (response.data) {
+          setExpenses(response.data);
+        } else {
+          setExpenses([]);
+        }
         setLoading(false);
       } catch (error) {
         setError("Harajat turlarini olishda xatolik: " + error.message);
