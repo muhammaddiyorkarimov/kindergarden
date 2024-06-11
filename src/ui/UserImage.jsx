@@ -17,7 +17,7 @@ function UserImage({ src }) {
       <img onClick={openFullImage} src={src} alt="Image" style={{ cursor: 'pointer' }} />
       {isModalOpen && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="user-modal-content" onClick={(e) => e.stopPropagation()}>
             <img src={src} alt="Image" />
             <button className="close-button" onClick={closeModal}>×</button>
           </div>

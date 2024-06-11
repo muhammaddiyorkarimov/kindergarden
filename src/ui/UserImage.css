@@ -11,6 +11,14 @@
   z-index: 1000;
 }
 
+.user-modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
 .modal-content {
   position: relative;
   background: white;
@@ -22,7 +30,7 @@
   overflow-y: auto;
 }
 
-.modal-content img {
+.user-modal-content img {
   max-width: 100%;
   max-height: 50vh !important;
 	object-fit: cover;
@@ -35,6 +43,7 @@
   width: 40px !important;
   height: 40px !important;
   background-color: #20687F !important;
+  border-radius: 4px;
 }
 
 .close-button {
