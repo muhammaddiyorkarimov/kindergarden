@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../service/Api';
 import { useParams } from 'react-router-dom';
 
-import './Employees.css'
 import '../attendance/Attendance.css'
 import Cookies from 'js-cookie';
 import { ThreeDots } from 'react-loader-spinner';
+import UserImage from '../../ui/UserImage';
 
 function UserEmployees() {
   const [data, setData] = useState([]);
@@ -114,6 +114,9 @@ function UserEmployees() {
             <input type="month" id="date" defaultValue={selectedDate} onChange={handleDateChange} />
           </div>
           <div className="name">
+          <div className="user-image-wrapper">
+                <UserImage src={data.user.face_image} />
+              </div>
             {data.user && <h1 className="title">{data.user.first_name} {data.user.middle_name} {data.user.last_name}</h1>}
             <div className="user-calender">
               <div className="user-calendar">

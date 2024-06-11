@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 import './Payment.css'
+import UserImage from '../../ui/UserImage';
 
 function PaymentUser() {
 
@@ -75,9 +76,13 @@ function PaymentUser() {
         <div className="body">
           {data && data.monthly_payments && <table>
             <thead>
-              <tr>
-                <th colSpan={5}>{data.first_name} {data.last_name} {data.middle_name}</th>
-              </tr>
+            <tr>
+								<th colSpan={5}>
+									<div className="user-image-wrapper">
+									<UserImage src={data.face_image} />
+								</div>
+								 {data.first_name} {data.last_name} {data.middle_name}</th>
+							</tr>
             </thead>
             <tbody>
               {data && data.monthly_payments && data.monthly_payments.length > 0 ? (

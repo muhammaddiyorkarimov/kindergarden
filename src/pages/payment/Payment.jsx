@@ -9,6 +9,7 @@ import InstitutionType from '../../components/InstitutionType';
 import './Payment.css';
 import PaymentModal from './../../components/PaymentModal';
 import UpdatePaymentModal from './../../components/UpdatePaymentModal';
+import UserImage from '../../ui/UserImage';
 
 function Payment() {
   const navigate = useNavigate();
@@ -200,8 +201,10 @@ function Payment() {
             <table>
               <thead>
                 <tr>
+                  <th>Rasm</th>
                   <th>Ism</th>
                   <th>Sana</th>
+                  <th>Jami kelgan kunlar</th>
                   <th>To'langan Summa</th>
                   <th>To'liq to'landimi</th>
                   <th>To'lov</th>
@@ -217,8 +220,14 @@ function Payment() {
                 ) : data.length > 0 ? (
                   data.map(item => (
                     <tr key={item.id}>
+                      <td>
+                        <div className="user-image-wrapper">
+                          <UserImage src={item.face_image}/>
+                        </div>
+                      </td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
                       <td>{date}</td>
+                      <td>{item.present_days}</td>
                       <td style={{ cursor: 'pointer' }}>
                         {formatNumberWithCommas(item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0))}
                       </td>
@@ -255,7 +264,7 @@ function Payment() {
                   </tr>
                 )}
                 <tr>
-                  {data.length > 0 && <td colSpan={5}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
+                  {data.length > 0 && <td colSpan={7}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
                 </tr>
               </tbody>
             </table>

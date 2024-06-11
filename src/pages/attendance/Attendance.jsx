@@ -6,6 +6,7 @@ import InstitutionType from "../../components/InstitutionType";
 import GroupNumber from "../../components/GroupNumber";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
+import UserImage from "../../ui/UserImage";
 
 function Attendance() {
   const navigate = useNavigate();
@@ -194,6 +195,7 @@ function Attendance() {
             <table>
               <thead>
                 <tr>
+                  <th>Rasm</th>
                   <th>ISM</th>
                   <th>Sana</th>
                   <th>Davomat</th>
@@ -203,6 +205,11 @@ function Attendance() {
                 {data.length > 0 ? (
                   data.map((item) => (
                     <tr key={item.id}>
+                      <td>
+                        <div className="user-image-wrapper">
+                          <UserImage src={item.face_image}/>
+                        </div>
+                      </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
                         {item.first_name} {item.last_name} {item.middle_name}
                       </td>

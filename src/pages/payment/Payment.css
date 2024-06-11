@@ -3,13 +3,6 @@
 	height: 100vh;
 }
 
-.payment tbody .td-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	justify-content: space-around;
-}
-
 .payment tbody button {
 	width: 100px;
 	display: flex;
@@ -36,6 +29,7 @@
 }
 
 .payment tbody .td-wrapper button {
+	margin: 0 auto;
 	padding: 8px 25px;
 	font-family: 'Montserrat', sans-serif;
 	border: none;

@@ -119,7 +119,7 @@
 	z-index: 100;
 }
 
-.attendance .header .items .type .dropdown .all{
+.attendance .header .items .type .dropdown .all {
 	font-size: 14px;
 	background-color: white;
 	padding: 10px;
@@ -158,7 +158,7 @@
 	width: 100%;
 }
 
-.attendance .header .items .group-number .dropdown .all{
+.attendance .header .items .group-number .dropdown .all {
 	font-size: 14px;
 	background-color: white;
 	padding: 10px;
@@ -293,7 +293,7 @@ tbody td {
 	border: none;
 	border-radius: 16px;
 	font-size: 18px;
-	
+
 }
 
 /* user attendance */
@@ -303,6 +303,17 @@ tbody td {
 }
 
 .user-attendance .name {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.user-attendance .name .user-information{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+.user-attendance .name .user-information{
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -345,7 +356,6 @@ tbody td {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
-	padding: 0 80px;
 	margin-top: 30px;
 	overflow-x: scroll;
 }
@@ -388,59 +398,72 @@ tbody td {
 	font-weight: bold;
 	color: blue;
 }
+
 .user-calendar {
-  display: grid;
-  gap: 5px;
-  width: 100%;
+	display: grid;
+	gap: 5px;
+	width: 100%;
 }
 
 .calendar-header {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  background-color: #f2f2f2;
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	text-align: center;
+	background-color: #f2f2f2;
 }
 
 .calendar-header div {
-  padding: 10px;
-  font-weight: bold;
+	padding: 10px;
+	font-weight: bold;
 }
 
 .calendar-body {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
 }
 
 .calendar-week {
-  display: contents;
+	display: contents;
 }
 
 .calendar-day {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
+	padding: 10px;
+	text-align: center;
+	border: 1px solid #ddd;
 }
 
-.detailed-statistics{
+.detailed-statistics {
 	display: flex;
 	justify-content: space-between;
 	width: 80%;
 	margin: 0 auto;
 	font-weight: 700;
 }
-.wrapper{
+
+.wrapper {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 }
 
+.user-image-wrapper {
+	width: 40px;
+	height: 40px;
+	margin: 0 auto;
+}
+
+.user-image-wrapper img {
+	object-fit: cover;
+	width: 100%;
+}
 
 @media (max-width: 600px) {
-  .calendar-header div,
-  .calendar-day {
-    padding: 5px;
-    font-size: 12px;
-  }
+
+	.calendar-header div,
+	.calendar-day {
+		padding: 5px;
+		font-size: 12px;
+	}
 }
 
 
@@ -493,6 +516,7 @@ tbody td {
 	.loading {
 		margin-left: 110px;
 	}
+
 	.header .items {
 		width: 100%;
 		gap: 10px !important;
@@ -538,17 +562,20 @@ tbody td {
 		align-items: start;
 		justify-content: start;
 	}
+
 	.date-range label {
 		display: flex;
 		justify-content: start;
 		justify-content: start !important;
 		gap: 5px;
 	}
+
 	.attendance .header .a-count .organization-dropdown {
 		top: 120px;
 		width: 100px;
 
 	}
+
 	.attendance .header .a-count .organization-dropdown p {
 		width: 100px;
 	}
@@ -558,6 +585,7 @@ tbody td {
 	.loading {
 		margin-left: 50px;
 	}
+
 	.attendance .header .a-count .organization-dropdown {
 		top: 175px;
 		width: 100px;

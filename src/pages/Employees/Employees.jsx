@@ -4,6 +4,7 @@ import axios from "../../service/Api";
 import InstitutionType from "../../components/InstitutionType";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
+import UserImage from "../../ui/UserImage";
 
 function Employees() {
   const navigate = useNavigate();
@@ -127,6 +128,7 @@ function Employees() {
             <table>
               <thead>
                 <tr>
+                  <th>Rasm</th>
                   <th>ISM</th>
                   <th>Sana</th>
                   <th>Davomat</th>
@@ -136,6 +138,11 @@ function Employees() {
                 {data.length > 0 ? (
                   data.map((item) => (
                     <tr key={item.id}>
+                      <td>
+                        <div className="user-image-wrapper">
+                          <UserImage src={item.face_image}/>
+                        </div>
+                      </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
                         {item.first_name} {item.last_name} {item.middle_name}
                       </td>

@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 
 import './Attendance.css';
 import { ThreeDots } from 'react-loader-spinner';
+import UserImage from '../../ui/UserImage';
 
 function UserAttendance() {
   const [data, setData] = useState([]);
@@ -113,7 +114,12 @@ function UserAttendance() {
             <input type="month" id="date" value={selectedDate} onChange={handleDateChange} />
           </div>
           <div className="name">
-            {data.user && <h1 className="title">{data.user.first_name} {data.user.middle_name} {data.user.last_name}</h1>}
+            <div className="user-information">
+              <div className="user-image-wrapper">
+                <UserImage src={data.user.face_image} />
+              </div>
+              {data.user && <h1 className="title">{data.user.first_name} {data.user.middle_name} {data.user.last_name}</h1>}
+            </div>
             <div className="user-calendar">
               <div className="calendar-header">
                 <div>Yak</div>

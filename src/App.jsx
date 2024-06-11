@@ -32,6 +32,7 @@ import Income from "./pages/Income";
 import Statistics from "./pages/Statistics";
 import GroupNumber from "./components/GroupNumber";
 import InstitutionType from "./components/InstitutionType";
+import WorkCalendar from "./pages/workCalendar/WorkCalendar";
 
 const PrivateRoutes = ({ inputValue, filterData }) => {
   const auth = Cookies.get("access_token");
@@ -83,6 +84,7 @@ function App() {
             <Route path="/attendance/:id" element={<UserAttendance />} />
             <Route path="/payment" element={<Payment />}/>
             <Route path="/salary" element={<Salary />} />
+            <Route path="/work-calendar" element={<WorkCalendar />} />
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/expenses/expensescreate" element={<ExpensesCreate />} />
             <Route path="/payment/:id" element={<PaymentUser />} />

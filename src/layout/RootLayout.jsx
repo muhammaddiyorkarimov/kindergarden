@@ -110,11 +110,11 @@ function RootLayout() {
               className={`children-dropdown ${activeDropdown === "children" ? "active" : ""
                 }`}
             >
-              <div className="first">
+              <div className="element">
                 <span></span>
                 <Link to="/attendance">Davomat</Link>
               </div>
-              <div className="second">
+              <div className="element">
                 <span></span>
                 <Link to="/payment">To'lov</Link>
               </div>
@@ -136,17 +136,18 @@ function RootLayout() {
                 </div>
               </Link>
             </li>
-            <div
-              className={`children-dropdown ${activeDropdown === "employees" ? "active" : ""
-                }`}
-            >
-              <div className="first">
+            <div className={`children-dropdown2 ${activeDropdown === "employees" ? "active" : "" }`}>
+              <div className="element">
                 <span></span>
                 <Link to="/employees">Davomat</Link>
               </div>
-              <div className="second">
+              <div className="element">
                 <span></span>
                 <Link to="/salary">Maosh</Link>
+              </div>
+              <div className="element" >
+                <span></span>
+                <Link to="/work-calendar">Boshqarish</Link>
               </div>
             </div>
             <li>
