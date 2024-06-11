@@ -253,7 +253,7 @@ function Salary() {
                           payment.is_completed ?
                             <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} /> :
                             <input type="checkbox" style={{ pointerEvents: 'none' }} />
-                        ), "To'lanmagan") : "To'lanmagan"}
+                        ), <input type="checkbox" style={{ pointerEvents: 'none' }} />) : <input type="checkbox" style={{ pointerEvents: 'none' }} />}
                       </td>
                       <td>{item.present_days !== null ? item.present_days : "0"}</td>
                       <td>{item.worked_hours !== null ? item.worked_hours : "0"}</td>

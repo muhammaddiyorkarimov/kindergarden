@@ -242,7 +242,7 @@ function Payment() {
                               :
                               <input type="checkbox" style={{ pointerEvents: 'none' }} />
                           )
-                        }, "To'lanmagan")}
+                        }, <input type="checkbox" style={{ pointerEvents: 'none' }} />)}
                       </td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
