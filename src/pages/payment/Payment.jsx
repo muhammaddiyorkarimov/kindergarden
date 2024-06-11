@@ -69,10 +69,10 @@ function Payment() {
       const url = groupId
         ? `accounting/monthly-payments/list/?${insId ? `organization=${insId}&` : ''}educating_group=${groupId}&type=student&year=${year}&month=${month}`
         : `accounting/monthly-payments/list/?${insId ? `organization=${insId}&` : ''}&type=student&year=${year}&month=${month}`
-        fetchAttendanceData(url);
-      } else {
-        const url = `accounting/monthly-payments/list/?type=student&year=${year}&month=${month}`
-        fetchAttendanceData(url);
+      fetchAttendanceData(url);
+    } else {
+      const url = `accounting/monthly-payments/list/?type=student&year=${year}&month=${month}`
+      fetchAttendanceData(url);
     }
   }, [insId, groupId, year, month, token]);
 
@@ -195,6 +195,9 @@ function Payment() {
               <div className="select-date">
                 <input defaultValue={getCurrentDate()} type='month' onChange={handleGetDate} />
               </div>
+              <div className="a-count2">
+                {data.length > 0 && <td colSpan={7}>Umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
+              </div>
             </div>
           </div>
           <div className="body">
@@ -222,7 +225,7 @@ function Payment() {
                     <tr key={item.id}>
                       <td>
                         <div className="user-image-wrapper">
-                          <UserImage src={item.face_image}/>
+                          <UserImage src={item.face_image} />
                         </div>
                       </td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
@@ -263,9 +266,6 @@ function Payment() {
                     <td style={{ textAlign: 'center' }} colSpan={5}>Ma'lumot topilmadi</td>
                   </tr>
                 )}
-                <tr>
-                  {data.length > 0 && <td colSpan={7}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
-                </tr>
               </tbody>
             </table>
           </div>

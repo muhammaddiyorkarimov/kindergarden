@@ -1,10 +1,12 @@
 /* styles */
 @import './styles/rootStyles.css';
 
-/* "main" - rootlayout */
+/* main - rootlayout */
 .App {
 	height: 100vh;
+	overflow: hidden;
 }
+
 .root-layout {
 	width: 100%;
 	height: 100%;
@@ -58,8 +60,6 @@ header .logo h1 {
 	font-size: 24px;
 	font-weight: 500;
 }
-
-
 
 .navbar .menu i {
 	color: white;
@@ -130,16 +130,18 @@ header .logo h1 {
 
 
 /* sidebar */
+
 main {
 	display: flex;
 	background-color: #f1f1f1;
-	height: 100%;
+	height: calc(100vh - 60px);
+	overflow: hidden;
 }
 
 .sidebar {
-	height: 100%;
 	width: 250px;
 	background-color: #222D32;
+	height: 100vh;
 	transition: var(--primary-transition);
 }
 

@@ -3,12 +3,20 @@ import Cookies from 'js-cookie';
 import axios from '../../service/Api';
 import { ThreeDots } from 'react-loader-spinner';
 import CreateWorkCalendarModal from './../../ui/CreateWorkCalendarModal';
+import { Alert, AlertTitle } from "@mui/material";
+// import './WorkCalendar.css';
 
 function WorkCalendar() {
   const [workCalendars, setWorkCalendars] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  const monthNames = [
+    'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+    'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+  ];
 
   const fetchWorkCalendars = async () => {
     const token = Cookies.get('access_token');
@@ -43,6 +51,16 @@ function WorkCalendar() {
 
   const handleSubmit = async (calendarData) => {
     const token = Cookies.get('access_token');
+    const isDuplicate = workCalendars.some(calendar =>
+      calendar.year === calendarData.year && calendar.month === calendarData.month && calendar.worker_type === calendarData.worker_type
+    );
+
+    if (isDuplicate) {
+      setError('Bu oy uchun hisoblangan');
+      setTimeout(() => setError(null), 3000); // Hide message after 3 seconds
+      return;
+    }
+
     try {
       await axios.post('organizations/work-calendar/create/', calendarData, {
         headers: {
@@ -50,6 +68,8 @@ function WorkCalendar() {
         }
       });
       fetchWorkCalendars(); // Refresh data after submission
+      setSuccessMessage('Work calendar created successfully!');
+      setTimeout(() => setSuccessMessage(null), 3000); // Hide message after 3 seconds
     } catch (error) {
       console.error('Error creating work calendar:', error);
       setError('Failed to create work calendar. Please try again.');
@@ -62,12 +82,22 @@ function WorkCalendar() {
         <h2>Work Calendars</h2>
         <button className='calendar-btn' onClick={handleOpenModal}>Create Work Calendar</button>
       </div>
+      {successMessage && (
+        <Alert severity="success" style={{ backgroundColor: 'green', color: 'white' }}>
+          <AlertTitle>Success</AlertTitle>
+          {successMessage}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" style={{ backgroundColor: 'green', color: 'white' }}>
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
       {isLoading ? (
         <div className="loading">
           <ThreeDots color="#222D32" />
         </div>
-      ) : error ? (
-        <div className="error-message">{error}</div>
       ) : (
         <table>
           <thead>
@@ -80,20 +110,26 @@ function WorkCalendar() {
             </tr>
           </thead>
           <tbody>
-            {workCalendars.map(calendar => (
-              <tr key={calendar.id}>
-                <td>
-                  {calendar.worker_type === 'educator' ? 'Tarbiyachi' :
-                    calendar.worker_type === 'teacher' ? "O'qituvchi" :
-                    calendar.worker_type === 'worker' ? 'Tarbiyachi' :
-                    calendar.worker_type}
-                </td>
-                <td>{calendar.year}</td>
-                <td>{calendar.month}</td>
-                <td>{calendar.daily_work_hours}</td>
-                <td>{calendar.work_days.join(', ')}</td>
-              </tr>
-            ))}
+            {workCalendars.length == 0 ? <tr>
+              <td style={{ textAlign: 'center' }} colSpan={9}>
+                Ma'lumot topilmadi
+              </td>
+            </tr> : <>
+              {workCalendars.map(calendar => (
+                <tr key={calendar.id}>
+                  <td>
+                    {calendar.worker_type === 'educator' ? 'Tarbiyachi' :
+                      calendar.worker_type === 'teacher' ? "O'qituvchi" :
+                        calendar.worker_type === 'worker' ? 'Tarbiyachi' :
+                          calendar.worker_type}
+                  </td>
+                  <td>{calendar.year}</td>
+                  <td>{monthNames[calendar.month - 1]}</td>
+                  <td>{calendar.daily_work_hours}</td>
+                  <td>{calendar.work_days.join(', ')}</td>
+                </tr>
+              ))}
+            </>}
           </tbody>
         </table>
       )}

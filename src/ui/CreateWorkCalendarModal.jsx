@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
   const [workerType, setWorkerType] = useState('');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [dailyWorkHours, setDailyWorkHours] = useState('');
   const [selectedDays, setSelectedDays] = useState(new Set());
-  const [isAllSelected, setIsAllSelected] = useState(false);
+
+  useEffect(() => {
+    const initializeSelectedDays = () => {
+      const newSelectedDays = new Set();
+      const daysInMonth = new Date(year, month, 0).getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayOfWeek = new Date(year, month - 1, day).getDay();
+        if (dayOfWeek !== 0) { // Exclude Sundays initially
+          newSelectedDays.add(day);
+        }
+      }
+
+      setSelectedDays(newSelectedDays);
+    };
+
+    if (year && month) {
+      initializeSelectedDays();
+    }
+  }, [year, month]);
 
   if (!isOpen) return null;
 
@@ -20,19 +39,12 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
     setSelectedDays(newSelectedDays);
   };
 
-  const handleSelectAll = () => {
-    if (isAllSelected) {
-      setSelectedDays(new Set());
-    } else {
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const allDays = new Set(Array.from({ length: daysInMonth }, (_, i) => i + 1));
-      setSelectedDays(allDays);
-    }
-    setIsAllSelected(!isAllSelected);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!workerType) {
+      alert("Ishchi turi tanlanishi shart");
+      return;
+    }
     const workDays = Array.from(selectedDays);
     onSubmit({
       worker_type: workerType,
@@ -46,15 +58,59 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
 
   const renderCalendar = () => {
     const daysInMonth = new Date(year, month, 0).getDate();
+    const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
+    const weeks = [];
+    let week = [];
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      week.push(null);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      week.push(day);
+      if (week.length === 7) {
+        weeks.push(week);
+        week = [];
+      }
+    }
+
+    if (week.length > 0) {
+      while (week.length < 7) {
+        week.push(null);
+      }
+      weeks.push(week);
+    }
+
+    const dayNames = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Juma', 'Shan'];
+
     return (
       <div className="calendar">
-        {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
-          <div
-            key={day}
-            className={`day ${selectedDays.has(day) ? 'selected' : ''}`}
-            onClick={() => handleDayClick(day)}
-          >
-            {day}
+        <div className="calendar-row header">
+          {dayNames.map((dayName, index) => (
+            <div key={index} className="day-name">
+              {dayName}
+            </div>
+          ))}
+        </div>
+        {weeks.map((week, weekIndex) => (
+          <div key={weekIndex} className="calendar-row">
+            {week.map((day, dayIndex) => (
+              <div
+                key={dayIndex}
+                className={`day ${day ? (selectedDays.has(day) ? 'selected' : '') : 'empty'}`}
+                onClick={() => day && handleDayClick(day)}
+                style={{
+                  backgroundColor: day
+                    ? selectedDays.has(day)
+                      ? 'green'
+                      : 'red'
+                    : 'white',
+                  color: 'white'
+                }}
+              >
+                {day}
+              </div>
+            ))}
           </div>
         ))}
       </div>
@@ -70,6 +126,7 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
           <div className="form-group">
             <label>Ishchi turi</label>
             <select value={workerType} onChange={(e) => setWorkerType(e.target.value)} required>
+              <option value="">Turni tanlang</option>
               <option value="teacher">O'qituvchi</option>
               <option value="worker">Tarbiyachi</option>
             </select>
@@ -80,20 +137,30 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
           </div>
           <div className="form-group">
             <label>Oy</label>
-            <input type="number" value={month} onChange={(e) => setMonth(e.target.value)} min="1" max="12" required />
+            <select value={month} onChange={(e) => setMonth(e.target.value)} required>
+              <option value="1">Yanvar</option>
+              <option value="2">Fevral</option>
+              <option value="3">Mart</option>
+              <option value="4">Aprel</option>
+              <option value="5">May</option>
+              <option value="6">Iyun</option>
+              <option value="7">Iyul</option>
+              <option value="8">Avgust</option>
+              <option value="9">Sentabr</option>
+              <option value="10">Oktabr</option>
+              <option value="11">Noyabr</option>
+              <option value="12">Dekabr</option>
+            </select>
           </div>
           <div className="form-group">
             <label>Kunlik ish soati</label>
-            <input type="number" value={dailyWorkHours} onChange={(e) => setDailyWorkHours(e.target.value)} min="-2147483648" max="2147483647" required />
+            <input type="number" value={dailyWorkHours} onChange={(e) => setDailyWorkHours(e.target.value)} min="0" required />
           </div>
           <div className="form-group">
-            <label>Oylik ish kunlari</label>
-            {renderCalendar()}
-            <button type="button" onClick={handleSelectAll}>
-              {isAllSelected ? 'Bekor qilish' : 'Hammasini tanlash'}
-            </button>
+            <label>Ish kunlari</label>
+            {year && month && renderCalendar()}
           </div>
-          <button style={{marginRight: '10px'}} type="submit">Saqlash</button>
+          <button type="submit">Saqlash</button>
         </form>
       </div>
     </div>

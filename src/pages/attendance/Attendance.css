@@ -1,7 +1,8 @@
 .attendance {
 	padding: 20px;
 	width: 100%;
-	overflow-y: scroll;
+	height: calc(100vh - 60px);
+	overflow-y: auto;
 }
 
 .loading {
@@ -60,6 +61,17 @@
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	min-width: 200px;
+}
+.attendance .header .a-count2 {
+	background-color: white;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	min-width: 260px;
+}
+
+.attendance .header .a-count2 p {
+	width: 100%;
 }
 
 .attendance .header .a-count .organization-type {
@@ -450,11 +462,12 @@ tbody td {
 	width: 40px;
 	height: 40px;
 	margin: 0 auto;
+	overflow: hidden;
 }
 
 .user-image-wrapper img {
-	object-fit: cover;
 	width: 100%;
+	object-fit: cover;
 }
 
 @media (max-width: 600px) {
@@ -573,7 +586,6 @@ tbody td {
 	.attendance .header .a-count .organization-dropdown {
 		top: 120px;
 		width: 100px;
-
 	}
 
 	.attendance .header .a-count .organization-dropdown p {

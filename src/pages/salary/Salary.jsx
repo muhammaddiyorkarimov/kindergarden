@@ -8,7 +8,6 @@ import InstitutionType from '../../components/InstitutionType';
 import PaymentModal from './../../components/PaymentModal';
 import UpdatePaymentModal from './../../components/UpdatePaymentModal';
 import UserImage from '../../ui/UserImage';
-import DetailModal from './../../ui/DetailModal';
 
 function Salary() {
   const navigate = useNavigate();
@@ -36,7 +35,6 @@ function Salary() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
-  const [showDetailModal, setShowDetailModal] = useState(false);
 
   const handleCreateWorkCalendarSuccess = (newWorkCalendar) => {
     navigate('/work-calendar', { state: { newWorkCalendar } });
@@ -164,16 +162,6 @@ function Salary() {
     }, 2000);
   };
 
-  const showDetailModalHandler = (user) => {
-    setSelectedUser(user);
-    setShowDetailModal(true);
-  };
-
-  const hideDetailModalHandler = () => {
-    setShowDetailModal(false);
-    setSelectedUser(null);
-  };
-
   function formatNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -221,6 +209,9 @@ function Salary() {
               <div className="select-date">
                 <input value={`${year}-${month}`} type='month' onChange={handleGetDate} />
               </div>
+              <div className="a-count2">
+                {data.length > 0 && <p colSpan={9}>Umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></p>}
+              </div>
             </div>
           </div>
           <div className="body">
@@ -229,17 +220,19 @@ function Salary() {
                 <tr>
                   <th>Rasm</th>
                   <th>Ism</th>
-                  <th>Sana</th>
                   <th>To'langan Summa (izoh)</th>
                   <th>To'liq to'landimi</th>
+                  <th>Jami ishga kelgan kunlar</th>
+                  <th>Ishlagan soati</th>
+                  <th>Jami ish soati</th>
+                  <th>Jami hisoblangan oylik</th>
                   <th>To'lov</th>
-                  <th>Batafsil</th>
                 </tr>
               </thead>
               <tbody>
                 {data.length == 0 ? (
                   <tr>
-                    <td style={{ textAlign: 'center' }} colSpan={5}>
+                    <td style={{ textAlign: 'center' }} colSpan={9}>
                       Ma'lumot topilmadi
                     </td>
                   </tr>
@@ -252,7 +245,6 @@ function Salary() {
                         </div>
                       </td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
-                      <td>{date}</td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan") : "To'lov qilinmagan")}>
                         {formatNumberWithCommas(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0)}
                       </td>
@@ -263,6 +255,10 @@ function Salary() {
                             <input type="checkbox" style={{ pointerEvents: 'none' }} />
                         ), "To'lanmagan") : "To'lanmagan"}
                       </td>
+                      <td>{item.present_days !== null ? item.present_days : "0"}</td>
+                      <td>{item.worked_hours !== null ? item.worked_hours : "0"}</td>
+                      <td>{item.total_working_hours !== null ? item.total_working_hours : "0"}</td>
+                      <td>{item.calculated_salary !== null ? item.calculated_salary : "0"}</td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
                           <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>
@@ -278,21 +274,15 @@ function Salary() {
                           <button className='payment-btn' onClick={() => showModalPayment(item)}>To'lov</button>
                         )}
                       </td>
-                      <td className='td-wrapper'>
-                        <button className='edit-btn' onClick={() => showDetailModalHandler(item)}>Batafsil</button>
-                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td style={{ textAlign: 'center' }} colSpan={5}>
+                    <td style={{ textAlign: 'center' }} colSpan={9}>
                       Ma'lumot yo'q
                     </td>
                   </tr>
                 )}
-                <tr>
-                  {data.length > 0 && <td colSpan={7}>Ushbu oydagi umumiy summa: <b>{formatNumberWithCommas(data.reduce((total, item) => total + item.monthly_payments.reduce((sum, payment) => sum + parseFloat(payment.amount), 0), 0))}</b></td>}
-                </tr>
               </tbody>
             </table>
           </div>
@@ -301,14 +291,6 @@ function Salary() {
       }
       {showModal && <PaymentModal isCompleted={isCompleted} showAlert={showAlertMessage} hideModal={hideModalPayment} userId={selectedUser.id} selectedUser={selectedUser} insId={insId} year={year} month={month} />}
       {showModal2 && <UpdatePaymentModal isCompleted={isCompleted} showAlert={showAlertMessage} hideModal={hideModalUpdate} userId={selectedUser.id} selectedUser={selectedUser} insId={insId} year={year} month={month} />}
-      {showDetailModal && (
-        <DetailModal
-          isOpen={showDetailModal}
-          onClose={hideDetailModalHandler}
-          user={selectedUser}
-          onSuccess={handleCreateWorkCalendarSuccess}
-        />
-      )}
     </div >
   );
 }
