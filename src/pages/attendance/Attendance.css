@@ -305,7 +305,28 @@ tbody td {
 	border: none;
 	border-radius: 16px;
 	font-size: 18px;
+}
 
+.checkbox-container {
+	display: flex;
+	align-items: center;
+	gap: 30px;
+}
+
+.checkbox-container button {
+	border: none;
+	background-color: transparent;
+}
+
+.save-button-wrapper button{
+	float: right;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: none;
+	padding: 10px 25px;
+	color: white;
+	background-color: #20687F;
+	border-radius: 10px;
 }
 
 /* user attendance */

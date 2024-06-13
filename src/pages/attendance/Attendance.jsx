@@ -7,6 +7,8 @@ import GroupNumber from "../../components/GroupNumber";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import UserImage from "../../ui/UserImage";
+import EditIcon from '@mui/icons-material/Edit';
+import { Alert, AlertTitle } from "@mui/material";
 
 function Attendance() {
   const navigate = useNavigate();
@@ -28,6 +30,9 @@ function Attendance() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [timeoutExpired, setTimeoutExpired] = useState(false);
+  const [editMode, setEditMode] = useState({});
+  const [updatedUsers, setUpdatedUsers] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     const fetchAttendanceData = async (url) => {
@@ -135,6 +140,40 @@ function Attendance() {
     window.location.reload();
   };
 
+  const handleEdit = (id) => {
+    setEditMode(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleCheckboxChange = (id) => {
+    setData(prevData => prevData.map(item => {
+      if (item.id === id) {
+        const updatedItem = { ...item, is_present: !item.is_present };
+        if (updatedItem.is_present) {
+          setUpdatedUsers(prev => [...prev, id]);
+        } else {
+          setUpdatedUsers(prev => prev.filter(userId => userId !== id));
+        }
+        return updatedItem;
+      }
+      return item;
+    }));
+  };
+
+  const handleSave = async () => {
+    handleReload();
+    try {
+      const token = Cookies.get('access_token');
+      await axios.post('/users/attendance/create/', { users: updatedUsers }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAlert({ type: 'success', message: 'Davomat muvaffaqiyatli saqlandi' });
+    } catch (error) {
+      setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
+    }
+  };
+
   return (
     <div className="attendance">
       {loading ? (
@@ -155,6 +194,12 @@ function Attendance() {
         </div>
       ) : (
         <>
+          {alert && (
+            <Alert severity={alert.type} style={{ position: 'fixed', top: 0, width: '100%' }}>
+              <AlertTitle>{alert.type === 'success' ? 'Muvaffaqiyat' : 'Xatolik'}</AlertTitle>
+              {alert.message}
+            </Alert>
+          )}
           <div className="header">
             <div className="items">
               <div className="a-count">
@@ -216,19 +261,26 @@ function Attendance() {
                       <td>{date}</td>
                       <td>
                         <input
-                          style={{ pointerEvents: 'none' }}
+                          style={{ pointerEvents: editMode[item.id] ? 'auto' : 'none', borderColor: editMode[item.id] ? 'blue' : '', boxShadow: editMode[item.id] ? '0 0 5px blue' : '' }}
                           type="checkbox"
                           checked={item.is_present}
-                          readOnly
+                          readOnly={!editMode[item.id]}
+                          onChange={() => handleCheckboxChange(item.id)}
                         />
+                        {!item.is_present && (
+                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px'}} />
+                        )}
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td style={{ textAlign: 'center' }} colSpan={3}>Ma'lumot topilmadi</td></tr>
+                  <tr><td style={{ textAlign: 'center' }} colSpan={4}>Ma'lumot topilmadi</td></tr>
                 )}
               </tbody>
             </table>
+            <div className="save-button-wrapper">
+              <button onClick={handleSave} className="save-button">Saqlash</button>
+            </div>
           </div>
         </>
       )}

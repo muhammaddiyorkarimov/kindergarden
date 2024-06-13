@@ -5,6 +5,7 @@ import InstitutionType from "../../components/InstitutionType";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import UserImage from "../../ui/UserImage";
+import EditIcon from '@mui/icons-material/Edit';
 
 function Employees() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ function Employees() {
   const [date, setDate] = useState(urlDate);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [updatedUsers, setUpdatedUsers] = useState([]);
+  const [editMode, setEditMode] = useState({});
 
 
   useEffect(() => {
@@ -55,7 +58,7 @@ function Employees() {
       setInsId(urlInsId);
     }
   }, [urlInsId]);
-  
+
   useEffect(() => {
     if (!query.get('date')) {
       navigate(`/employees?${insId ? `organization=${insId}&` : ''}&type=worker&date=${date}`);
@@ -91,6 +94,44 @@ function Employees() {
     const newDate = e.target.value;
     setDate(newDate);
     navigate(`/employees?organization=${insId}&type=worker&date=${newDate}`);
+  };
+
+  const handleEdit = (id) => {
+    setEditMode(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleCheckboxChange = (id) => {
+    setData(prevData => prevData.map(item => {
+      if (item.id === id) {
+        const updatedItem = { ...item, is_present: !item.is_present };
+        if (updatedItem.is_present) {
+          setUpdatedUsers(prev => [...prev, id]);
+        } else {
+          setUpdatedUsers(prev => prev.filter(userId => userId !== id));
+        }
+        return updatedItem;
+      }
+      return item;
+    }));
+  };
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  const handleSave = async () => {
+    handleReload();
+    try {
+      const token = Cookies.get('access_token');
+      await axios.post('/users/attendance/create/', { users: updatedUsers }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAlert({ type: 'success', message: 'Davomat muvaffaqiyatli saqlandi' });
+    } catch (error) {
+      setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
+    }
   };
 
   return (
@@ -140,7 +181,7 @@ function Employees() {
                     <tr key={item.id}>
                       <td>
                         <div className="user-image-wrapper">
-                          <UserImage src={item.face_image}/>
+                          <UserImage src={item.face_image} />
                         </div>
                       </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
@@ -149,17 +190,24 @@ function Employees() {
                       <td>{date}</td>
                       <td>
                         <input
-                          style={{ pointerEvents: 'none' }}
+                          style={{ pointerEvents: editMode[item.id] ? 'auto' : 'none', borderColor: editMode[item.id] ? 'blue' : '', boxShadow: editMode[item.id] ? '0 0 5px blue' : '' }}
                           type="checkbox"
                           checked={item.is_present}
-                          readOnly
+                          readOnly={!editMode[item.id]}
+                          onChange={() => handleCheckboxChange(item.id)}
                         />
+                        {!item.is_present && (
+                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px' }} />
+                        )}
                       </td>
                     </tr>
                   ))
                 ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
+            <div className="save-button-wrapper">
+              <button onClick={handleSave} className="save-button">Saqlash</button>
+            </div>
           </div>
         </>
       )}
