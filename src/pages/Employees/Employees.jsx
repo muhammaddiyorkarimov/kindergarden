@@ -202,7 +202,7 @@ function Employees() {
                       </td>
                     </tr>
                   ))
-                ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
+                ) : <tr><td style={{ textAlign: 'center' }} colSpan={4}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
             <div className="save-button-wrapper">
