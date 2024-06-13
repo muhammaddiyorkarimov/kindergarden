@@ -70,10 +70,6 @@
 	outline: none;
 }
 
-.payment-user .loading {
-	margin-top: 200px;
-}
-
 .user-payment-empty {
 	text-align: center;
 	font-size: 24px;

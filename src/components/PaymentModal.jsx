@@ -46,7 +46,7 @@ const PaymentModal = ({ selectedUser, hideModal, year, month, showAlert }) => {
             <span>Sana: {year} yil {month} uchun</span>
           </div>
           <span>To'lov miqdorini kiriting</span>
-          <input type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div className="comment">
           <span>Izoh</span>

@@ -96,7 +96,7 @@ function Expenses() {
   });
 
   function formatNumberWithCommas(number) {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number ? number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0";
   }
 
 
@@ -147,23 +147,21 @@ function Expenses() {
                 <tr>
                   <th>Mahsulot</th>
                   <th>Summa</th>
-                  <th>
-                    <span>Sana</span>
-                  </th>
+                  <th>Sana</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map((item) => (
                   <tr key={item.id}>
                     <td className="name-click" onClick={() => handleOpenExpense(item)}>
-                      {item.comment}
+                      <span>Mahsulot:</span>{item.comment}
                     </td>
-                    <td>{formatNumberWithCommas(item.amount)}</td>
-                    <td>{item.date}</td>
+                    <td><span>Summa:</span>{formatNumberWithCommas(item.amount)}</td>
+                    <td><span>Sana:</span>{item.date}</td>
                   </tr>
                 ))}
                 <tr>
-                  <td colSpan={3}>Umumiy xarajatlar: {formatNumberWithCommas(allExpenses.total_payment)}</td>
+                  <td colSpan={3}>Umumiy xarajatlar: {formatNumberWithCommas(allExpenses ? allExpenses.total_payment : 0)}</td>
                 </tr>
               </tbody>
             </table>

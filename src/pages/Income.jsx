@@ -118,9 +118,9 @@ function Income() {
               <tbody>
                 {data.monthly_incomes.length ? (data.monthly_incomes.map(item => (
                   <tr key={uuidv4()}>
-                    <td>{item.organization_type === 'school' ? "Maktab to'lovlari" : "Bog'cha to'lovlari"}</td>
-                    <td>{formatNumberWithCommas(item.total)}</td>
-                    <td>{item.year_month}</td>
+                    <td><span>Izoh:</span>{item.organization_type === 'school' ? "Maktab to'lovlari" : "Bog'cha to'lovlari"}</td>
+                    <td><span>To'lovlar:</span>{formatNumberWithCommas(item.total)}</td>
+                    <td><span>Sana:</span>{item.year_month}</td>
                   </tr>
                 ))) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>Ma'lumot topilmadi</td></tr>}
               </tbody>

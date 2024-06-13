@@ -186,6 +186,7 @@ function Payment() {
           <div className="header">
             <div className="items">
               <div className="a-count">
+                {console.log(data)}
                 <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
               </div>
               <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="student"
@@ -224,17 +225,20 @@ function Payment() {
                   data.map(item => (
                     <tr key={item.id}>
                       <td>
+                        <span>Rasm: </span>
                         <div className="user-image-wrapper">
                           <UserImage src={item.face_image} />
                         </div>
                       </td>
-                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
-                      <td>{date}</td>
-                      <td>{item.present_days}</td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}><span>Ism:</span>{item.first_name} {item.last_name}</td>
+                      <td><span>Sana:</span>{date}</td>
+                      <td><span>Jami kelgan kunlar:</span>{item.present_days}</td>
                       <td style={{ cursor: 'pointer' }}>
+                        <span>To'langan summa:</span>
                         {formatNumberWithCommas(item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0))}
                       </td>
                       <td>
+                        <span>To'liq to'landimi:</span>
                         {item.monthly_payments.reduce((total, payment) => {
                           return (
                             payment.is_completed ?

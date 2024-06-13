@@ -149,17 +149,20 @@ function Attendance() {
       if (item.id === id) {
         const updatedItem = { ...item, is_present: !item.is_present };
         if (updatedItem.is_present) {
-          setUpdatedUsers(prev => [...prev, id]);
+          setUpdatedUsers(prev => [...new Set([...prev, id])]);
         } else {
           setUpdatedUsers(prev => prev.filter(userId => userId !== id));
         }
+        console.log(`Item ID: ${id}, is_present: ${updatedItem.is_present}`);
         return updatedItem;
       }
       return item;
     }));
   };
-
+  
+  // handleSave funksiyasida updatedUsers ni consolega chiqaramiz
   const handleSave = async () => {
+    console.log("Updated Users IDs: ", updatedUsers);
     try {
       const token = Cookies.get('access_token');
       await axios.post('/users/attendance/create/', { users: updatedUsers }, {
@@ -168,11 +171,14 @@ function Attendance() {
         },
       });
       setAlert({ type: 'success', message: 'Davomat muvaffaqiyatli saqlandi' });
-      handleReload();
+      setTimeout(() => window.location.reload(), 2000);
+      setTimeout(() => setAlert(false), 2000);
     } catch (error) {
       setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
     }
   };
+  
+  
 
   return (
     <div className="attendance">
@@ -195,7 +201,7 @@ function Attendance() {
       ) : (
         <>
           {alert && (
-            <Alert severity={alert.type} style={{ position: 'fixed', top: 0, width: '100%' }}>
+            <Alert severity={alert.type} style={{ backgroundColor: "green", color: "white", position: 'fixed', top: '100px', zIndex: 9999, maxWidth: '300px' }}>
               <AlertTitle>{alert.type === 'success' ? 'Muvaffaqiyat' : 'Xatolik'}</AlertTitle>
               {alert.message}
             </Alert>
@@ -251,15 +257,18 @@ function Attendance() {
                   data.map((item) => (
                     <tr key={item.id}>
                       <td>
+                        <span>Rasm:</span>
                         <div className="user-image-wrapper">
-                          <UserImage src={item.face_image} />
+                          <UserImage src={item.face_image}/>
                         </div>
                       </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
+                        <span>Ism: </span>
                         {item.first_name} {item.last_name} {item.middle_name}
                       </td>
-                      <td>{date}</td>
+                      <td><span>Sana: </span>{date}</td>
                       <td>
+                        <span>Davomat: </span>
                         <input
                           style={{ pointerEvents: editMode[item.id] ? 'auto' : 'none', borderColor: editMode[item.id] ? 'blue' : '', boxShadow: editMode[item.id] ? '0 0 5px blue' : '' }}
                           type="checkbox"
@@ -268,7 +277,7 @@ function Attendance() {
                           onChange={() => handleCheckboxChange(item.id)}
                         />
                         {!item.is_present && (
-                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px' }} />
+                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px'}} />
                         )}
                       </td>
                     </tr>

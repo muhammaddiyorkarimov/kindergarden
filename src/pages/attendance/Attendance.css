@@ -1,8 +1,14 @@
 .attendance {
-	padding: 20px;
+	padding: 20px 20px 70px;
 	width: 100%;
 	height: calc(100vh - 60px);
 	overflow-y: auto;
+}
+
+@media (max-width: 475px) {
+	.attendance {
+		padding: 20px 20px 120px;
+	}
 }
 
 .loading {
@@ -13,8 +19,10 @@
 	justify-content: center;
 }
 
-.loading p {
-	margin-top: 100px;
+.loading .nSnSW {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .attendance .header {
@@ -62,6 +70,7 @@
 	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 	min-width: 200px;
 }
+
 .attendance .header .a-count2 {
 	background-color: white;
 	padding: 10px 20px;
@@ -276,8 +285,8 @@ tbody td {
 }
 
 .attendance tbody td span {
-	font-weight: bold;
-	color: blue;
+	font-weight: 500;
+	display: none;
 }
 
 .attandance-save {
@@ -318,7 +327,7 @@ tbody td {
 	background-color: transparent;
 }
 
-.save-button-wrapper button{
+.save-button-wrapper button {
 	float: right;
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -340,13 +349,15 @@ tbody td {
 	align-items: center;
 	justify-content: center;
 }
-.user-attendance .name .user-information{
+
+.user-attendance .name .user-information {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 10px;
 }
-.user-attendance .name .user-information{
+
+.user-attendance .name .user-information {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -523,6 +534,10 @@ tbody td {
 		float: left;
 		text-transform: uppercase;
 	}
+
+	.attendance tbody td span {
+		display: block;
+	}
 }
 
 @media (max-width: 1211px) {
@@ -547,9 +562,6 @@ tbody td {
 }
 
 @media (max-width: 653px) {
-	.loading {
-		margin-left: 110px;
-	}
 
 	.header .items {
 		width: 100%;
@@ -615,9 +627,7 @@ tbody td {
 }
 
 @media (max-width: 400px) {
-	.loading {
-		margin-left: 50px;
-	}
+
 
 	.attendance .header .a-count .organization-dropdown {
 		top: 175px;

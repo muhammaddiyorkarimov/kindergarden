@@ -224,7 +224,7 @@ function Salary() {
                   <th>To'liq to'landimi</th>
                   <th>Jami ishga kelgan kunlar</th>
                   <th>Ishlagan soati</th>
-                  <th>Jami ish soati</th>
+                  <th>1 oylik jami ish kunlar</th>
                   <th>Jami hisoblangan oylik</th>
                   <th>To'lov</th>
                 </tr>
@@ -240,25 +240,29 @@ function Salary() {
                   data.map(item => (
                     <tr key={item.id}>
                       <td>
+                        <span>Rasm:</span>
                         <div className="user-image-wrapper">
                           <UserImage src={item.face_image} />
                         </div>
                       </td>
-                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>{item.first_name} {item.last_name}</td>
+                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}>
+                        <span>Ism:</span>
+                        {item.first_name} {item.last_name}</td>
                       <td style={{ cursor: 'pointer' }} onClick={() => handleOpenComment(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => payment.comment, "To'lov qilinmagan") : "To'lov qilinmagan")}>
-                        {formatNumberWithCommas(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0)}
+                        <span>To'langan summa:</span>{formatNumberWithCommas(item.monthly_payments ? item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0) : 0)}
                       </td>
                       <td>
+                        <span>To'liq to'landimi</span>
                         {item.monthly_payments ? item.monthly_payments.reduce((total, payment) => (
                           payment.is_completed ?
                             <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} /> :
                             <input type="checkbox" style={{ pointerEvents: 'none' }} />
                         ), <input type="checkbox" style={{ pointerEvents: 'none' }} />) : <input type="checkbox" style={{ pointerEvents: 'none' }} />}
                       </td>
-                      <td>{item.present_days !== null ? item.present_days : "0"}</td>
-                      <td>{item.worked_hours !== null ? item.worked_hours : "0"}</td>
-                      <td>{item.total_working_hours !== null ? item.total_working_hours : "0"}</td>
-                      <td>{item.calculated_salary !== null ? item.calculated_salary : "0"}</td>
+                      <td><span>Jami ishga kelgan kunlar:</span>{item.present_days !== null ? item.present_days : "0"}</td>
+                      <td><span>Ishlagan soati:</span>{item.worked_hours !== null ? item.worked_hours : "0"}</td>
+                      <td><span>1 oylik jami ish kunlar:</span>{item.total_working_hours !== null ? item.total_working_hours : "0"}</td>
+                      <td><span>Jami hisoblangan oylik:</span>{item.calculated_salary !== null ? item.calculated_salary : "0"}</td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
                           <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>
