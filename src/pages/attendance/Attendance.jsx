@@ -160,7 +160,6 @@ function Attendance() {
   };
 
   const handleSave = async () => {
-    handleReload();
     try {
       const token = Cookies.get('access_token');
       await axios.post('/users/attendance/create/', { users: updatedUsers }, {
@@ -169,6 +168,7 @@ function Attendance() {
         },
       });
       setAlert({ type: 'success', message: 'Davomat muvaffaqiyatli saqlandi' });
+      handleReload();
     } catch (error) {
       setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
     }
@@ -252,7 +252,7 @@ function Attendance() {
                     <tr key={item.id}>
                       <td>
                         <div className="user-image-wrapper">
-                          <UserImage src={item.face_image}/>
+                          <UserImage src={item.face_image} />
                         </div>
                       </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
@@ -268,7 +268,7 @@ function Attendance() {
                           onChange={() => handleCheckboxChange(item.id)}
                         />
                         {!item.is_present && (
-                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px'}} />
+                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px' }} />
                         )}
                       </td>
                     </tr>

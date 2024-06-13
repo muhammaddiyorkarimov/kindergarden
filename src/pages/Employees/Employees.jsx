@@ -120,7 +120,6 @@ function Employees() {
   };
 
   const handleSave = async () => {
-    handleReload();
     try {
       const token = Cookies.get('access_token');
       await axios.post('/users/attendance/create/', { users: updatedUsers }, {
@@ -129,6 +128,7 @@ function Employees() {
         },
       });
       setAlert({ type: 'success', message: 'Davomat muvaffaqiyatli saqlandi' });
+      handleReload();
     } catch (error) {
       setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
     }
