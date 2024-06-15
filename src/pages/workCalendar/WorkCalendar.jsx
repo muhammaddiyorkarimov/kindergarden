@@ -105,7 +105,6 @@ function WorkCalendar() {
               <th>Ishchi turi</th>
               <th>Yil</th>
               <th>Oy</th>
-              <th>Kunlik ish soati</th>
               <th>Oylik ish kunlari</th>
             </tr>
           </thead>
@@ -118,15 +117,15 @@ function WorkCalendar() {
               {workCalendars.map(calendar => (
                 <tr key={calendar.id}>
                   <td>
+                    <span>Ishchi turi:</span>
                     {calendar.worker_type === 'educator' ? 'Tarbiyachi' :
                       calendar.worker_type === 'teacher' ? "O'qituvchi" :
                         calendar.worker_type === 'worker' ? 'Tarbiyachi' :
                           calendar.worker_type}
                   </td>
-                  <td>{calendar.year}</td>
-                  <td>{monthNames[calendar.month - 1]}</td>
-                  <td>{calendar.daily_work_hours}</td>
-                  <td>{calendar.work_days.join(', ')}</td>
+                  <td><span>Yil:</span>{calendar.year}</td>
+                  <td><span>Oy:</span>{monthNames[calendar.month - 1]}</td>
+                  <td><span>Oylik ish soati:</span>{calendar.work_days.join(', ')}</td>
                 </tr>
               ))}
             </>}

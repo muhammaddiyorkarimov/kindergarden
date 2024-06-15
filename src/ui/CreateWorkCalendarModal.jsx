@@ -4,7 +4,6 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
   const [workerType, setWorkerType] = useState('');
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [dailyWorkHours, setDailyWorkHours] = useState('');
   const [selectedDays, setSelectedDays] = useState(new Set());
 
   useEffect(() => {
@@ -50,7 +49,6 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
       worker_type: workerType,
       year: parseInt(year),
       month: parseInt(month),
-      daily_work_hours: parseInt(dailyWorkHours),
       work_days: workDays,
     });
     onClose();
@@ -151,10 +149,6 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
               <option value="11">Noyabr</option>
               <option value="12">Dekabr</option>
             </select>
-          </div>
-          <div className="form-group">
-            <label>Kunlik ish soati</label>
-            <input type="number" value={dailyWorkHours} onChange={(e) => setDailyWorkHours(e.target.value)} min="0" required />
           </div>
           <div className="form-group">
             <label>Ish kunlari</label>

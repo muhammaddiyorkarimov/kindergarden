@@ -37,6 +37,7 @@ function Payment() {
   const [alertMessage, setAlertMessage] = useState('');
   const [activeDropdown, setActiveDropdown] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [paymentNumber, setPaymentNumber] = useState(null);
 
   useEffect(() => {
     if (!query.get('date')) {
@@ -58,6 +59,7 @@ function Payment() {
             }
           }
         );
+        setPaymentNumber(response.data);
         setData(response.data.results);
         setLoading(false);
       } catch (error) {
@@ -160,6 +162,7 @@ function Payment() {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+
   return (
     <div className='payment attendance'>
       {loading ? (
@@ -186,8 +189,8 @@ function Payment() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                {console.log(data)}
-                <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
+                <p>To'lov: {data.length} dan {paymentNumber && paymentNumber.total_payments_number}</p>
+                {/* <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p> */}
               </div>
               <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="student"
                 date={date} />

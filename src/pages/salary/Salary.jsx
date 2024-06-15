@@ -166,6 +166,7 @@ function Salary() {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+
   return (
     <div className='payment attendance'>
       {loading ? (
@@ -202,7 +203,8 @@ function Salary() {
           <div className="header">
             <div className="items">
               <div className="a-count">
-                <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p>
+                <p>To'lov: {data.length} dan {payment && payment.total_payments_number}</p>
+                {/* <p>To'lov: {data.length} dan {data ? data.reduce((total, item) => total + item.monthly_payments.filter(payment => payment.is_completed).length, 0) : 0}</p> */}
               </div>
               <InstitutionType handleGetInsName={handleGetInsName} handleGetInsId={handleGetInsId} activeDropdown={activeDropdown} toggleDropdown={toggleDropdown} type="worker"
                 date={date} />
