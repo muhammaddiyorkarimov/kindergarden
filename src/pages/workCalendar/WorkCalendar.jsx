@@ -37,6 +37,8 @@ function WorkCalendar() {
     }
   };
 
+  console.log(workCalendars);
+
   useEffect(() => {
     fetchWorkCalendars();
   }, []);
@@ -83,7 +85,7 @@ function WorkCalendar() {
         <button className='calendar-btn' onClick={handleOpenModal}>Create Work Calendar</button>
       </div>
       {successMessage && (
-        <Alert severity="success" style={{ backgroundColor: 'green', color: 'white' }}>
+        <Alert severity="success" style={{ position: 'fixed', backgroundColor: 'green', color: 'white' }}>
           <AlertTitle>Success</AlertTitle>
           {successMessage}
         </Alert>
@@ -120,7 +122,7 @@ function WorkCalendar() {
                     <span>Ishchi turi:</span>
                     {calendar.worker_type === 'educator' ? 'Tarbiyachi' :
                       calendar.worker_type === 'teacher' ? "O'qituvchi" :
-                        calendar.worker_type === 'worker' ? 'Tarbiyachi' :
+                        calendar.worker_type === 'worker' ? 'Ishchi' :
                           calendar.worker_type}
                   </td>
                   <td><span>Yil:</span>{calendar.year}</td>

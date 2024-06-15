@@ -126,7 +126,8 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
             <select value={workerType} onChange={(e) => setWorkerType(e.target.value)} required>
               <option value="">Turni tanlang</option>
               <option value="teacher">O'qituvchi</option>
-              <option value="worker">Tarbiyachi</option>
+              <option value="educator">Tarbiyachi</option>
+              <option value="worker">Ishchi</option>
             </select>
           </div>
           <div className="form-group">
