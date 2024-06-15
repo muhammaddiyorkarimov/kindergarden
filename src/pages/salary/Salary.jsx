@@ -165,7 +165,7 @@ function Salary() {
   function formatNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-
+console.log(data);
 
   return (
     <div className='payment attendance'>
@@ -263,7 +263,7 @@ function Salary() {
                       </td>
                       <td><span>Jami ishga kelgan kunlar:</span>{item.present_days !== null ? item.present_days : "0"}</td>
                       <td><span>Ishlagan soati:</span>{item.worked_hours !== null ? item.worked_hours : "0"}</td>
-                      <td><span>1 oylik jami ish kunlar:</span>{item.total_working_days !== null ? item.total_working_hours : "0"}</td>
+                      <td><span>1 oylik jami ish kunlar:</span>{item.total_working_days !== null ? item.total_working_days : "0"}</td>
                       <td><span>Jami hisoblangan oylik:</span>{item.calculated_salary !== null ? item.calculated_salary : "0"}</td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
