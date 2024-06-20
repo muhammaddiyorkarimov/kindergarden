@@ -132,7 +132,6 @@ function WorkCalendar() {
                     <span>Ishchi turi:</span>
                     {calendar.worker_type === 'educator' ? 'Tarbiyachi' :
                       calendar.worker_type === 'teacher' ? "O'qituvchi" :
-                        calendar.worker_type === 'worker' ? 'Ishchi' :
                           calendar.worker_type}
                   </td>
                   <td><span>Yil:</span>{calendar.year}</td>

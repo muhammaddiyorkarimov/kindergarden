@@ -228,6 +228,7 @@ console.log(data);
                   <th>Ishlagan soati</th>
                   <th>1 oylik jami ish kunlar</th>
                   <th>Jami hisoblangan oylik</th>
+                  <th>To'liq ish haqi</th>
                   <th>To'lov</th>
                 </tr>
               </thead>
@@ -265,6 +266,7 @@ console.log(data);
                       <td><span>Ishlagan soati:</span>{item.worked_hours !== null ? item.worked_hours : "0"}</td>
                       <td><span>1 oylik jami ish kunlar:</span>{item.total_working_days !== null ? item.total_working_days : "0"}</td>
                       <td><span>Jami hisoblangan oylik:</span>{item.calculated_salary !== null ? item.calculated_salary : "0"}</td>
+                      <td><span>To'liq ish haqi:</span> {item.full_salary !== null ? item.full_salary : "0"}</td>
                       <td className='td-wrapper'>
                         {item.monthly_payments.length > 0 && (
                           <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>

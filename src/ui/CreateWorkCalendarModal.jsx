@@ -126,7 +126,7 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit, initialData }) {
           <h2>{initialData ? 'Ish kalendarini yangilash' : 'Ish kalendarini yaratish'}</h2>
           <div className="form-group">
             <label>Ishchi turi</label>
-            <select value={workerType} onChange={(e) => setWorkerType(e.target.value)} required>
+            <select value={workerType} onChange={(e) => setWorkerType(e.target.value)} required disabled={!!initialData}>
               <option value="">Turni tanlang</option>
               <option value="teacher">O'qituvchi</option>
               <option value="educator">Tarbiyachi</option>
