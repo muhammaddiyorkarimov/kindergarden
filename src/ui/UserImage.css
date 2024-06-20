@@ -139,3 +139,18 @@ form h2 {
   background-color: #20687f;
   color: white;
 }
+.calendar-btn2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-btn2 button {
+  padding: 10px 30px;
+  font-size: 14px;
+}
+
+.calendar-btn2 button:disabled {
+  background-color: #20677f99;
+  cursor: auto;
+}

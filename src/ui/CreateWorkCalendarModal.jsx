@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react';
 
-function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
-  const [workerType, setWorkerType] = useState('');
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-  const [selectedDays, setSelectedDays] = useState(new Set());
+function CreateWorkCalendarModal({ isOpen, onClose, onSubmit, initialData }) {
+  const [workerType, setWorkerType] = useState(initialData ? initialData.worker_type : '');
+  const [year, setYear] = useState(initialData ? initialData.year : new Date().getFullYear());
+  const [month, setMonth] = useState(initialData ? initialData.month : new Date().getMonth() + 1);
+  const [selectedDays, setSelectedDays] = useState(new Set(initialData ? initialData.work_days : []));
 
   useEffect(() => {
-    const initializeSelectedDays = () => {
-      const newSelectedDays = new Set();
-      const daysInMonth = new Date(year, month, 0).getDate();
+    if (!initialData) {
+      const initializeSelectedDays = () => {
+        const newSelectedDays = new Set();
+        const daysInMonth = new Date(year, month, 0).getDate();
 
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dayOfWeek = new Date(year, month - 1, day).getDay();
-        if (dayOfWeek !== 0) { // Exclude Sundays initially
-          newSelectedDays.add(day);
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dayOfWeek = new Date(year, month - 1, day).getDay();
+          if (dayOfWeek !== 0) { // Exclude Sundays initially
+            newSelectedDays.add(day);
+          }
         }
+
+        setSelectedDays(newSelectedDays);
+      };
+
+      if (year && month) {
+        initializeSelectedDays();
       }
-
-      setSelectedDays(newSelectedDays);
-    };
-
-    if (year && month) {
-      initializeSelectedDays();
     }
-  }, [year, month]);
+  }, [year, month, initialData]);
 
   if (!isOpen) return null;
 
@@ -46,11 +48,12 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
     }
     const workDays = Array.from(selectedDays);
     onSubmit({
+      id: initialData ? initialData.id : undefined,
       worker_type: workerType,
       year: parseInt(year),
       month: parseInt(month),
       work_days: workDays,
-    });
+    }, !!initialData);
     onClose();
   };
 
@@ -120,7 +123,7 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-button" onClick={onClose}>×</button>
         <form onSubmit={handleSubmit}>
-          <h2>Ish kalendarini yaratish</h2>
+          <h2>{initialData ? 'Ish kalendarini yangilash' : 'Ish kalendarini yaratish'}</h2>
           <div className="form-group">
             <label>Ishchi turi</label>
             <select value={workerType} onChange={(e) => setWorkerType(e.target.value)} required>
@@ -132,11 +135,11 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
           </div>
           <div className="form-group">
             <label>Yil</label>
-            <input type="number" value={year} onChange={(e) => setYear(e.target.value)} min="2023" required />
+            <input type="number" value={year} onChange={(e) => setYear(e.target.value)} min="2023" required disabled={!!initialData} />
           </div>
           <div className="form-group">
             <label>Oy</label>
-            <select value={month} onChange={(e) => setMonth(e.target.value)} required>
+            <select value={month} onChange={(e) => setMonth(e.target.value)} required disabled={!!initialData}>
               <option value="1">Yanvar</option>
               <option value="2">Fevral</option>
               <option value="3">Mart</option>
@@ -155,7 +158,7 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit }) {
             <label>Ish kunlari</label>
             {year && month && renderCalendar()}
           </div>
-          <button type="submit">Saqlash</button>
+          <button type="submit">{initialData ? 'Yangilash' : 'Saqlash'}</button>
         </form>
       </div>
     </div>

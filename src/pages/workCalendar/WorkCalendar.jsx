@@ -12,6 +12,7 @@ function WorkCalendar() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [editingCalendar, setEditingCalendar] = useState(null);
 
   const monthNames = [
     'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
@@ -37,52 +38,58 @@ function WorkCalendar() {
     }
   };
 
-  console.log(workCalendars);
-
   useEffect(() => {
     fetchWorkCalendars();
   }, []);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (calendar) => {
+    setEditingCalendar(calendar);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setEditingCalendar(null);
   };
 
-  const handleSubmit = async (calendarData) => {
+  const handleSubmit = async (calendarData, isEdit) => {
     const token = Cookies.get('access_token');
-    const isDuplicate = workCalendars.some(calendar =>
-      calendar.year === calendarData.year && calendar.month === calendarData.month && calendar.worker_type === calendarData.worker_type
-    );
-
-    if (isDuplicate) {
-      setError('Bu oy uchun hisoblangan');
-      setTimeout(() => setError(null), 3000); // Hide message after 3 seconds
-      return;
-    }
 
     try {
-      await axios.post('organizations/work-calendar/create/', calendarData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
+      if (isEdit) {
+        await axios.put(`organizations/work-calendar/${calendarData.id}/update/`, calendarData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setSuccessMessage('Work calendar updated successfully!');
+      } else {
+        await axios.post('organizations/work-calendar/create/', calendarData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        setSuccessMessage('Work calendar created successfully!');
+      }
       fetchWorkCalendars(); // Refresh data after submission
-      setSuccessMessage('Work calendar created successfully!');
       setTimeout(() => setSuccessMessage(null), 3000); // Hide message after 3 seconds
     } catch (error) {
-      console.error('Error creating work calendar:', error);
-      setError('Failed to create work calendar. Please try again.');
+      console.error('Error submitting work calendar:', error);
+      setError('Failed to submit work calendar. Please try again.');
     }
+  };
+
+  const isPastMonth = (year, month) => {
+    const now = new Date();
+    const calendarDate = new Date(year, month - 1);
+    return calendarDate < new Date(now.getFullYear(), now.getMonth());
   };
 
   return (
     <div className="work-calendar attendance">
       <div className="calendar-create-wrapper">
         <h2>Work Calendars</h2>
-        <button className='calendar-btn' onClick={handleOpenModal}>Create Work Calendar</button>
+        <button className='calendar-btn' onClick={() => handleOpenModal(null)}>Create Work Calendar</button>
       </div>
       {successMessage && (
         <Alert severity="success" style={{ position: 'fixed', backgroundColor: 'green', color: 'white' }}>
@@ -108,15 +115,18 @@ function WorkCalendar() {
               <th>Yil</th>
               <th>Oy</th>
               <th>Oylik ish kunlari</th>
+              <th>Yangilash</th>
             </tr>
           </thead>
           <tbody>
-            {workCalendars.length == 0 ? <tr>
-              <td style={{ textAlign: 'center' }} colSpan={9}>
-                Ma'lumot topilmadi
-              </td>
-            </tr> : <>
-              {workCalendars.map(calendar => (
+            {workCalendars.length === 0 ? (
+              <tr>
+                <td style={{ textAlign: 'center' }} colSpan={5}>
+                  Ma'lumot topilmadi
+                </td>
+              </tr>
+            ) : (
+              workCalendars.map(calendar => (
                 <tr key={calendar.id}>
                   <td>
                     <span>Ishchi turi:</span>
@@ -128,9 +138,18 @@ function WorkCalendar() {
                   <td><span>Yil:</span>{calendar.year}</td>
                   <td><span>Oy:</span>{monthNames[calendar.month - 1]}</td>
                   <td><span>Oylik ish soati:</span>{calendar.work_days.join(', ')}</td>
+                  <td className='calendar-btn2'>
+                    <button
+                      className='calendar-btn'
+                      onClick={() => handleOpenModal(calendar)}
+                      disabled={isPastMonth(calendar.year, calendar.month)}
+                    >
+                      Yangilash
+                    </button>
+                  </td>
                 </tr>
-              ))}
-            </>}
+              ))
+            )}
           </tbody>
         </table>
       )}
@@ -139,6 +158,7 @@ function WorkCalendar() {
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           onSubmit={handleSubmit}
+          initialData={editingCalendar}
         />
       )}
     </div>
