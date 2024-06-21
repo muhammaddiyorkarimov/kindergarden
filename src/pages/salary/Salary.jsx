@@ -8,6 +8,7 @@ import InstitutionType from '../../components/InstitutionType';
 import PaymentModal from './../../components/PaymentModal';
 import UpdatePaymentModal from './../../components/UpdatePaymentModal';
 import UserImage from '../../ui/UserImage';
+import SearchInputs from '../../components/SerachInputs';
 
 function Salary() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ function Salary() {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleCreateWorkCalendarSuccess = (newWorkCalendar) => {
     navigate('/work-calendar', { state: { newWorkCalendar } });
@@ -165,7 +167,18 @@ function Salary() {
   function formatNumberWithCommas(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-console.log(data);
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const normalizeString = (str) => {
+    return str.toLowerCase().replace(/x/g, 'h');
+  };
+
+  const filteredData = data.filter(item =>
+    normalizeString(`${item.first_name} ${item.last_name} ${item.middle_name}`).includes(normalizeString(searchTerm))
+  );
 
   return (
     <div className='payment attendance'>
@@ -201,6 +214,7 @@ console.log(data);
             </Alert>
           )}
           <div className="header">
+            <SearchInputs handleSearch={handleSearch} />
             <div className="items">
               <div className="a-count">
                 <p>To'lov: {data.length} dan {payment && payment.total_payments_number}</p>
@@ -233,14 +247,14 @@ console.log(data);
                 </tr>
               </thead>
               <tbody>
-                {data.length == 0 ? (
+                {filteredData.length == 0 ? (
                   <tr>
                     <td style={{ textAlign: 'center' }} colSpan={9}>
                       Ma'lumot topilmadi
                     </td>
                   </tr>
-                ) : data.length > 0 ? (
-                  data.map(item => (
+                ) : filteredData.length > 0 ? (
+                  filteredData.map(item => (
                     <tr key={item.id}>
                       <td>
                         <span>Rasm:</span>

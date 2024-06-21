@@ -5,6 +5,7 @@ import InstitutionType from "../../components/InstitutionType";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import UserImage from "../../ui/UserImage";
+import SearchInputs from "../../components/SerachInputs";
 
 function Employees() {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function Employees() {
   const [date, setDate] = useState(urlDate);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   useEffect(() => {
@@ -93,6 +95,18 @@ function Employees() {
     navigate(`/employees?organization=${insId}&type=worker&date=${newDate}`);
   };
 
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const normalizeString = (str) => {
+    return str.toLowerCase().replace(/x/g, 'h');
+  };
+
+  const filteredData = data.filter(item =>
+    normalizeString(`${item.first_name} ${item.last_name} ${item.middle_name}`).includes(normalizeString(searchTerm))
+  );
+
   return (
     <div className="attendance">
       {loading ? (
@@ -106,6 +120,7 @@ function Employees() {
       ) : (
         <>
           <div className="header">
+          <SearchInputs handleSearch={handleSearch} />
             <div className="items">
               <div className="a-count">
                 <p>Davomat: {employees && `${employees.count} dan ${employees.total_presences}`}</p>
@@ -135,8 +150,8 @@ function Employees() {
                 </tr>
               </thead>
               <tbody>
-                {data.length > 0 ? (
-                  data.map((item) => (
+                {filteredData.length > 0 ? (
+                  filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
                       <span>Rasm:</span>
@@ -160,7 +175,7 @@ function Employees() {
                       </td>
                     </tr>
                   ))
-                ) : <tr><td style={{ textAlign: 'center' }} colSpan={3}>M'alumot topilmadi</td></tr>}
+                ) : <tr><td style={{ textAlign: 'center' }} colSpan={4}>M'alumot topilmadi</td></tr>}
               </tbody>
             </table>
           </div>

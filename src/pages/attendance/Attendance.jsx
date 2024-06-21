@@ -9,6 +9,7 @@ import Cookies from 'js-cookie';
 import UserImage from "../../ui/UserImage";
 import EditIcon from '@mui/icons-material/Edit';
 import { Alert, AlertTitle } from "@mui/material";
+import SearchInputs from './../../components/SerachInputs';
 
 function Attendance() {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ function Attendance() {
   const [editMode, setEditMode] = useState({});
   const [updatedUsers, setUpdatedUsers] = useState([]);
   const [alert, setAlert] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchAttendanceData = async (url) => {
@@ -159,8 +161,7 @@ function Attendance() {
       return item;
     }));
   };
-  
-  // handleSave funksiyasida updatedUsers ni consolega chiqaramiz
+
   const handleSave = async () => {
     console.log("Updated Users IDs: ", updatedUsers);
     try {
@@ -177,8 +178,19 @@ function Attendance() {
       setAlert({ type: 'error', message: 'Davomatni saqlashda xatolik yuz berdi: ' + error.message });
     }
   };
-  
-  
+
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const normalizeString = (str) => {
+    return str.toLowerCase().replace(/x/g, 'h');
+  };
+
+  const filteredData = data.filter(item =>
+    normalizeString(`${item.first_name} ${item.last_name} ${item.middle_name}`).includes(normalizeString(searchTerm))
+  );
+
 
   return (
     <div className="attendance">
@@ -207,6 +219,7 @@ function Attendance() {
             </Alert>
           )}
           <div className="header">
+            <SearchInputs handleSearch={handleSearch} />
             <div className="items">
               <div className="a-count">
                 <p>
@@ -253,13 +266,13 @@ function Attendance() {
                 </tr>
               </thead>
               <tbody>
-                {data.length > 0 ? (
-                  data.map((item) => (
+                {filteredData.length > 0 ? (
+                  filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>
                         <span>Rasm:</span>
                         <div className="user-image-wrapper">
-                          <UserImage src={item.face_image}/>
+                          <UserImage src={item.face_image} />
                         </div>
                       </td>
                       <td className="name-click" onClick={() => handleNameAbout(item)}>
@@ -277,7 +290,7 @@ function Attendance() {
                           onChange={() => handleCheckboxChange(item.id)}
                         />
                         {!item.is_present && (
-                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px'}} />
+                          <EditIcon onClick={() => handleEdit(item.id)} style={{ cursor: 'pointer', marginLeft: '10px', color: 'orange', fontSize: '20px' }} />
                         )}
                       </td>
                     </tr>

@@ -10,6 +10,7 @@ import './Payment.css';
 import PaymentModal from './../../components/PaymentModal';
 import UpdatePaymentModal from './../../components/UpdatePaymentModal';
 import UserImage from '../../ui/UserImage';
+import SearchInputs from '../../components/SerachInputs';
 
 function Payment() {
   const navigate = useNavigate();
@@ -38,6 +39,8 @@ function Payment() {
   const [activeDropdown, setActiveDropdown] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [paymentNumber, setPaymentNumber] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   useEffect(() => {
     if (!query.get('date')) {
@@ -162,6 +165,18 @@ function Payment() {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+  };
+
+  const normalizeString = (str) => {
+    return str.toLowerCase().replace(/x/g, 'h');
+  };
+
+  const filteredData = data.filter(item =>
+    normalizeString(`${item.first_name} ${item.last_name} ${item.middle_name}`).includes(normalizeString(searchTerm))
+  );
+
 
   return (
     <div className='payment attendance'>
@@ -187,6 +202,7 @@ function Payment() {
             </Alert>
           )}
           <div className="header">
+            <SearchInputs handleSearch={handleSearch} />
             <div className="items">
               <div className="a-count">
                 <p>To'lov: {data.length} dan {paymentNumber && paymentNumber.total_payments_number}</p>
@@ -214,63 +230,63 @@ function Payment() {
                   <th>Jami kelgan kunlar</th>
                   <th>To'langan Summa</th>
                   <th>To'liq to'landimi</th>
+                  <th>Qolgan to'lov</th>
+                  <th>O'qish to'lovi</th>
                   <th>To'lov</th>
                 </tr>
               </thead>
               <tbody>
-                {data.length == 0 ? (
-                  <tr>
-                    <td style={{ textAlign: 'center' }} colSpan={5}>
-                      Ma'lumot topilmadi
+                {filteredData.length > 0 ? filteredData.map(item => (
+                  <tr key={item.id}>
+                    <td>
+                      <span>Rasm: </span>
+                      <div className="user-image-wrapper">
+                        <UserImage src={item.face_image} />
+                      </div>
+                    </td>
+                    <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}><span>Ism:</span>{item.first_name} {item.last_name}</td>
+                    <td><span>Sana:</span>{date}</td>
+                    <td><span>Jami kelgan kunlar:</span>{item.present_days}</td>
+                    <td style={{ cursor: 'pointer' }}>
+                      <span>To'langan summa:</span>
+                      {formatNumberWithCommas(item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0))}
+                    </td>
+                    <td>
+                      <span>To'liq to'landimi:</span>
+                      {item.monthly_payments.reduce((total, payment) => {
+                        return (
+                          payment.is_completed ?
+                            <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} />
+                            :
+                            <input type="checkbox" style={{ pointerEvents: 'none' }} />
+                        )
+                      }, <input type="checkbox" style={{ pointerEvents: 'none' }} />)}
+                    </td>
+                    <td><span>Qolgan to'lov:</span>
+                      {item.remain_payment !== null ? item.remain_payment : '0'}
+                    </td>
+                    <td><span>O'qish to'lovi</span>
+                      {item.tuition_fee !== null ? item.tuition_fee : '0'}
+                    </td>
+                    <td className='td-wrapper'>
+                      {item.monthly_payments.length > 0 && (
+                        <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>
+                          {item.monthly_payments.reduce((total, payment) => (
+                            payment.is_completed ?
+                              "To'landi"
+                              :
+                              "Yangilash"
+                          ), "Yangilash")}
+                        </button>
+                      )}
+                      {item.monthly_payments.length === 0 && (
+                        <button className='payment-btn' onClick={() => showModalPayment(item)}>To'lov</button>
+                      )}
                     </td>
                   </tr>
-                ) : data.length > 0 ? (
-                  data.map(item => (
-                    <tr key={item.id}>
-                      <td>
-                        <span>Rasm: </span>
-                        <div className="user-image-wrapper">
-                          <UserImage src={item.face_image} />
-                        </div>
-                      </td>
-                      <td style={{ cursor: 'pointer' }} onClick={() => handleNameAbout(item.id)}><span>Ism:</span>{item.first_name} {item.last_name}</td>
-                      <td><span>Sana:</span>{date}</td>
-                      <td><span>Jami kelgan kunlar:</span>{item.present_days}</td>
-                      <td style={{ cursor: 'pointer' }}>
-                        <span>To'langan summa:</span>
-                        {formatNumberWithCommas(item.monthly_payments.reduce((total, payment) => total + parseFloat(payment.amount), 0))}
-                      </td>
-                      <td>
-                        <span>To'liq to'landimi:</span>
-                        {item.monthly_payments.reduce((total, payment) => {
-                          return (
-                            payment.is_completed ?
-                              <input type="checkbox" defaultChecked style={{ pointerEvents: 'none' }} />
-                              :
-                              <input type="checkbox" style={{ pointerEvents: 'none' }} />
-                          )
-                        }, <input type="checkbox" style={{ pointerEvents: 'none' }} />)}
-                      </td>
-                      <td className='td-wrapper'>
-                        {item.monthly_payments.length > 0 && (
-                          <button className={item.monthly_payments.some(payment => payment.is_completed) ? 'edit-btn green-bg' : 'edit-btn'} onClick={() => showModalUpdate(item)}>
-                            {item.monthly_payments.reduce((total, payment) => (
-                              payment.is_completed ?
-                                "To'landi"
-                                :
-                                "Yangilash"
-                            ), "Yangilash")}
-                          </button>
-                        )}
-                        {item.monthly_payments.length === 0 && (
-                          <button className='payment-btn' onClick={() => showModalPayment(item)}>To'lov</button>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+                )) : (
                   <tr>
-                    <td style={{ textAlign: 'center' }} colSpan={5}>Ma'lumot topilmadi</td>
+                    <td style={{ textAlign: 'center' }} colSpan={9}>Ma'lumot topilmadi</td>
                   </tr>
                 )}
               </tbody>

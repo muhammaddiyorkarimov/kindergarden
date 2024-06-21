@@ -28,8 +28,40 @@
 .attendance .header {
 	width: 100%;
 	display: flex;
+	flex-direction: column;
+	align-items: start;
+	justify-content: space-between;
+}
+
+.search-input-wrapper {
+	display: flex;
+}
+
+.attendance .header .search-inputs {
+	max-width: 300px;
+	width: 100%;
+	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 10px;
+	border-radius: 10px;
+	padding: 10px 20px;
+	background-color: white;
+	cursor: pointer;
+	box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+	border: none;
+	margin-bottom: 10px;
+}
+
+
+.attendance .header .search-inputs input {
+	border: none;
+	background-color: transparent;
+	width: 100%;
+}
+
+.attendance .header .search-inputs input:focus {
+	outline: none;
 }
 
 .attendance .header .items {
