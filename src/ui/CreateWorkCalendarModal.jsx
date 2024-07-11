@@ -86,7 +86,7 @@ function CreateWorkCalendarModal({ isOpen, onClose, onSubmit, initialData }) {
 
     return (
       <div className="calendar">
-        <div className="calendar-row header">
+        <div className="calendar-row">
           {dayNames.map((dayName, index) => (
             <div key={index} className="day-name">
               {dayName}
